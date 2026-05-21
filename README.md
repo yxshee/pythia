@@ -110,10 +110,10 @@ Arc testnet (chain ID 5042002):
 
 | Contract       | Address                                      |
 |----------------|----------------------------------------------|
-| `PythiaVault`  | `<0x… fill after forge script>`              |
-| `TraceLog`     | `<0x… fill after forge script>`              |
-| `UnlockMarket` | `<0x… fill after forge script>`              |
-| `DevUSDC`      | `<0x… fill after forge script>`              |
+| `PythiaVault`  | `0x7383dF0f0F0822b380092C5D2204258Ce4C842B5` |
+| `TraceLog`     | `0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4` |
+| `UnlockMarket` | `0x6478370B34Dc31498C68734EB2647C99A333b6D4` |
+| `DevUSDC`      | `0x6d3bda6e93dd02a1c237642C5af837796bF47511` |
 
 Web demo: `https://agoraalpha.vercel.app` (Vercel deploy alias).
 
