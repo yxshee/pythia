@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+@theme {
+  /* Parchment + ink + oxblood palette - intentionally not the AI-default off-white-on-black. */
+  --color-parchment: #f2eddc;
+  --color-parchment-warm: #ede6d0;
+  --color-ink: #0f0e0c;
+  --color-ink-soft: #514e47;
+  --color-ink-faint: #8a857a;
+  --color-oxblood: #7a1f1a;
+  --color-oxblood-bright: #9b2820;
+  --color-gold: #b89849;
+  --color-marble: #fbfaf3;
+  --color-laurel: #3a5a3a;
+
+  --font-display: var(--font-display), "Fraunces", "Georgia", serif;
+  --font-mono: var(--font-mono), ui-monospace, "JetBrains Mono", "Menlo", monospace;
+  --font-sans: var(--font-display), "Fraunces", "Georgia", serif;
+}
+
+@layer base {
+  html {
+    background: var(--color-parchment);
+    color: var(--color-ink);
+    color-scheme: light;
+  }
+
+  body {
+    /* Hand-rolled background: warm parchment + a very faint repeating Greek-key
+       motif baked in as a single SVG data URI. Keeps the canvas alive without
+       a hero image. */
+    background-color: var(--color-parchment);
+    background-image:
+      radial-gradient(at 18% 8%, rgba(184, 152, 73, 0.10) 0, transparent 38%),
+      radial-gradient(at 92% 92%, rgba(122, 31, 26, 0.06) 0, transparent 40%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g fill='none' stroke='%230f0e0c' stroke-opacity='0.04' stroke-width='1'><path d='M0 40 H20 V20 H60 V60 H20 V40' /></g></svg>");
+    background-attachment: fixed;
+    background-size: auto, auto, 80px 80px;
+    font-family: var(--font-display);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "ss01", "ss02", "cv11";
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-parchment);
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  .num, .mono {
+    font-family: var(--font-mono);
+    font-feature-settings: "tnum", "ss01";
+  }
+}
+
+/* Subtle staggered fade-in for cards on first paint. */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.rise {
+  animation: rise 480ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}

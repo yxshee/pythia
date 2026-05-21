@@ -1,0 +1,119 @@
+{
+  "analyst": {
+    "confidence_bps": 3816,
+    "decision": "BUY_YES",
+    "edge_bps": 272,
+    "fair_price_yes": 0.18720000000000003,
+    "generated_at": "2026-05-14T14:34:00+00:00",
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+    "model": "heuristic-v1-placeholder",
+    "question": "Will BTC reach a new all-time high in 2026?",
+    "reasoning": [
+      {
+        "kind": "observation",
+        "text": "Market YES price = 0.160; 24h volume = $1,205,700; liquidity = $540,000."
+      },
+      {
+        "kind": "inference",
+        "text": "Tail-of-distribution market; heuristic fair 0.187 vs market 0.160 -> +272 bps."
+      },
+      {
+        "kind": "risk",
+        "text": "Placeholder model: confidence is artificially capped at 60% until the LLM analyst lands."
+      },
+      {
+        "kind": "conclusion",
+        "text": "Decision: BUY_YES @ conf=38.2%"
+      }
+    ]
+  },
+  "builder_code": "pythia",
+  "full": {
+    "agent_probability_yes": 0.1872,
+    "confidence": "low",
+    "current_implied_yes": 0.16,
+    "decision": "BUY_YES",
+    "edge_bps": 272,
+    "end_date_iso": "2026-12-31T23:59:59Z",
+    "expected_value_pct": 17.0,
+    "generated_at": "2026-05-14T14:34:00+00:00",
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+    "market_liquidity_usd": 540000.0,
+    "market_url": "https://polymarket.com/event/btc-new-ath-2026",
+    "market_volume_24h_usd": 1205700.0,
+    "model": "heuristic-v1-placeholder",
+    "question": "Will BTC reach a new all-time high in 2026?",
+    "reasoning": [
+      {
+        "kind": "observation",
+        "text": "Market YES price = 0.160; 24h volume = $1,205,700; liquidity = $540,000."
+      },
+      {
+        "kind": "inference",
+        "text": "Tail-of-distribution market; heuristic fair 0.187 vs market 0.160 -> +272 bps."
+      },
+      {
+        "kind": "risk",
+        "text": "Placeholder model: confidence is artificially capped at 60% until the LLM analyst lands."
+      },
+      {
+        "kind": "conclusion",
+        "text": "Decision: BUY_YES @ conf=38.2%"
+      }
+    ],
+    "risk": "conservative",
+    "risk_factors": [],
+    "sources": [],
+    "suggested_size_by_profile": {
+      "aggressive": 30.53,
+      "balanced": 19.08,
+      "conservative": 7.63
+    },
+    "suggested_size_usdc": 19.08,
+    "trace_hash": "0x2ebcef3c68584a0079009270b7cbfe31a411a60f48053614a8f7167373c761be",
+    "trace_id": 2
+  },
+  "generated_at": "2026-05-14T14:34:00+00:00",
+  "model": "heuristic-v1-placeholder",
+  "plan": {
+    "confidence_bps": 3816,
+    "decision": "BUY_YES",
+    "edge_bps": 272,
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+    "parent_trace_id": 0,
+    "question": "Will BTC reach a new all-time high in 2026?",
+    "size_usdc": 19.08
+  },
+  "preview": {
+    "agent_probability_yes": 0.1872,
+    "confidence": "low",
+    "current_implied_yes": 0.16,
+    "decision": "BUY_YES",
+    "end_date_iso": "2026-12-31T23:59:59Z",
+    "generated_at": "2026-05-14T14:34:00+00:00",
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+    "model": "heuristic-v1-placeholder",
+    "question": "Will BTC reach a new all-time high in 2026?",
+    "risk": "conservative",
+    "trace_hash": "0x2ebcef3c68584a0079009270b7cbfe31a411a60f48053614a8f7167373c761be",
+    "trace_id": 2
+  },
+  "publication": {
+    "builder_code_link": "https://polymarket.com/event/btc-new-ath-2026?builderCode=pythia&side=yes",
+    "error": null,
+    "fallback_link": "https://polymarket.com/event/btc-new-ath-2026",
+    "plan": {
+      "confidence_bps": 3816,
+      "decision": "BUY_YES",
+      "edge_bps": 272,
+      "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+      "parent_trace_id": 0,
+      "question": "Will BTC reach a new all-time high in 2026?",
+      "size_usdc": 19.08
+    },
+    "published": true
+  },
+  "theme": "crypto",
+  "trace_id": 2,
+  "vault": null
+}

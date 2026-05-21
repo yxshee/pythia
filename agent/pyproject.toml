@@ -1,0 +1,36 @@
+[project]
+name = "pythia-agent"
+version = "0.1.0"
+description = "Autonomous prediction-market reasoning agent for the Pythia vault"
+requires-python = ">=3.11"
+authors = [{ name = "yxshee" }]
+license = { text = "MIT" }
+dependencies = [
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "httpx>=0.27",
+    "anthropic>=0.39",
+    "openai>=1.40",
+    "web3>=7.0",
+    "tenacity>=8.3",
+    "structlog>=24.1",
+    "rich>=13.7",
+    "click>=8.1",
+]
+
+[project.scripts]
+pythia-loop = "pythia.loop:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["pythia"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "RUF"]
