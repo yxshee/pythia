@@ -69,7 +69,7 @@ class Analyst:
                 import anthropic
 
                 self._client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
-                self._model = "claude-sonnet-4-5"
+                self._model = "claude-sonnet-4-6"
             except ImportError:
                 log.warning("analyst.anthropic_unavailable")
 
@@ -152,13 +152,119 @@ class Analyst:
     #  LLM-backed analyst (Claude)
     # ------------------------------------------------------------------
     def _score_with_llm(self, market: MarketCandidate) -> AnalystReport:
-        """Route reasoning through Claude with a JSON-schema'd output.
+        """Score the market via Claude with a forced JSON tool call.
 
-        Wired up on Day 3 once the JSON schema settles. For Day 1 we fall back to the
-        heuristic so the loop runs.
+        Uses the forced tool-use pattern: we declare a ``submit_analysis`` tool
+        with a strict input_schema and pin ``tool_choice`` to it. Claude returns
+        a single tool_use block whose ``input`` is guaranteed to match the schema.
+
+        Falls back to the heuristic on any error (network, rate limit, schema
+        mismatch). The heuristic is the safety net — failing closed is correct
+        here because we publish paper picks, not execute trades.
         """
-        # TODO(day-3): structured output via tool_choice=auto + the AnalystReport schema.
-        return self._score_heuristic(market)
+        system_prompt = (
+            "You are Pythia, a prediction-market analyst. Your job: score one market "
+            "for +EV and explain your reasoning concisely.\n\n"
+            "Discipline:\n"
+            "- HOLD is the default. Only BUY when you have a thesis the market is mispricing.\n"
+            "- Confidence is calibrated, not promotional. 70%+ confidence means you would "
+            "bet your own money. ~50% is essentially HOLD.\n"
+            "- Edge below 200 bps after slippage is not worth the round-trip.\n"
+            "- Liquidity below $25k is a hard pass — slippage eats the edge.\n"
+            "- Produce 3-6 reasoning steps. Be specific: cite price, liquidity, catalyst.\n"
+            "- `fair_price_yes` is YOUR probability YES resolves true (clamped 0.01-0.99). "
+            "The market price is one data point among many.\n\n"
+            "Always call the submit_analysis tool. Do not respond in prose."
+        )
+        user_prompt = (
+            f"Market: {market.question}\n"
+            f"Description: {market.description[:1200]}\n"
+            f"Current YES price: {market.yes_price:.3f}  (NO: {market.no_price:.3f})\n"
+            f"24h volume: ${market.volume_24h_usd:,.0f}\n"
+            f"Liquidity: ${market.liquidity_usd:,.0f}\n"
+            f"Resolves: {market.end_date_iso}\n"
+            f"Tags: {', '.join(market.tags[:8])}\n\n"
+            "Analyze and submit."
+        )
+        tool = {
+            "name": "submit_analysis",
+            "description": "Submit your structured analysis of this market.",
+            "input_schema": {
+                "type": "object",
+                "properties": {
+                    "decision": {"type": "string", "enum": ["BUY_YES", "BUY_NO", "HOLD"]},
+                    "confidence_bps": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 10000,
+                        "description": "Calibrated confidence, 0-10000 basis points (0-100%).",
+                    },
+                    "fair_price_yes": {
+                        "type": "number",
+                        "minimum": 0.01,
+                        "maximum": 0.99,
+                        "description": "Analyst's probability YES resolves true.",
+                    },
+                    "reasoning": {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 8,
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "kind": {
+                                    "type": "string",
+                                    "enum": ["observation", "comparison", "inference", "risk", "conclusion"],
+                                },
+                                "text": {"type": "string", "maxLength": 600},
+                            },
+                            "required": ["kind", "text"],
+                        },
+                    },
+                },
+                "required": ["decision", "confidence_bps", "fair_price_yes", "reasoning"],
+            },
+        }
+        try:
+            resp = self._client.messages.create(
+                model=self._model,
+                max_tokens=2048,
+                system=[
+                    {
+                        "type": "text",
+                        "text": system_prompt,
+                        "cache_control": {"type": "ephemeral"},
+                    }
+                ],
+                messages=[{"role": "user", "content": user_prompt}],
+                tools=[tool],
+                tool_choice={"type": "tool", "name": "submit_analysis"},
+            )
+            payload: dict | None = None
+            for block in resp.content:
+                if getattr(block, "type", None) == "tool_use" and getattr(block, "name", None) == "submit_analysis":
+                    payload = block.input
+                    break
+            if payload is None:
+                raise RuntimeError("no submit_analysis tool_use in response")
+        except Exception as exc:  # noqa: BLE001 - heuristic is the safety net
+            log.warning("analyst.llm_failed", error=str(exc), market_id=market.market_id)
+            return self._score_heuristic(market)
+
+        fair = max(0.01, min(0.99, float(payload["fair_price_yes"])))
+        edge_bps = int(round((fair - market.yes_price) * 10_000))
+        steps = [ReasoningStep(kind=s["kind"], text=s["text"]) for s in payload["reasoning"]]
+        return AnalystReport(
+            market_id=market.market_id,
+            question=market.question,
+            decision=payload["decision"],
+            confidence_bps=max(0, min(10_000, int(payload["confidence_bps"]))),
+            fair_price_yes=fair,
+            edge_bps=edge_bps,
+            reasoning=steps,
+            model=self._model,
+            generated_at=_now(),
+        )
 
 
 def _hold(market: MarketCandidate, fair: float, steps: list[ReasoningStep]) -> AnalystReport:

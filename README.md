@@ -10,7 +10,7 @@ Built for the **Agora Agents Hackathon** (Canteen × Circle × Arc, May 11–25 
 Pythia is a **recommendation agent**. It never trades its own funds and never custodies user funds. The loop is:
 
 1. **Scout** ingests Polymarket markets from the public Gamma API (or `--mock` fixtures when geo-blocked).
-2. **Analyst** scores each candidate market for +EV using LLM reasoning (Claude Sonnet 4.5; a deterministic heuristic-v1 placeholder is the fallback path).
+2. **Analyst** scores each candidate market for +EV using LLM reasoning (Claude Sonnet 4.6; a deterministic heuristic-v1 placeholder is the fallback path).
 3. **PM** sizes a *hypothetical* position against a virtual `paper_capital` balance.
 4. **Publisher** emits a two-section trace: a free **preview** (thesis + edge) for the Telegram broadcast and web feed, and a paid **full** payload (sizing, alternatives, risks) gated by `UnlockMarket`. Copy-trade CTAs deep-link to Polymarket with `?builderCode=pythia`; attributed fees in USDC flow to Pythia's address.
 5. **Trace** writes the full reasoning to disk and logs the canonical hash on Arc via `TraceLog`. IPFS pinning (Irys) is wired but optional.
@@ -35,7 +35,7 @@ When a market resolves, the agent's resolver computes the paper PnL the publishe
 
 - **Contracts:** Solidity 0.8.24, Foundry, `via_ir = true`. Deployed to Arc testnet (chain ID 5042002 / 0x4cef52).
 - **Agent runtime:** Python 3.13, async, uv-managed.
-- **LLM:** Claude Sonnet 4.5 for the analyst; deterministic `heuristic-v1-placeholder` fallback.
+- **LLM:** Claude Sonnet 4.6 for the analyst; deterministic `heuristic-v1-placeholder` fallback.
 - **Data sources:** Polymarket V2 Gamma + CLOB REST (`--mock` fallback when geo-blocked); Envio HyperSync for Arc state.
 - **Trace storage:** local disk → IPFS via Irys (optional); CIDv1 hashes logged on Arc through `TraceLog`.
 - **Bridging:** Circle CCTP — revenue-only, Polygon → Arc for accrued builder fees.
