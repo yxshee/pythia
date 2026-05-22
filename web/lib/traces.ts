@@ -47,6 +47,15 @@ type TraceFull = TracePreview & {
   market_liquidity_usd: number;
 };
 
+export type TraceOnchain = {
+  tx_hash: string;
+  block_number: number;
+  trace_id: number;
+  publisher: string;
+  contract: string;
+  chain_id: number;
+};
+
 export type Trace = {
   trace_id: number;
   generated_at: string;
@@ -54,6 +63,7 @@ export type Trace = {
   builder_code: string;
   theme: string;
   vault: string | null;
+  onchain?: TraceOnchain;
   preview: TracePreview;
   full: TraceFull;
 };

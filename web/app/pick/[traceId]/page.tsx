@@ -91,6 +91,57 @@ export default async function PickPage({ params }: Props) {
             </dl>
           </section>
 
+          {trace.onchain && (
+            <section className="mt-14">
+              <div className="flex items-baseline justify-between border-b border-ink/15 pb-3">
+                <h2 className="mono text-[12px] uppercase tracking-[0.32em] text-ink">
+                  On-chain anchor
+                </h2>
+                <span className="mono text-[10px] uppercase tracking-[0.22em] text-laurel">
+                  Arc · chain {trace.onchain.chain_id}
+                </span>
+              </div>
+              <dl className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <FreeRow
+                  term="Tx hash"
+                  mono
+                  tooltip={trace.onchain.tx_hash}
+                  desc={
+                    <a
+                      href={`https://testnet.arcscan.app/tx/${trace.onchain.tx_hash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline decoration-ink/30 hover:decoration-ink"
+                    >
+                      {shortHash(trace.onchain.tx_hash, 10, 6)}
+                    </a>
+                  }
+                />
+                <FreeRow term="Block" mono desc={String(trace.onchain.block_number)} />
+                <FreeRow
+                  term="Contract"
+                  mono
+                  tooltip={trace.onchain.contract}
+                  desc={
+                    <a
+                      href={`https://testnet.arcscan.app/address/${trace.onchain.contract}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline decoration-ink/30 hover:decoration-ink"
+                    >
+                      {shortHash(trace.onchain.contract, 8, 6)}
+                    </a>
+                  }
+                />
+                <FreeRow
+                  term="On-chain trace #"
+                  mono
+                  desc={`#${String(trace.onchain.trace_id).padStart(3, "0")}`}
+                />
+              </dl>
+            </section>
+          )}
+
           <section className="mt-14">
             <div className="flex items-baseline justify-between border-b border-ink/15 pb-3">
               <h2 className="mono text-[12px] uppercase tracking-[0.32em] text-ink">
@@ -167,7 +218,7 @@ function FreeRow({
   tooltip,
 }: {
   term: string;
-  desc: string;
+  desc: React.ReactNode;
   mono?: boolean;
   tooltip?: string;
 }) {
