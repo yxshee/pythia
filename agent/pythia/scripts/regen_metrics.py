@@ -1,4 +1,4 @@
-"""Recompute ``web/data/metrics.json`` from the per-trace JSONs on disk.
+"""Recompute ``web/data/metrics.json`` from server-side trace JSONs.
 
 The traction strip on the home page reads this file. Keeping the metric
 derivation deterministic and scripted (rather than hand-edited) is the
@@ -39,19 +39,20 @@ _EXPLORER_URL = "https://testnet.arcscan.app"
 
 def main() -> int:
     repo_root = Path(__file__).resolve().parents[3]
-    traces_dir = repo_root / "traces"
+    private_full = repo_root / "web" / "data" / "picks-full.private.json"
+    traces_dir = repo_root / ".private" / "traces"
     out = repo_root / "web" / "data" / "metrics.json"
 
-    files = sorted(traces_dir.glob("trace-*.json"))
-    if not files:
-        print(f"no traces found under {traces_dir}", file=sys.stderr)
-        return 1
+    if private_full.exists():
+        traces = json.loads(private_full.read_text())
+    else:
+        files = sorted(traces_dir.glob("trace-*.json"))
+        if not files:
+            print(f"no private traces found under {traces_dir}", file=sys.stderr)
+            return 1
+        traces = [json.loads(f.read_text()) for f in files]
 
-    anchored: list[dict] = []
-    for f in files:
-        t = json.loads(f.read_text())
-        if (t.get("onchain") or {}).get("tx_hash"):
-            anchored.append(t)
+    anchored = [t for t in traces if (t.get("onchain") or {}).get("tx_hash")]
 
     if not anchored:
         print("no anchored traces — refusing to write all-zero metrics.json", file=sys.stderr)

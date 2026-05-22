@@ -1,11 +1,11 @@
-"""Trace publishing: persist analyst output locally and anchor on Arc via TraceLog.
+"""Trace publishing: persist analyst output privately and anchor on Arc via TraceLog.
 
-The local JSON in ``./traces/`` is the canonical source of truth (web feed, replay,
-hand-off to the bot). The on-chain ``TraceLog.publish`` emit is best-effort additive
+The JSON written by release scripts is the server-side source of truth for replay
+and web unlocks. The on-chain ``TraceLog.publish`` emit is best-effort additive
 evidence — when it succeeds, the tx hash and the contract-assigned trace id get
 appended to the JSON. When the on-chain leg is unavailable (missing key, missing
-contract address, or a network error) we keep writing locally so the loop and the
-demo never break.
+contract address, or a network error) we keep writing locally so development
+runs still produce inspectable traces.
 
 Activation: set ``TRACE_LOG_ADDRESS``, a real ``ARC_RPC_URL`` (not the ``REPLACE_ME``
 placeholder), and a non-zero ``PRIVATE_KEY`` in ``.env``. The publisher must already
