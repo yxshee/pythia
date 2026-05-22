@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { Providers } from "@/components/providers";
 
 const display = Fraunces({
   subsets: ["latin"],
@@ -31,7 +32,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${display.variable} ${mono.variable}`}>
-      <body className="min-h-screen text-ink">{children}</body>
+      <body className="min-h-screen text-ink">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
