@@ -119,9 +119,9 @@ Web demo: `https://agoraalpha.vercel.app` (Vercel deploy alias).
 
 ## Status
 
-Day 12 of 15 (submission May 25). Contracts: 39 forge tests green; Arc testnet deploy + Vercel push are the next two steps. Agent loop runs end-to-end against fixtures with builder-code links rendered. Web shell built locally.
+Day 12 of 15 (submission May 25). Contracts: 39 forge tests green, deployed to Arc testnet (addresses above). Web shell live at https://agoraalpha.vercel.app with fixture trace feed. Agent loop runs end-to-end against fixtures with builder-code links rendered; LLM analyst code path wired with heuristic fallback.
 
-Open work: real LLM call path in `analyst.py` (heuristic is the default today); wallet-connect on the pick page; resolver → `PythiaVault.recordTrade` close-out.
+Open work: activate live LLM call path in `analyst.py` (needs `ANTHROPIC_API_KEY` in `.env`; heuristic is the live runtime today); wallet-connect on the pick page; resolver → `PythiaVault.recordTrade` close-out.
 
 Polymarket APIs are geo-blocked from this development machine — see `docs/POLYMARKET-INTEGRATION.md` for mitigations (cloud-region deploy, direct Polygon-RPC scout, or HTTPS proxy).
 
