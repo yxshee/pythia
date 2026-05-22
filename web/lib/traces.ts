@@ -25,6 +25,15 @@ type Decision = "BUY_YES" | "BUY_NO" | "HOLD";
 type Confidence = "low" | "medium" | "high";
 type Risk = "conservative" | "balanced" | "aggressive";
 
+export type TraceSource = {
+  kind: string;
+  name: string;
+  url?: string;
+  observed_at?: string;
+  credibility?: number;
+  description?: string;
+};
+
 type TracePreview = {
   trace_id: number;
   trace_hash: string;
@@ -46,10 +55,10 @@ export type TraceFull = TracePreview & {
   suggested_size_usdc: number;
   suggested_size_by_profile: { conservative: number; balanced: number; aggressive: number };
   reasoning: { kind: string; text: string }[];
-  sources: unknown[];
-  risk_factors: unknown[];
+  sources: TraceSource[];
+  risk_factors: string[];
   market_url: string;
-  copy_trade_url?: string;
+  copy_trade_url?: string | null;
   market_volume_24h_usd: number;
   market_liquidity_usd: number;
 };

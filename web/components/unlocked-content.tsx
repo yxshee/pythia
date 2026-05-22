@@ -29,6 +29,7 @@ export function UnlockedContent({ full, isUnlocked }: Props) {
   const sizing = full.suggested_size_by_profile;
   const evPct = full.expected_value_pct;
   const edgeBps = full.edge_bps;
+  const canCopyTrade = full.decision !== "HOLD" && Boolean(full.copy_trade_url);
   const decisionAccent =
     full.decision === "BUY_YES"
       ? "text-laurel"
@@ -90,21 +91,75 @@ export function UnlockedContent({ full, isUnlocked }: Props) {
         <Stat label="Liquidity" value={`$${full.market_liquidity_usd.toLocaleString()}`} />
       </div>
 
+      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="rounded-md border border-ink/10 bg-marble/50 p-5">
+          <p className="mono text-[10px] uppercase tracking-[0.28em] text-ink-faint">
+            Sources
+          </p>
+          <ul className="mt-4 space-y-3">
+            {full.sources.map((source, i) => (
+              <li key={`${source.kind}-${i}`} className="font-display text-[14px] leading-[1.4] text-ink">
+                <span className="mono mr-2 text-[9px] uppercase tracking-[0.18em] text-ink-faint">
+                  {source.kind}
+                </span>
+                {source.url ? (
+                  <a
+                    href={source.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline decoration-laurel/40 hover:decoration-ink"
+                  >
+                    {source.name}
+                  </a>
+                ) : (
+                  <span>{source.name}</span>
+                )}
+                {source.observed_at && (
+                  <span className="mono ml-2 text-[9px] uppercase tracking-[0.16em] text-ink-faint">
+                    {formatObservedAt(source.observed_at)}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="rounded-md border border-ink/10 bg-marble/50 p-5">
+          <p className="mono text-[10px] uppercase tracking-[0.28em] text-ink-faint">
+            Risk factors
+          </p>
+          <ul className="mt-4 space-y-3">
+            {full.risk_factors.map((risk, i) => (
+              <li key={i} className="flex gap-2 font-display text-[14px] leading-[1.4] text-ink">
+                <span aria-hidden className="mono text-[10px] text-ink-faint">▸</span>
+                <span>{risk}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
       <div className="mt-8 rounded-md border border-laurel/30 bg-marble/50 p-5">
         <p className="mono text-[10px] uppercase tracking-[0.28em] text-ink-faint">
-          Copy the trade
+          {canCopyTrade ? "Copy the trade" : "No copy trade"}
         </p>
-        <a
-          href={full.copy_trade_url ?? full.market_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-3 inline-flex items-baseline gap-2 font-display text-[16px] text-ink underline decoration-laurel/40 hover:decoration-ink"
-        >
-          Open on Polymarket
-          <span aria-hidden className="mono text-[12px]">↗</span>
-        </a>
+        {canCopyTrade ? (
+          <a
+            href={full.copy_trade_url ?? full.market_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex items-baseline gap-2 font-display text-[16px] text-ink underline decoration-laurel/40 hover:decoration-ink"
+          >
+            Open on Polymarket
+            <span aria-hidden className="mono text-[12px]">↗</span>
+          </a>
+        ) : (
+          <p className="mt-3 font-display text-[15px] leading-[1.45] text-ink-soft">
+            The agent&rsquo;s final action is HOLD, so this trace has no Polymarket trade link.
+          </p>
+        )}
         <p className="mt-2 mono text-[10px] uppercase tracking-[0.22em] text-ink-faint">
-          Builder-code attributed to Pythia. Copy-trade fees in USDC flow to the agent.
+          Builder-code placeholder. Production fee attribution requires a registered Polymarket V2 bytes32 builder code in the order.
         </p>
       </div>
     </section>
@@ -139,6 +194,12 @@ function SizeRow({ label, value }: { label: string; value: number }) {
       </span>
     </div>
   );
+}
+
+function formatObservedAt(value: string): string {
+  const ms = Date.parse(value);
+  if (!Number.isFinite(ms)) return value;
+  return new Date(ms).toLocaleDateString();
 }
 
 function UnlockedSkeleton() {
