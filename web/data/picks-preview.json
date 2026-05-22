@@ -1,62 +1,101 @@
 [
   {
-    "analyst": {
-      "confidence_bps": 6500,
+    "trace_id": 15,
+    "theme": "crypto",
+    "vault": null,
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-05-22T17:25:48+00:00",
+    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "preview": {
+      "agent_probability_yes": 0.72,
+      "confidence": "high",
+      "current_implied_yes": 0.88,
       "decision": "BUY_NO",
-      "edge_bps": -1600,
-      "fair_price_yes": 0.72,
-      "generated_at": "2026-05-22T13:01:28+00:00",
-      "liquidity_usd": 185000,
+      "end_date_iso": "2026-05-31T23:59:59Z",
+      "generated_at": "2026-05-22T17:24:02+00:00",
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "model": "claude-sonnet-4-6",
       "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "reasoning": [
-        {
-          "kind": "observation",
-          "text": "Market prices YES at 0.880, implying an 88% probability ETH closes ≥ $4,000 on May 31, 2026. Liquidity is $185,000 and 24h volume is $412,400 — well above the $25k minimum threshold, so slippage is manageable."
-        },
-        {
-          "kind": "observation",
-          "text": "As of May 2026, ETH has been trading in a broad range roughly between $2,800 and $4,200 over the past several months. While ETH has seen notable rallies in 2025-2026 on macro tailwinds and ETF inflows, it has not decisively sustained levels above $4,000 for extended periods. Current spot is estimated near $3,600–$3,800 based on recent trajectory."
-        },
-        {
-          "kind": "inference",
-          "text": "For ETH to close above $4,000 on May 31 specifically requires a ~5–10% move from current levels (assuming ~$3,700 spot). While plausible in a bullish crypto environment, the single-day close requirement on the final day of the month adds idiosyncratic risk — month-end rebalancing and profit-taking can introduce volatility in either direction."
-        },
-        {
-          "kind": "comparison",
-          "text": "An 88% YES probability implies roughly 7:1 odds in favor. Historical volatility for ETH over a 2–4 week horizon typically implies a wide distribution of outcomes. A 28% probability of being below $4,000 by month-end seems more reasonable given current price levels and ETH's well-documented volatility (30-day realized vol ~55–65% annualized), suggesting the true probability is closer to 70–75% YES."
-        },
-        {
-          "kind": "risk",
-          "text": "Key upside risks to the NO thesis: a broad crypto market breakout (BTC above $110k could drag ETH higher), favorable macro data, or a major ETH-specific catalyst (e.g., protocol upgrade, ETF news). If ETH is already trading near or above $4,000 at the time of analysis, the YES price would be more justified."
-        },
-        {
-          "kind": "conclusion",
-          "text": "Fair value for YES is ~0.72. The market is pricing YES at 0.88 — a ~16 percentage point overpricing. Edge on BUY_NO is approximately 1600 bps before slippage, well above the 200 bps minimum. With strong liquidity and a clear mispricing thesis, BUY_NO is the play. NO is currently priced at 0.120; fair value is ~0.28, representing ~2.3x the current price."
-        }
-      ]
+      "risk": "balanced",
+      "trace_hash": "0xd793dd78c0e7d8afbfe7bea6bc6a79adbd51c645f4e22f65da5c9e556f0a1d83",
+      "trace_id": 15
     },
-    "builder_code": "pythia",
-    "generated_at": "2026-05-22T13:02:16+00:00",
-    "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43512467,
+      "block_number": 43538026,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 10,
-      "tx_hash": "0x481a7e582b85fc1c09a54ffb760cd9a4f63ca9faedc65f6a747b16e27651b282"
+      "trace_id": 15,
+      "tx_hash": "0x75bbd5766eb17cfe745606d0138076019aff78d6b2bf58563a102ae774fe7f68"
+    }
+  },
+  {
+    "trace_id": 14,
+    "theme": "crypto",
+    "vault": null,
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-05-22T17:25:46+00:00",
+    "market_id": "0x7c2d8e3f4a5b6c7d8e9f0a1b2c3d4e5f11111111111111111111111111111111",
+    "preview": {
+      "agent_probability_yes": 0.52,
+      "confidence": "medium",
+      "current_implied_yes": 0.34,
+      "decision": "BUY_YES",
+      "end_date_iso": "2026-12-31T23:59:59Z",
+      "generated_at": "2026-05-22T17:25:28+00:00",
+      "market_id": "0x7c2d8e3f4a5b6c7d8e9f0a1b2c3d4e5f11111111111111111111111111111111",
+      "model": "claude-sonnet-4-6",
+      "question": "Will BTC trade above $120,000 on any day in Q4 2026?",
+      "risk": "balanced",
+      "trace_hash": "0x859d4f9d2ffc6e3243b15027630364d6f55888e3d20e74c42df6f8b0dd7fd870",
+      "trace_id": 14
     },
-    "plan": {
-      "confidence_bps": 6500,
-      "decision": "BUY_NO",
-      "edge_bps": -1600,
-      "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "parent_trace_id": 0,
-      "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "size_usdc": 32.5
+    "onchain": {
+      "block_number": 43538022,
+      "chain_id": 5042002,
+      "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
+      "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
+      "trace_id": 14,
+      "tx_hash": "0x2808688cdcd7f8e8ff1acb8a1b5d71367d615a12d80c6abaa2ad13bb95744856"
+    }
+  },
+  {
+    "trace_id": 13,
+    "theme": "crypto",
+    "vault": null,
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-05-22T17:25:43+00:00",
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+    "preview": {
+      "agent_probability_yes": 0.72,
+      "confidence": "high",
+      "current_implied_yes": 0.16,
+      "decision": "BUY_YES",
+      "end_date_iso": "2026-12-31T23:59:59Z",
+      "generated_at": "2026-05-22T17:24:30+00:00",
+      "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+      "model": "claude-sonnet-4-6",
+      "question": "Will BTC reach a new all-time high in 2026?",
+      "risk": "aggressive",
+      "trace_hash": "0xbd2624c3cc5fe0e71d9e56645c372bb159cb5b4d6b9411c8621babe74b626584",
+      "trace_id": 13
     },
+    "onchain": {
+      "block_number": 43538017,
+      "chain_id": 5042002,
+      "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
+      "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
+      "trace_id": 13,
+      "tx_hash": "0x3452595fd672209f52b89568346398091417d39e328dc8cf7473222639d10f9c"
+    }
+  },
+  {
+    "trace_id": 12,
+    "theme": "crypto",
+    "vault": null,
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-05-22T13:02:16+00:00",
+    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "preview": {
       "agent_probability_yes": 0.72,
       "confidence": "high",
@@ -71,87 +110,22 @@
       "trace_hash": "0x7d95b2f7808696d8f4e44bb15099a0eb890ff1d4ffd959d6f8d1af60e96346dd",
       "trace_id": 12
     },
-    "publication": {
-      "builder_code_link": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=no",
-      "error": null,
-      "fallback_link": "https://polymarket.com/event/eth-above-4000-may-31",
-      "plan": {
-        "confidence_bps": 6500,
-        "decision": "BUY_NO",
-        "edge_bps": -1600,
-        "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "parent_trace_id": 0,
-        "question": "Will ETH close above $4,000 on May 31, 2026?",
-        "size_usdc": 32.5
-      },
-      "published": true
-    },
-    "theme": "crypto",
-    "trace_id": 12,
-    "vault": null
-  },
-  {
-    "analyst": {
-      "confidence_bps": 7200,
-      "decision": "BUY_YES",
-      "edge_bps": 5600,
-      "fair_price_yes": 0.72,
-      "generated_at": "2026-05-22T13:01:59+00:00",
-      "liquidity_usd": 540000,
-      "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
-      "model": "claude-sonnet-4-6",
-      "question": "Will BTC reach a new all-time high in 2026?",
-      "reasoning": [
-        {
-          "kind": "observation",
-          "text": "BTC's 2024 ATH was ~$108,000 (set in December 2024). As of May 2026, BTC has had over 17 months of price action since that ATH. The market is pricing only a 16% chance of a new ATH by end of 2026 — an extremely bearish implied probability."
-        },
-        {
-          "kind": "observation",
-          "text": "Liquidity is $540,000 and 24h volume is $1.2M — well above the $25k minimum threshold. Slippage is manageable and there is sufficient depth to take a meaningful position."
-        },
-        {
-          "kind": "inference",
-          "text": "Historical BTC 4-year cycle dynamics: every halving cycle (2012, 2016, 2020, 2024) has produced a new ATH within ~18 months of the halving event. The April 2024 halving would place the cycle peak window squarely in late 2025 to mid-2026. Even if the cycle peaked in late 2025, a re-test or new ATH in 2026 remains highly plausible."
-        },
-        {
-          "kind": "comparison",
-          "text": "A 16% YES price implies ~84% probability BTC stays below ~$108k for the entirety of 2026. This is consistent with a severe bear scenario. Historical base rates: BTC has set a new ATH in 4 of the last 6 calendar years, and in every post-halving year. Even in bearish cycles (2018, 2022), the *following* year saw major recovery. The odds of BTC failing to breach $108k for ALL of 2026 are far lower than 84%."
-        },
-        {
-          "kind": "risk",
-          "text": "Key risks to YES: a prolonged macro bear market (rising rates, risk-off), regulatory crackdown, or a structural BTC bear cycle that breaks historical patterns. If BTC already peaked well below its prior ATH in this cycle (a 'lower high'), the 16% price could be closer to fair. However, BTC was trading near or above $90k as recently as early 2025, making a full year below $108k increasingly unlikely if any bullish catalyst emerges."
-        },
-        {
-          "kind": "inference",
-          "text": "With ~7 months remaining in 2026 and ample time for a catalyst (ETF inflows, institutional adoption, macro pivot, dollar weakness), the market's 16% is a severe underestimate. Fair value is closer to 70-75%, representing a massive +EV edge of ~55 percentage points."
-        },
-        {
-          "kind": "conclusion",
-          "text": "BUY YES at 0.160. Fair price ~0.72. Edge of ~56 percentage points — among the largest mispricings seen in liquid BTC markets. The 16% YES price only makes sense if you assign >84% probability to BTC never breaching $108k for 7+ remaining months, which contradicts cycle history and current market structure. Strong BUY with 72% confidence."
-        }
-      ]
-    },
-    "builder_code": "pythia",
-    "generated_at": "2026-05-22T13:02:13+00:00",
-    "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43512462,
+      "block_number": 43512467,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 9,
-      "tx_hash": "0xbb95cd38439b370ef727091aeef34373e157bce3625fd00f1811b35c23f7a936"
-    },
-    "plan": {
-      "confidence_bps": 7200,
-      "decision": "BUY_YES",
-      "edge_bps": 5600,
-      "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
-      "parent_trace_id": 0,
-      "question": "Will BTC reach a new all-time high in 2026?",
-      "size_usdc": 36
-    },
+      "trace_id": 10,
+      "tx_hash": "0x481a7e582b85fc1c09a54ffb760cd9a4f63ca9faedc65f6a747b16e27651b282"
+    }
+  },
+  {
+    "trace_id": 11,
+    "theme": "crypto",
+    "vault": null,
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-05-22T13:02:13+00:00",
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
     "preview": {
       "agent_probability_yes": 0.72,
       "confidence": "high",
@@ -166,82 +140,22 @@
       "trace_hash": "0xc2d8d49b750c7bf1eb06743a94e4da992127fbdd844c542ca336389623a98675",
       "trace_id": 11
     },
-    "publication": {
-      "builder_code_link": "https://polymarket.com/event/btc-new-ath-2026?builderCode=pythia&side=yes",
-      "error": null,
-      "fallback_link": "https://polymarket.com/event/btc-new-ath-2026",
-      "plan": {
-        "confidence_bps": 7200,
-        "decision": "BUY_YES",
-        "edge_bps": 5600,
-        "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
-        "parent_trace_id": 0,
-        "question": "Will BTC reach a new all-time high in 2026?",
-        "size_usdc": 36
-      },
-      "published": true
-    },
-    "theme": "crypto",
-    "trace_id": 11,
-    "vault": null
-  },
-  {
-    "analyst": {
-      "confidence_bps": 6500,
-      "decision": "BUY_NO",
-      "edge_bps": -3600,
-      "fair_price_yes": 0.52,
-      "generated_at": "2026-05-22T09:44:27+00:00",
-      "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "model": "claude-sonnet-4-6",
-      "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "reasoning": [
-        {
-          "kind": "observation",
-          "text": "Market prices YES at 0.880, implying an 88% probability ETH closes ≥ $4,000 on May 31, 2026. Liquidity is $185k (above $25k threshold) and 24h volume is $412k — market is active and tradeable."
-        },
-        {
-          "kind": "observation",
-          "text": "As of mid-2025, ETH is trading roughly in the $2,500–$3,500 range. To resolve YES, ETH needs to be at or above $4,000 by May 31, 2026 — representing a ~15–60% appreciation depending on current spot."
-        },
-        {
-          "kind": "comparison",
-          "text": "ETH has only briefly touched $4,000+ during the Nov–Dec 2021 peak and again in early 2024. Sustained closes above $4,000 are historically rare. The base rate for ETH trading above $4,000 on any given future date is well below 88%."
-        },
-        {
-          "kind": "inference",
-          "text": "Using crypto volatility models (annualized ETH vol ~80–100%), a log-normal distribution from ~$3,000 spot gives a ~45–55% probability of being above $4,000 in ~12 months. Even in a bull-case scenario, 88% is a significant overstatement of probability."
-        },
-        {
-          "kind": "risk",
-          "text": "Key upside risks: BTC/ETH bull cycle continuation, ETH ETF inflows accelerating, spot ETH ETF staking approval, macro rate cuts. Even combining these catalysts, reaching 88% confidence for a specific $4k floor seems aggressive given macro uncertainty and ETH's historical volatility patterns."
-        },
-        {
-          "kind": "conclusion",
-          "text": "Fair value YES ~52%. Market is pricing YES at 88%, a ~36 percentage point overpricing. BUY_NO (i.e., buy the NO side at 0.120) offers substantial +EV. Edge ≈ 3600 bps before slippage, well above the 200 bps minimum threshold."
-        }
-      ]
-    },
-    "builder_code": "pythia",
-    "generated_at": "2026-05-22T09:45:16+00:00",
-    "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43490155,
+      "block_number": 43512462,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 6,
-      "tx_hash": "0xa12e9355e0398ffcfc2288ea39aa165f8f472ef2df2956d238f78ae93bc81461"
-    },
-    "plan": {
-      "confidence_bps": 6500,
-      "decision": "BUY_NO",
-      "edge_bps": -3600,
-      "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "parent_trace_id": 0,
-      "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "size_usdc": 32.5
-    },
+      "trace_id": 9,
+      "tx_hash": "0xbb95cd38439b370ef727091aeef34373e157bce3625fd00f1811b35c23f7a936"
+    }
+  },
+  {
+    "trace_id": 10,
+    "theme": "crypto",
+    "vault": null,
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-05-22T09:45:16+00:00",
+    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "preview": {
       "agent_probability_yes": 0.52,
       "confidence": "high",
@@ -256,82 +170,22 @@
       "trace_hash": "0x94c010c73ab46905f2bf7726b7e9580231ab11bcc52907efa7e2e0844d02ac20",
       "trace_id": 10
     },
-    "publication": {
-      "builder_code_link": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=no",
-      "error": null,
-      "fallback_link": "https://polymarket.com/event/eth-above-4000-may-31",
-      "plan": {
-        "confidence_bps": 6500,
-        "decision": "BUY_NO",
-        "edge_bps": -3600,
-        "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "parent_trace_id": 0,
-        "question": "Will ETH close above $4,000 on May 31, 2026?",
-        "size_usdc": 32.5
-      },
-      "published": true
-    },
-    "theme": "crypto",
-    "trace_id": 10,
-    "vault": null
-  },
-  {
-    "analyst": {
-      "confidence_bps": 7200,
-      "decision": "BUY_YES",
-      "edge_bps": 5600,
-      "fair_price_yes": 0.72,
-      "generated_at": "2026-05-22T09:44:58+00:00",
-      "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
-      "model": "claude-sonnet-4-6",
-      "question": "Will BTC reach a new all-time high in 2026?",
-      "reasoning": [
-        {
-          "kind": "observation",
-          "text": "Market prices YES at 0.160, implying only a 16% chance BTC closes above its 2024 ATH (~$73,737) on any single day during the entirety of calendar year 2026. Liquidity is $540k — well above the $25k threshold — and 24h volume is $1.2M, confirming this is a tradeable, liquid market."
-        },
-        {
-          "kind": "observation",
-          "text": "BTC already broke its 2024 ATH in late 2024 (Q4 2024 rally to ~$99k-$108k range). The question resolves YES if BTC closes above the 2024 ATH (~$73,737). Given BTC is currently trading well above that level as of early 2025, the baseline probability of BTC being above $73,737 on ANY day in 2026 is extremely high unless a catastrophic drawdown of 30%+ from current levels occurs AND BTC never recovers during all of 2026."
-        },
-        {
-          "kind": "comparison",
-          "text": "Historical BTC bear markets: even the brutal 2022 bear saw BTC retrace ~77% from ATH. Starting from ~$100k+, a 77% drawdown would put BTC at ~$23k — below the 2024 ATH. However, this is a tail scenario. In all prior cycles, BTC has spent meaningful time above prior ATHs within multi-year windows. The bar here is just ONE close above $73,737 across 365 days in 2026."
-        },
-        {
-          "kind": "inference",
-          "text": "The 2024 ATH was ~$73,737. BTC is currently trading substantially above that. For YES to fail, BTC would need to fall below $73,737 BEFORE 2026 starts AND stay below that level for all of 2026. Given the current price level (~$95k-$108k range in early 2025), this requires a sustained ~30-35%+ drawdown with no recovery — possible but historically uncommon over a full calendar year."
-        },
-        {
-          "kind": "risk",
-          "text": "Key risks to YES: (1) Macro shock or regulatory crackdown causing a deep multi-year bear market. (2) BTC could enter a prolonged bear cycle in 2025 and never recover above $73,737 in 2026. (3) Resolution ambiguity around 'closes above' — but this is standard daily close language. These risks are real but do not justify a 16% probability; a fair estimate is closer to 70-75%."
-        },
-        {
-          "kind": "conclusion",
-          "text": "The market is severely mispricing this at 0.160. My fair value is ~0.72. The edge is ~56 percentage points — far exceeding the 200 bps threshold. The question merely requires ONE daily close above ~$73,737 during all of 2026, a level BTC has already surpassed. Strong BUY YES with 72% confidence."
-        }
-      ]
-    },
-    "builder_code": "pythia",
-    "generated_at": "2026-05-22T09:45:12+00:00",
-    "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43490148,
+      "block_number": 43490155,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 5,
-      "tx_hash": "0x16385f1d19f0787255f8d02f3b9366d9ca0e3062e5007c7fd25c44277cb82ee7"
-    },
-    "plan": {
-      "confidence_bps": 7200,
-      "decision": "BUY_YES",
-      "edge_bps": 5600,
-      "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
-      "parent_trace_id": 0,
-      "question": "Will BTC reach a new all-time high in 2026?",
-      "size_usdc": 36
-    },
+      "trace_id": 6,
+      "tx_hash": "0xa12e9355e0398ffcfc2288ea39aa165f8f472ef2df2956d238f78ae93bc81461"
+    }
+  },
+  {
+    "trace_id": 9,
+    "theme": "crypto",
+    "vault": null,
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-05-22T09:45:12+00:00",
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
     "preview": {
       "agent_probability_yes": 0.72,
       "confidence": "high",
@@ -346,74 +200,22 @@
       "trace_hash": "0x094881cf2e82b07c38bb695cdfa936309bbcec00f18bd0c39529e9df501414d4",
       "trace_id": 9
     },
-    "publication": {
-      "builder_code_link": "https://polymarket.com/event/btc-new-ath-2026?builderCode=pythia&side=yes",
-      "error": null,
-      "fallback_link": "https://polymarket.com/event/btc-new-ath-2026",
-      "plan": {
-        "confidence_bps": 7200,
-        "decision": "BUY_YES",
-        "edge_bps": 5600,
-        "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
-        "parent_trace_id": 0,
-        "question": "Will BTC reach a new all-time high in 2026?",
-        "size_usdc": 36
-      },
-      "published": true
-    },
-    "theme": "crypto",
-    "trace_id": 9,
-    "vault": null
-  },
-  {
-    "analyst": {
-      "confidence_bps": 3816,
-      "decision": "BUY_YES",
-      "edge_bps": 272,
-      "fair_price_yes": 0.18720000000000003,
-      "generated_at": "2026-05-22T09:41:27+00:00",
-      "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
-      "model": "heuristic-v1-placeholder",
-      "question": "Will BTC reach a new all-time high in 2026?",
-      "reasoning": [
-        {
-          "kind": "observation",
-          "text": "Market YES price = 0.160; 24h volume = $1,205,700; liquidity = $540,000."
-        },
-        {
-          "kind": "inference",
-          "text": "Tail-of-distribution market; heuristic fair 0.187 vs market 0.160 -> +272 bps."
-        },
-        {
-          "kind": "risk",
-          "text": "Placeholder model: confidence is artificially capped at 60% until the LLM analyst lands."
-        },
-        {
-          "kind": "conclusion",
-          "text": "Decision: BUY_YES @ conf=38.2%"
-        }
-      ]
-    },
-    "builder_code": "pythia",
-    "generated_at": "2026-05-22T09:41:31+00:00",
-    "model": "heuristic-v1-placeholder",
     "onchain": {
-      "block_number": 43489721,
+      "block_number": 43490148,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 4,
-      "tx_hash": "0x3367969fb58a1519a3992678f263ac2175ac84754371869e18a3507432bfac42"
-    },
-    "plan": {
-      "confidence_bps": 3816,
-      "decision": "BUY_YES",
-      "edge_bps": 272,
-      "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
-      "parent_trace_id": 0,
-      "question": "Will BTC reach a new all-time high in 2026?",
-      "size_usdc": 19.08
-    },
+      "trace_id": 5,
+      "tx_hash": "0x16385f1d19f0787255f8d02f3b9366d9ca0e3062e5007c7fd25c44277cb82ee7"
+    }
+  },
+  {
+    "trace_id": 8,
+    "theme": "crypto",
+    "vault": null,
+    "model": "heuristic-v1-placeholder",
+    "generated_at": "2026-05-22T09:41:31+00:00",
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
     "preview": {
       "agent_probability_yes": 0.1872,
       "confidence": "low",
@@ -428,74 +230,22 @@
       "trace_hash": "0xe7714d8dfe4ffef7296807e0dbb75f4a223fdee6923fa94b2ad49aca66dd7027",
       "trace_id": 8
     },
-    "publication": {
-      "builder_code_link": "https://polymarket.com/event/btc-new-ath-2026?builderCode=pythia&side=yes",
-      "error": null,
-      "fallback_link": "https://polymarket.com/event/btc-new-ath-2026",
-      "plan": {
-        "confidence_bps": 3816,
-        "decision": "BUY_YES",
-        "edge_bps": 272,
-        "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
-        "parent_trace_id": 0,
-        "question": "Will BTC reach a new all-time high in 2026?",
-        "size_usdc": 19.08
-      },
-      "published": true
-    },
-    "theme": "crypto",
-    "trace_id": 8,
-    "vault": null
-  },
-  {
-    "analyst": {
-      "confidence_bps": 3912,
-      "decision": "BUY_NO",
-      "edge_bps": -304,
-      "fair_price_yes": 0.8496,
-      "generated_at": "2026-05-22T09:41:27+00:00",
-      "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "model": "heuristic-v1-placeholder",
-      "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "reasoning": [
-        {
-          "kind": "observation",
-          "text": "Market YES price = 0.880; 24h volume = $412,400; liquidity = $185,000."
-        },
-        {
-          "kind": "inference",
-          "text": "Tail-of-distribution market; heuristic fair 0.850 vs market 0.880 -> -304 bps."
-        },
-        {
-          "kind": "risk",
-          "text": "Placeholder model: confidence is artificially capped at 60% until the LLM analyst lands."
-        },
-        {
-          "kind": "conclusion",
-          "text": "Decision: BUY_NO @ conf=39.1%"
-        }
-      ]
-    },
-    "builder_code": "pythia",
-    "generated_at": "2026-05-22T09:41:27+00:00",
-    "model": "heuristic-v1-placeholder",
     "onchain": {
-      "block_number": 43489715,
+      "block_number": 43489721,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 3,
-      "tx_hash": "0x89b15b6721fbd123ae120caffe804a8df35cbafcfad096175e8a6a282abaa33d"
-    },
-    "plan": {
-      "confidence_bps": 3912,
-      "decision": "BUY_NO",
-      "edge_bps": -304,
-      "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "parent_trace_id": 0,
-      "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "size_usdc": 19.56
-    },
+      "trace_id": 4,
+      "tx_hash": "0x3367969fb58a1519a3992678f263ac2175ac84754371869e18a3507432bfac42"
+    }
+  },
+  {
+    "trace_id": 7,
+    "theme": "crypto",
+    "vault": null,
+    "model": "heuristic-v1-placeholder",
+    "generated_at": "2026-05-22T09:41:27+00:00",
+    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "preview": {
       "agent_probability_yes": 0.8496,
       "confidence": "low",
@@ -510,74 +260,22 @@
       "trace_hash": "0xb3d01f690fb952a8f9ed3ba053fbfda47c698319abd219c737e2402677e7817d",
       "trace_id": 7
     },
-    "publication": {
-      "builder_code_link": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=no",
-      "error": null,
-      "fallback_link": "https://polymarket.com/event/eth-above-4000-may-31",
-      "plan": {
-        "confidence_bps": 3912,
-        "decision": "BUY_NO",
-        "edge_bps": -304,
-        "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "parent_trace_id": 0,
-        "question": "Will ETH close above $4,000 on May 31, 2026?",
-        "size_usdc": 19.56
-      },
-      "published": true
-    },
-    "theme": "crypto",
-    "trace_id": 7,
-    "vault": null
+    "onchain": {
+      "block_number": 43489715,
+      "chain_id": 5042002,
+      "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
+      "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
+      "trace_id": 3,
+      "tx_hash": "0x89b15b6721fbd123ae120caffe804a8df35cbafcfad096175e8a6a282abaa33d"
+    }
   },
   {
-    "analyst": {
-      "confidence_bps": 6200,
-      "decision": "BUY_NO",
-      "edge_bps": -3600,
-      "fair_price_yes": 0.52,
-      "generated_at": "2026-05-22T08:35:51+00:00",
-      "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "model": "claude-sonnet-4-6",
-      "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "reasoning": [
-        {
-          "kind": "observation",
-          "text": "Market is pricing YES at 0.880 — implying an 88% probability ETH closes ≥ $4,000 on May 31, 2026. Liquidity is $185k and 24h volume is $412k, clearing the $25k hard floor comfortably."
-        },
-        {
-          "kind": "observation",
-          "text": "As of mid-2025, ETH is trading in the $2,500–$3,200 range. For the market to resolve YES, ETH needs a 25–60% appreciation from current levels within ~12 months. That is plausible but far from certain."
-        },
-        {
-          "kind": "comparison",
-          "text": "Historical precedent: ETH breached $4,000 only during the late-2021 bull peak and briefly in early 2022. It failed to sustain $4,000 for the bulk of 2021 despite extraordinary conditions. Base-rate probability of holding above $4k on any given future date is well below 88%."
-        },
-        {
-          "kind": "inference",
-          "text": "Crypto markets are highly volatile and path-dependent. While a bull cycle driven by ETH ETF flows, BTC halving tailwinds, and macro rate cuts could push ETH above $4k, the specific requirement of a SINGLE daily close on May 31, 2026 being ≥ $4k is still a high bar. Macro uncertainty, regulatory risk, and ETH-specific competitive pressures (L2 fee cannibalisation, Solana competition) all suppress the upper-tail probability."
-        },
-        {
-          "kind": "risk",
-          "text": "Key upside risks to the NO thesis: a strong BTC + ETH bull run materialising by Q1 2026, spot ETH ETF inflows accelerating, or a broad risk-on macro environment. These could push ETH well above $4k and make YES correct. This is the core reason we don't assign more than 62% confidence to NO."
-        },
-        {
-          "kind": "conclusion",
-          "text": "Fair value for YES is ~52%, versus the market's 88%. That is a ~36 percentage point mispricing — well above the 200 bps edge threshold. BUY NO at 0.120 offers implied 88% NO probability vs. our fair ~48% NO probability, yielding strong expected value. Confidence is 62% given genuine bull-case uncertainty."
-        }
-      ]
-    },
-    "builder_code": "pythia",
-    "generated_at": "2026-05-22T08:36:36+00:00",
+    "trace_id": 6,
+    "theme": "crypto",
+    "vault": null,
     "model": "claude-sonnet-4-6",
-    "plan": {
-      "confidence_bps": 6200,
-      "decision": "BUY_NO",
-      "edge_bps": -3600,
-      "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "parent_trace_id": 0,
-      "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "size_usdc": 31
-    },
+    "generated_at": "2026-05-22T08:36:36+00:00",
+    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "preview": {
       "agent_probability_yes": 0.52,
       "confidence": "medium",
@@ -592,78 +290,15 @@
       "trace_hash": "0xd41a7607560566ae62a4d46d7f928b2da56956121c2f5429366afb07036585c8",
       "trace_id": 6
     },
-    "publication": {
-      "builder_code_link": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=no",
-      "error": null,
-      "fallback_link": "https://polymarket.com/event/eth-above-4000-may-31",
-      "plan": {
-        "confidence_bps": 6200,
-        "decision": "BUY_NO",
-        "edge_bps": -3600,
-        "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "parent_trace_id": 0,
-        "question": "Will ETH close above $4,000 on May 31, 2026?",
-        "size_usdc": 31
-      },
-      "published": true
-    },
-    "theme": "crypto",
-    "trace_id": 6,
-    "vault": null
+    "onchain": null
   },
   {
-    "analyst": {
-      "confidence_bps": 7200,
-      "decision": "BUY_YES",
-      "edge_bps": 5600,
-      "fair_price_yes": 0.72,
-      "generated_at": "2026-05-22T08:36:23+00:00",
-      "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
-      "model": "claude-sonnet-4-6",
-      "question": "Will BTC reach a new all-time high in 2026?",
-      "reasoning": [
-        {
-          "kind": "observation",
-          "text": "Market prices YES at 0.160 against a NO at 0.840. Liquidity is $540,000 and 24h volume is $1.2M — well above the $25k hard floor, so slippage risk is manageable for a reasonable position size."
-        },
-        {
-          "kind": "observation",
-          "text": "BTC's 2024 ATH was ~$108,300 (Dec 2024). As of mid-2025, BTC has already reclaimed the ~$100k range, meaning the 2024 ATH is only ~8-10% above current price. The question asks only for *one daily close* above that level during all of calendar year 2026."
-        },
-        {
-          "kind": "comparison",
-          "text": "Historically, BTC has set a new ATH in every 4-year halving cycle. The April 2024 halving typically front-loads a bull run into late 2024/early 2025, with continuation and new ATHs often appearing 12–24 months post-halving (i.e., Q1–Q4 2026). Past cycles: 2013, 2017, 2020/21 all produced ATHs in this window."
-        },
-        {
-          "kind": "inference",
-          "text": "A 0.16 implied probability means the market is pricing only a ~1-in-6 chance BTC exceeds ~$108k even once across all 365 days of 2026. Given BTC is already near ~$100k, a mere ~8-10% further move at any point over a full year is a severely underpriced outcome. Macro tailwinds (spot ETF inflows, institutional adoption, potential rate cuts) further support upside."
-        },
-        {
-          "kind": "risk",
-          "text": "Key risks: macro recession or crypto-specific regulatory shock could suppress price below ATH through all of 2026. A prolonged bear market (similar to 2018 or 2022) remains possible. However, even in 2022's bear market, BTC was only ~50% below its ATH at worst — starting from ~$100k, staying below ~$108k for an *entire* year requires sustained suppression, not just a dip."
-        },
-        {
-          "kind": "risk",
-          "text": "The resolution requires a *daily close* above the ATH, not just an intraday wick. This is a slight headwind vs. intraday highs, but given a full calendar year and proximity to the level, this is a minor constraint."
-        },
-        {
-          "kind": "conclusion",
-          "text": "Fair value is ~0.72 YES. The market at 0.16 represents a ~56 percentage-point mispricing — an enormous edge of ~5600 bps, far exceeding the 200 bps threshold. This is a strong BUY_YES with 72% confidence. The combination of historical cycle patterns, proximity to ATH, full-year resolution window, and deep liquidity makes this a high-conviction trade."
-        }
-      ]
-    },
-    "builder_code": "pythia",
-    "generated_at": "2026-05-22T08:36:36+00:00",
+    "trace_id": 5,
+    "theme": "crypto",
+    "vault": null,
     "model": "claude-sonnet-4-6",
-    "plan": {
-      "confidence_bps": 7200,
-      "decision": "BUY_YES",
-      "edge_bps": 5600,
-      "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
-      "parent_trace_id": 0,
-      "question": "Will BTC reach a new all-time high in 2026?",
-      "size_usdc": 36
-    },
+    "generated_at": "2026-05-22T08:36:36+00:00",
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
     "preview": {
       "agent_probability_yes": 0.72,
       "confidence": "high",
@@ -678,74 +313,15 @@
       "trace_hash": "0xbced116c1c25c511916d59a22b84f24d2a1ab17270448b7020d6aca472c4db63",
       "trace_id": 5
     },
-    "publication": {
-      "builder_code_link": "https://polymarket.com/event/btc-new-ath-2026?builderCode=pythia&side=yes",
-      "error": null,
-      "fallback_link": "https://polymarket.com/event/btc-new-ath-2026",
-      "plan": {
-        "confidence_bps": 7200,
-        "decision": "BUY_YES",
-        "edge_bps": 5600,
-        "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
-        "parent_trace_id": 0,
-        "question": "Will BTC reach a new all-time high in 2026?",
-        "size_usdc": 36
-      },
-      "published": true
-    },
-    "theme": "crypto",
-    "trace_id": 5,
-    "vault": null
+    "onchain": null
   },
   {
-    "analyst": {
-      "confidence_bps": 3816,
-      "decision": "BUY_YES",
-      "edge_bps": 272,
-      "fair_price_yes": 0.18720000000000003,
-      "generated_at": "2026-05-22T08:26:12+00:00",
-      "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
-      "model": "heuristic-v1-placeholder",
-      "question": "Will BTC reach a new all-time high in 2026?",
-      "reasoning": [
-        {
-          "kind": "observation",
-          "text": "Market YES price = 0.160; 24h volume = $1,205,700; liquidity = $540,000."
-        },
-        {
-          "kind": "inference",
-          "text": "Tail-of-distribution market; heuristic fair 0.187 vs market 0.160 -> +272 bps."
-        },
-        {
-          "kind": "risk",
-          "text": "Placeholder model: confidence is artificially capped at 60% until the LLM analyst lands."
-        },
-        {
-          "kind": "conclusion",
-          "text": "Decision: BUY_YES @ conf=38.2%"
-        }
-      ]
-    },
-    "builder_code": "pythia",
-    "generated_at": "2026-05-22T08:26:16+00:00",
+    "trace_id": 4,
+    "theme": "crypto",
+    "vault": null,
     "model": "heuristic-v1-placeholder",
-    "onchain": {
-      "block_number": 43481334,
-      "chain_id": 5042002,
-      "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
-      "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 2,
-      "tx_hash": "0x756c20dd8b3f121efc28ebe09d8756167ec27e96eaf8db61f151e7ed25b27add"
-    },
-    "plan": {
-      "confidence_bps": 3816,
-      "decision": "BUY_YES",
-      "edge_bps": 272,
-      "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
-      "parent_trace_id": 0,
-      "question": "Will BTC reach a new all-time high in 2026?",
-      "size_usdc": 19.08
-    },
+    "generated_at": "2026-05-22T08:26:16+00:00",
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
     "preview": {
       "agent_probability_yes": 0.1872,
       "confidence": "low",
@@ -760,74 +336,22 @@
       "trace_hash": "0x71fe685878e2801e3357edf1d844b508981b6cb383baf3f30b6accbe4288777a",
       "trace_id": 4
     },
-    "publication": {
-      "builder_code_link": "https://polymarket.com/event/btc-new-ath-2026?builderCode=pythia&side=yes",
-      "error": null,
-      "fallback_link": "https://polymarket.com/event/btc-new-ath-2026",
-      "plan": {
-        "confidence_bps": 3816,
-        "decision": "BUY_YES",
-        "edge_bps": 272,
-        "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
-        "parent_trace_id": 0,
-        "question": "Will BTC reach a new all-time high in 2026?",
-        "size_usdc": 19.08
-      },
-      "published": true
-    },
-    "theme": "crypto",
-    "trace_id": 4,
-    "vault": null
-  },
-  {
-    "analyst": {
-      "confidence_bps": 3912,
-      "decision": "BUY_NO",
-      "edge_bps": -304,
-      "fair_price_yes": 0.8496,
-      "generated_at": "2026-05-22T08:26:12+00:00",
-      "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "model": "heuristic-v1-placeholder",
-      "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "reasoning": [
-        {
-          "kind": "observation",
-          "text": "Market YES price = 0.880; 24h volume = $412,400; liquidity = $185,000."
-        },
-        {
-          "kind": "inference",
-          "text": "Tail-of-distribution market; heuristic fair 0.850 vs market 0.880 -> -304 bps."
-        },
-        {
-          "kind": "risk",
-          "text": "Placeholder model: confidence is artificially capped at 60% until the LLM analyst lands."
-        },
-        {
-          "kind": "conclusion",
-          "text": "Decision: BUY_NO @ conf=39.1%"
-        }
-      ]
-    },
-    "builder_code": "pythia",
-    "generated_at": "2026-05-22T08:26:12+00:00",
-    "model": "heuristic-v1-placeholder",
     "onchain": {
-      "block_number": 43481327,
+      "block_number": 43481334,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 1,
-      "tx_hash": "0x8446bbd241d63fc96e6f7a1710dfc51df0f15bac122aa881048d5ce1b0bad250"
-    },
-    "plan": {
-      "confidence_bps": 3912,
-      "decision": "BUY_NO",
-      "edge_bps": -304,
-      "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "parent_trace_id": 0,
-      "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "size_usdc": 19.56
-    },
+      "trace_id": 2,
+      "tx_hash": "0x756c20dd8b3f121efc28ebe09d8756167ec27e96eaf8db61f151e7ed25b27add"
+    }
+  },
+  {
+    "trace_id": 3,
+    "theme": "crypto",
+    "vault": null,
+    "model": "heuristic-v1-placeholder",
+    "generated_at": "2026-05-22T08:26:12+00:00",
+    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "preview": {
       "agent_probability_yes": 0.8496,
       "confidence": "low",
@@ -842,66 +366,22 @@
       "trace_hash": "0xdd185b0a2337156c16a45341923e4a6cc50d1bd63aef7ea9e52f1bbc0f52aa14",
       "trace_id": 3
     },
-    "publication": {
-      "builder_code_link": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=no",
-      "error": null,
-      "fallback_link": "https://polymarket.com/event/eth-above-4000-may-31",
-      "plan": {
-        "confidence_bps": 3912,
-        "decision": "BUY_NO",
-        "edge_bps": -304,
-        "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "parent_trace_id": 0,
-        "question": "Will ETH close above $4,000 on May 31, 2026?",
-        "size_usdc": 19.56
-      },
-      "published": true
-    },
-    "theme": "crypto",
-    "trace_id": 3,
-    "vault": null
+    "onchain": {
+      "block_number": 43481327,
+      "chain_id": 5042002,
+      "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
+      "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
+      "trace_id": 1,
+      "tx_hash": "0x8446bbd241d63fc96e6f7a1710dfc51df0f15bac122aa881048d5ce1b0bad250"
+    }
   },
   {
-    "analyst": {
-      "confidence_bps": 3816,
-      "decision": "BUY_YES",
-      "edge_bps": 272,
-      "fair_price_yes": 0.18720000000000003,
-      "generated_at": "2026-05-14T14:34:00+00:00",
-      "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
-      "model": "heuristic-v1-placeholder",
-      "question": "Will BTC reach a new all-time high in 2026?",
-      "reasoning": [
-        {
-          "kind": "observation",
-          "text": "Market YES price = 0.160; 24h volume = $1,205,700; liquidity = $540,000."
-        },
-        {
-          "kind": "inference",
-          "text": "Tail-of-distribution market; heuristic fair 0.187 vs market 0.160 -> +272 bps."
-        },
-        {
-          "kind": "risk",
-          "text": "Placeholder model: confidence is artificially capped at 60% until the LLM analyst lands."
-        },
-        {
-          "kind": "conclusion",
-          "text": "Decision: BUY_YES @ conf=38.2%"
-        }
-      ]
-    },
-    "builder_code": "pythia",
-    "generated_at": "2026-05-14T14:34:00+00:00",
+    "trace_id": 2,
+    "theme": "crypto",
+    "vault": null,
     "model": "heuristic-v1-placeholder",
-    "plan": {
-      "confidence_bps": 3816,
-      "decision": "BUY_YES",
-      "edge_bps": 272,
-      "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
-      "parent_trace_id": 0,
-      "question": "Will BTC reach a new all-time high in 2026?",
-      "size_usdc": 19.08
-    },
+    "generated_at": "2026-05-14T14:34:00+00:00",
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
     "preview": {
       "agent_probability_yes": 0.1872,
       "confidence": "low",
@@ -916,66 +396,15 @@
       "trace_hash": "0x2ebcef3c68584a0079009270b7cbfe31a411a60f48053614a8f7167373c761be",
       "trace_id": 2
     },
-    "publication": {
-      "builder_code_link": "https://polymarket.com/event/btc-new-ath-2026?builderCode=pythia&side=yes",
-      "error": null,
-      "fallback_link": "https://polymarket.com/event/btc-new-ath-2026",
-      "plan": {
-        "confidence_bps": 3816,
-        "decision": "BUY_YES",
-        "edge_bps": 272,
-        "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
-        "parent_trace_id": 0,
-        "question": "Will BTC reach a new all-time high in 2026?",
-        "size_usdc": 19.08
-      },
-      "published": true
-    },
-    "theme": "crypto",
-    "trace_id": 2,
-    "vault": null
+    "onchain": null
   },
   {
-    "analyst": {
-      "confidence_bps": 3912,
-      "decision": "BUY_NO",
-      "edge_bps": -304,
-      "fair_price_yes": 0.8496,
-      "generated_at": "2026-05-14T14:34:00+00:00",
-      "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "model": "heuristic-v1-placeholder",
-      "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "reasoning": [
-        {
-          "kind": "observation",
-          "text": "Market YES price = 0.880; 24h volume = $412,400; liquidity = $185,000."
-        },
-        {
-          "kind": "inference",
-          "text": "Tail-of-distribution market; heuristic fair 0.850 vs market 0.880 -> -304 bps."
-        },
-        {
-          "kind": "risk",
-          "text": "Placeholder model: confidence is artificially capped at 60% until the LLM analyst lands."
-        },
-        {
-          "kind": "conclusion",
-          "text": "Decision: BUY_NO @ conf=39.1%"
-        }
-      ]
-    },
-    "builder_code": "pythia",
-    "generated_at": "2026-05-14T14:34:00+00:00",
+    "trace_id": 1,
+    "theme": "crypto",
+    "vault": null,
     "model": "heuristic-v1-placeholder",
-    "plan": {
-      "confidence_bps": 3912,
-      "decision": "BUY_NO",
-      "edge_bps": -304,
-      "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "parent_trace_id": 0,
-      "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "size_usdc": 19.56
-    },
+    "generated_at": "2026-05-14T14:34:00+00:00",
+    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "preview": {
       "agent_probability_yes": 0.8496,
       "confidence": "low",
@@ -990,23 +419,6 @@
       "trace_hash": "0x934101e7be75a875838673fc3b1985b17802cecd0b2417fbf072244b45d6e5e0",
       "trace_id": 1
     },
-    "publication": {
-      "builder_code_link": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=no",
-      "error": null,
-      "fallback_link": "https://polymarket.com/event/eth-above-4000-may-31",
-      "plan": {
-        "confidence_bps": 3912,
-        "decision": "BUY_NO",
-        "edge_bps": -304,
-        "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "parent_trace_id": 0,
-        "question": "Will ETH close above $4,000 on May 31, 2026?",
-        "size_usdc": 19.56
-      },
-      "published": true
-    },
-    "theme": "crypto",
-    "trace_id": 1,
-    "vault": null
+    "onchain": null
   }
 ]

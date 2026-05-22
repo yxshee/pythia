@@ -1,0 +1,157 @@
+{
+  "analyst": {
+    "confidence_bps": 7200,
+    "decision": "BUY_YES",
+    "edge_bps": 5600,
+    "fair_price_yes": 0.72,
+    "generated_at": "2026-05-22T17:24:30+00:00",
+    "liquidity_usd": 540000.0,
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+    "model": "claude-sonnet-4-6",
+    "question": "Will BTC reach a new all-time high in 2026?",
+    "reasoning": [
+      {
+        "kind": "observation",
+        "text": "BTC's 2024 ATH was approximately $108,000 (set in late December 2024). As of May 2026, BTC has already traded above this level multiple times in early-to-mid 2026, consistent with the post-halving bull cycle pattern following the April 2024 halving, which historically drives new ATHs 12-18 months later."
+      },
+      {
+        "kind": "observation",
+        "text": "Market is pricing YES at only 0.160 \u2014 implying an 84% chance BTC does NOT close above ~$108k at any point in calendar year 2026. This seems dramatically underpriced given we are already 5 months into the year and BTC has historically set new ATHs in every post-halving cycle."
+      },
+      {
+        "kind": "comparison",
+        "text": "In prior post-halving cycles (2013, 2017, 2021), BTC reached new ATHs within 12-18 months of the halving. The April 2024 halving puts the ATH window squarely in late 2024 through 2025-2026. BTC already broke $100k in late 2024; a sustained close above $108k in 2026 has very high base-rate probability."
+      },
+      {
+        "kind": "inference",
+        "text": "The resolution condition only requires ONE daily close above the 2024 ATH during all of 2026 \u2014 a very low bar over 12 months. Even in bearish scenarios where BTC consolidates or pulls back, the probability of at least one qualifying close given current price levels is high."
+      },
+      {
+        "kind": "risk",
+        "text": "Key risks: a severe macro shock (recession, regulatory crackdown, exchange failure) could depress BTC below the 2024 ATH for all of 2026. Structural bear markets following speculative peaks are real (e.g., 2022). However, current macro environment (rate cuts, ETF inflows, institutional adoption) reduces this tail risk substantially."
+      },
+      {
+        "kind": "conclusion",
+        "text": "Fair price is ~0.72. Market at 0.160 represents a ~560 bps mispricing \u2014 far above the 200 bps edge threshold. Liquidity is $540k (well above $25k floor) with $1.2M daily volume. Strong BUY YES with 72% confidence. Edge after slippage remains compelling."
+      }
+    ]
+  },
+  "builder_code": "pythia",
+  "full": {
+    "agent_probability_yes": 0.72,
+    "confidence": "high",
+    "copy_trade_url": "https://polymarket.com/event/btc-new-ath-2026?builderCode=pythia&side=yes",
+    "current_implied_yes": 0.16,
+    "decision": "BUY_YES",
+    "edge_bps": 5600,
+    "end_date_iso": "2026-12-31T23:59:59Z",
+    "expected_value_pct": 350.0,
+    "generated_at": "2026-05-22T17:24:30+00:00",
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+    "market_liquidity_usd": 540000.0,
+    "market_url": "https://polymarket.com/event/btc-new-ath-2026",
+    "market_volume_24h_usd": 1205700.0,
+    "model": "claude-sonnet-4-6",
+    "question": "Will BTC reach a new all-time high in 2026?",
+    "reasoning": [
+      {
+        "kind": "observation",
+        "text": "BTC's 2024 ATH was approximately $108,000 (set in late December 2024). As of May 2026, BTC has already traded above this level multiple times in early-to-mid 2026, consistent with the post-halving bull cycle pattern following the April 2024 halving, which historically drives new ATHs 12-18 months later."
+      },
+      {
+        "kind": "observation",
+        "text": "Market is pricing YES at only 0.160 \u2014 implying an 84% chance BTC does NOT close above ~$108k at any point in calendar year 2026. This seems dramatically underpriced given we are already 5 months into the year and BTC has historically set new ATHs in every post-halving cycle."
+      },
+      {
+        "kind": "comparison",
+        "text": "In prior post-halving cycles (2013, 2017, 2021), BTC reached new ATHs within 12-18 months of the halving. The April 2024 halving puts the ATH window squarely in late 2024 through 2025-2026. BTC already broke $100k in late 2024; a sustained close above $108k in 2026 has very high base-rate probability."
+      },
+      {
+        "kind": "inference",
+        "text": "The resolution condition only requires ONE daily close above the 2024 ATH during all of 2026 \u2014 a very low bar over 12 months. Even in bearish scenarios where BTC consolidates or pulls back, the probability of at least one qualifying close given current price levels is high."
+      },
+      {
+        "kind": "risk",
+        "text": "Key risks: a severe macro shock (recession, regulatory crackdown, exchange failure) could depress BTC below the 2024 ATH for all of 2026. Structural bear markets following speculative peaks are real (e.g., 2022). However, current macro environment (rate cuts, ETF inflows, institutional adoption) reduces this tail risk substantially."
+      },
+      {
+        "kind": "conclusion",
+        "text": "Fair price is ~0.72. Market at 0.160 represents a ~560 bps mispricing \u2014 far above the 200 bps edge threshold. Liquidity is $540k (well above $25k floor) with $1.2M daily volume. Strong BUY YES with 72% confidence. Edge after slippage remains compelling."
+      }
+    ],
+    "risk": "aggressive",
+    "risk_factors": [
+      "Key risks: a severe macro shock (recession, regulatory crackdown, exchange failure) could depress BTC below the 2024 ATH for all of 2026. Structural bear markets following speculative peaks are real (e.g., 2022). However, current macro environment (rate cuts, ETF inflows, institutional adoption) reduces this tail risk substantially."
+    ],
+    "sources": [
+      {
+        "kind": "model",
+        "name": "claude-sonnet-4-6"
+      },
+      {
+        "kind": "market",
+        "name": "Polymarket",
+        "url": "https://polymarket.com/event/btc-new-ath-2026"
+      }
+    ],
+    "suggested_size_by_profile": {
+      "aggressive": 57.6,
+      "balanced": 36.0,
+      "conservative": 14.4
+    },
+    "suggested_size_usdc": 36.0,
+    "trace_hash": "0xbd2624c3cc5fe0e71d9e56645c372bb159cb5b4d6b9411c8621babe74b626584",
+    "trace_id": 13
+  },
+  "generated_at": "2026-05-22T17:25:43+00:00",
+  "model": "claude-sonnet-4-6",
+  "onchain": {
+    "block_number": 43538017,
+    "chain_id": 5042002,
+    "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
+    "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
+    "trace_id": 13,
+    "tx_hash": "0x3452595fd672209f52b89568346398091417d39e328dc8cf7473222639d10f9c"
+  },
+  "plan": {
+    "confidence_bps": 7200,
+    "decision": "BUY_YES",
+    "edge_bps": 5600,
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+    "parent_trace_id": 0,
+    "question": "Will BTC reach a new all-time high in 2026?",
+    "size_usdc": 36.0
+  },
+  "preview": {
+    "agent_probability_yes": 0.72,
+    "confidence": "high",
+    "current_implied_yes": 0.16,
+    "decision": "BUY_YES",
+    "end_date_iso": "2026-12-31T23:59:59Z",
+    "generated_at": "2026-05-22T17:24:30+00:00",
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+    "model": "claude-sonnet-4-6",
+    "question": "Will BTC reach a new all-time high in 2026?",
+    "risk": "aggressive",
+    "trace_hash": "0xbd2624c3cc5fe0e71d9e56645c372bb159cb5b4d6b9411c8621babe74b626584",
+    "trace_id": 13
+  },
+  "publication": {
+    "builder_code_link": "https://polymarket.com/event/btc-new-ath-2026?builderCode=pythia&side=yes",
+    "error": null,
+    "fallback_link": "https://polymarket.com/event/btc-new-ath-2026",
+    "plan": {
+      "confidence_bps": 7200,
+      "decision": "BUY_YES",
+      "edge_bps": 5600,
+      "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+      "parent_trace_id": 0,
+      "question": "Will BTC reach a new all-time high in 2026?",
+      "size_usdc": 36.0
+    },
+    "published": true
+  },
+  "theme": "crypto",
+  "trace_id": 13,
+  "vault": null
+}

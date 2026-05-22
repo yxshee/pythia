@@ -82,8 +82,32 @@ class Settings(BaseSettings):
 
 
 def load_settings() -> Settings:
-    """Load and validate settings. Cached at the module level for callers who want a shared instance."""
-    return Settings()
+    """Load and validate settings. Cached at the module level for callers who want a shared instance.
+
+    Workaround for pydantic-settings v2.14.1: its env_file layering silently drops
+    values even when the path resolves correctly and the field is declared on the
+    Settings model. We read .env via python-dotenv directly and pass values as
+    explicit kwargs to the Settings constructor. SettingsConfigDict still controls
+    casing + extra-key handling; fields not present in .env still resolve from
+    os.environ via the EnvSettingsSource as usual (pydantic gives init-kwargs
+    higher priority than env vars, so .env wins on conflicts — same effective
+    order as the documented EnvSettingsSource > DotEnvSettingsSource priority).
+    """
+    import os
+    from dotenv import dotenv_values
+
+    # Some launchers (e.g., Claude Desktop) export ANTHROPIC_API_KEY="" into child
+    # processes. Drop empty LLM keys so a launcher-injected empty cannot shadow a
+    # real value (defensive — kwargs win anyway, but keeps EnvSettingsSource clean
+    # for any field we don't pass explicitly).
+    for key in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY"):
+        if os.environ.get(key) == "":
+            del os.environ[key]
+
+    env_path = Path(__file__).resolve().parents[2] / ".env"
+    values = dotenv_values(env_path)
+    kwargs = {k.lower(): v for k, v in values.items() if v}
+    return Settings(**kwargs)
 
 
 SETTINGS = load_settings()
