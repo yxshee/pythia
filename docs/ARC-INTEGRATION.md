@@ -1,6 +1,6 @@
 # Arc integration
 
-> Status: Day 1 - contracts written + tested locally. Deploy lands on Day 2.
+> Status: Deployed to Arc testnet. Contract addresses live in the repo `README.md` Deployments table; see [`/STATUS.md`](../STATUS.md) for the broader delivery state.
 
 ## Network
 
@@ -20,7 +20,7 @@
 | `TraceLog` | Authorized event emitter for IPFS-pinned reasoning traces | `contracts/src/TraceLog.sol` |
 | `UnlockMarket` | Pay-per-unlock for full reasoning traces (USDC on Arc) | `contracts/src/UnlockMarket.sol` |
 
-Tests: `cd contracts && forge test` (31/31 passing as of Day 2).
+Tests: `cd contracts && forge test` (39/39 passing).
 
 ### UnlockMarket flow
 
@@ -77,8 +77,8 @@ USDC_ADDRESS_ARC=0x...
 | USDC | `PythiaVault.asset` + `UnlockMarket.usdc` | Denomination for paper PnL accounting *and* the actual unlock payment. |
 | Wallets | operator + buyer EOAs | Dev-controlled wallet for the agent; user EOAs for unlocks (wagmi/viem on the web side). |
 | Contracts | `PythiaVault`, `TraceLog`, `UnlockMarket` | Three Arc-native deployments. |
-| App Kit | Connect Wallet + Send for unlocks (Day 3-4) | Drop-in components for the buyer flow on the web app. |
-| CCTP | Stretch / Day 8 | Bridge accrued unlock revenue from Arc to other chains; revenue-flow demo only. |
+| App Kit | Connect Wallet + unlock UX | Drop-in components for the buyer flow on the web app (wired today via wagmi + viem; App Kit drop-in is post-submission). |
+| CCTP | Planned (post-submission) | Bridge accrued unlock revenue from Arc to other chains; revenue-flow demo only. |
 | Paymaster | Stretch | Public Paymaster page does not list Arc; Arc already uses USDC as gas natively, so this is mostly redundant. |
 | USYC | Stretch | Requires allowlist + $100k institutional minimum; out of MVP scope. |
 
@@ -89,8 +89,8 @@ USDC_ADDRESS_ARC=0x...
 - **USDC-as-gas** means there are no native-token UX traps. The vault holds and spends one asset.
 - **~$0.01 fees** make publishing a trace event per decision economical. On a higher-fee chain, anchoring reasoning would eat into PnL.
 
-## Open items (Day 2)
+## Open items (post-submission)
 
-- [ ] Confirm canonical USDC address on Arc testnet (asking Anuhya).
-- [ ] Run `arc-canteen update-product` to push our first product update.
-- [ ] Wire `viem` or `web3.py` event listener for `TraceLog.Trace` to power the live feed.
+- DevUSDC is the deployed USDC for the hackathon demo; migrating to canonical USDC on Arc testnet is post-submission work.
+- Run `arc-canteen update-product` to push our first product update.
+- Wire `viem` / `web3.py` event listener for `TraceLog.Trace` to power the live feed (today the feed is statically baked from on-disk trace JSON).

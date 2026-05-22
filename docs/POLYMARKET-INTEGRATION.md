@@ -1,6 +1,6 @@
 # Polymarket V2 integration
 
-> Status: Day 1 - design + verified. Pythia is publish-only and never places its own orders.
+> Status: Pythia is publish-only and never places its own orders. See [`/STATUS.md`](../STATUS.md) for the broader delivery state.
 
 ## What Pythia does on Polymarket
 
@@ -10,7 +10,7 @@
 2. Publishes each pick to its own Telegram + web feed with a **builder-code deep-link**.
 3. Followers click the link, open Polymarket on their own account, and place the order. The order carries `builderCode=pythia` automatically.
 4. Polymarket pays the accrued builder fee in USDC on Polygon to the address registered against the `pythia` builder code (`POLYGON_ADDRESS_FOR_BUILDER_FEES`).
-5. Once the underlying question resolves, Pythia's `resolver` (Day 3) computes the **paper** PnL the published position would have realized and records it on Arc via `PythiaVault.recordTrade`.
+5. Once the underlying question resolves, Pythia's `resolver` computes the **paper** PnL the published position would have realized and records it on Arc via `PythiaVault.recordTrade`. The resolver close-out path is post-submission work; see [`/STATUS.md`](../STATUS.md).
 
 Real USDC flow is **follower's wallet -> Polymarket -> builder-fee receiver address**. Pythia never custodies.
 
@@ -22,7 +22,7 @@ Real USDC flow is **follower's wallet -> Polymarket -> builder-fee receiver addr
 
 ## Builder-code mechanics
 
-> Verified Day 1 against `docs.polymarket.com/trading/clients/builder`. Update this section if the exact registration flow differs.
+> Verified against `docs.polymarket.com/trading/clients/builder`. Update this section if the exact registration flow differs.
 
 Polymarket attributes fee shares via a `builderCode` field on each order. The field is included on V2 orders via the official `py-clob-client-v2` SDK and is propagated through the CLOB fill stream so Polymarket can settle attributed fees to the registered builder address.
 
@@ -54,19 +54,23 @@ https://polymarket.com/event/<slug>?builderCode=pythia&side=<yes|no>
 
 ## Open verifications
 
-- [ ] Confirm `builderCode` is the exact query-param key Polymarket honors in the frontend (vs `builder` or `bc`). Adjust `publisher.py:_builder_code_link` if needed.
-- [ ] Confirm whether `pythia` is reserved or arbitrary. If reserved, register via Polymarket's builder portal or contact their team in the Polymarket Discord.
-- [ ] Confirm builder-fee receiver address binding (per-code vs per-order). Most likely per-code, set on registration.
+Pending Polymarket builder-portal registration. The URL-parameter copy-trade
+link is a placeholder until the bytes32 builder code is registered against the
+canonical V2 SDK. See [`/STATUS.md`](../STATUS.md) for the live delivery state.
+
+- Confirm `builderCode` is the exact query-param key Polymarket honors in the frontend (vs `builder` or `bc`). Adjust `publisher.py:_builder_code_link` if needed.
+- Confirm whether `pythia` is reserved or arbitrary. If reserved, register via Polymarket's builder portal or contact their team in the Polymarket Discord.
+- Confirm builder-fee receiver address binding (per-code vs per-order). Most likely per-code, set on registration.
 
 ## Known issue: geo-block from India
 
-**Verified Day 1 (May 14, 2026):** All Polymarket endpoints return HTTP 000 (connection refused at TCP/TLS level) from this machine, including:
+**Verified May 14, 2026:** All Polymarket endpoints return HTTP 000 (connection refused at TCP/TLS level) from this machine, including:
 
 - `https://gamma-api.polymarket.com`
 - `https://clob.polymarket.com`
 - `https://polymarket.com`
 
-This is a known Polymarket geographic restriction. The Pythia agent has three Day-2+ paths to keep working:
+This is a known Polymarket geographic restriction. The Pythia agent has three paths to keep working:
 
 1. **Run from a non-blocked network** (deploy the agent to a cloud region where Polymarket is accessible: AWS us-east-1, GCP us-central1 are typically fine).
 2. **Use Polygon RPC + Envio HyperSync directly.** Polymarket's market state is on-chain on Polygon. We can read `ConditionalTokens`, `CTFExchange`, and orderbook events directly without touching the geo-blocked HTTP APIs. This is the more robust path long-term.

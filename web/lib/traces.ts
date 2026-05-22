@@ -43,6 +43,7 @@ type TraceFull = TracePreview & {
   sources: unknown[];
   risk_factors: unknown[];
   market_url: string;
+  copy_trade_url?: string;
   market_volume_24h_usd: number;
   market_liquidity_usd: number;
 };

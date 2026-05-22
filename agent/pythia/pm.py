@@ -81,8 +81,7 @@ class PortfolioManager:
 
     def _size(self, r: AnalystReport) -> float:
         """Linear sizing in confidence; capped by max position env."""
-        # 3500 bps (35%) is a deliberately low floor for the heuristic-v1 placeholder.
-        # Day 3 LLM analyst will produce higher-confidence signals; bump this then.
+        # 3500 bps (35%) is a deliberately low confidence floor; below this we skip.
         if r.confidence_bps < 3500:
             return 0.0
         confidence = r.confidence_bps / 10_000.0

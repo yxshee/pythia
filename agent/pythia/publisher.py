@@ -39,8 +39,10 @@ class PublishResult:
 class Publisher:
     """Emit picks to the broadcast surfaces with a builder-code copy-trade link.
 
-    Day-1 implementation logs the formatted pick + link so the rest of the loop
-    is exercised. Day-2 hooks Telegram broadcast in; Day-4 hooks the web feed.
+    The actual Telegram + web broadcast happens out-of-process via the bot
+    subcommand ``pythia-bot broadcast <trace.json>``; this class formats the
+    pick + link and emits the structured log line that downstream consumers
+    read.
     """
 
     def __init__(self, settings: Settings):
@@ -75,17 +77,12 @@ class Publisher:
 
         Polymarket exposes the market at ``polymarket.com/event/<slug>``. We attach
         ``?builderCode=...`` so the order created by a follower carries the code.
-        The exact query-param key is verified Day-1 against
-        ``docs.polymarket.com/trading/clients/builder``; we default to ``builderCode``
-        and add the ``side`` hint so the Polymarket UI pre-selects YES/NO.
+        The query-param key follows ``docs.polymarket.com/trading/clients/builder``
+        (defaulting to ``builderCode``); we add the ``side`` hint so the Polymarket
+        UI pre-selects YES/NO. The builder code is a placeholder until the bytes32
+        registration lands (see STATUS.md).
         """
-        slug = self._extract_slug(market)
-        side = self._side_for(plan)
-        code = self._settings.polymarket_builder_code or "pythia"
-        return (
-            f"https://polymarket.com/event/{quote(slug, safe='')}"
-            f"?builderCode={quote(code, safe='')}&side={side}"
-        )
+        return copy_trade_url(market, plan.decision, self._settings.polymarket_builder_code)
 
     def _fallback_link(self, market: MarketCandidate) -> str:
         slug = self._extract_slug(market)
@@ -112,3 +109,30 @@ class Publisher:
         if plan.decision == "BUY_NO":
             return "no"
         return "yes"  # default; HOLD should not reach this code path
+
+
+def copy_trade_url(
+    market: MarketCandidate,
+    decision: str,
+    builder_code: str | None,
+) -> str:
+    """Build the Polymarket copy-trade URL for a market + decision.
+
+    Shared between :class:`Publisher` (the broadcast path) and the paid trace
+    payload assembled in ``preview.to_full`` so the link the user clicks in the
+    bot matches what is rendered in the web UI. Keeping a single source of
+    truth here avoids the failure mode where the broadcast link is attributed
+    but the unlocked content sends users to an unattributed event URL.
+    """
+    slug = Publisher._extract_slug(market)
+    if decision == "BUY_YES":
+        side = "yes"
+    elif decision == "BUY_NO":
+        side = "no"
+    else:
+        side = "yes"  # default; HOLD should not reach this code path
+    code = builder_code or "pythia"
+    return (
+        f"https://polymarket.com/event/{quote(slug, safe='')}"
+        f"?builderCode={quote(code, safe='')}&side={side}"
+    )

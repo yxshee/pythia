@@ -93,7 +93,7 @@ export function UnlockedContent({ full, isUnlocked }: Props) {
           Copy the trade
         </p>
         <a
-          href={full.market_url}
+          href={full.copy_trade_url ?? full.market_url}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-3 inline-flex items-baseline gap-2 font-display text-[16px] text-ink underline decoration-laurel/40 hover:decoration-ink"

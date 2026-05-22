@@ -28,7 +28,7 @@ When a market resolves, the agent's resolver computes the paper PnL the publishe
 |---|---|---|
 | Agentic sophistication | 30% | Real Scout → Analyst → PM → Publisher → Trace loop. Autonomous on pick, sizing, hold/exit, trace generation. |
 | Traction | 30% | Telegram free tier + attributed copy-trader volume + builder fees in USDC. Non-custodial → lower friction onboarding. |
-| Circle tools | 20% | USDC + Wallets + 4 Arc contracts (`PythiaVault`, `TraceLog`, `UnlockMarket`, `DevUSDC`) + EIP-3009 gasless unlock + CCTP-ready revenue bridge (Polygon → Arc). |
+| Circle tools | 20% | USDC + Circle Wallets + 4 Arc contracts (`PythiaVault`, `TraceLog`, `UnlockMarket`, `DevUSDC`). EIP-3009 primitives ship on `DevUSDC` (not yet wired into the unlock flow) and CCTP is a planned revenue-bridge integration. See [STATUS.md](STATUS.md) for the live delivery state. |
 | Innovation | 20% | First builder-code-attributed reasoning-trace marketplace. Traces are split into free-preview / paid-full at the data-model level, not bolted on. |
 
 ## Stack
@@ -37,8 +37,8 @@ When a market resolves, the agent's resolver computes the paper PnL the publishe
 - **Agent runtime:** Python 3.13, async, uv-managed.
 - **LLM:** Claude Sonnet 4.6 for the analyst; deterministic `heuristic-v1-placeholder` fallback.
 - **Data sources:** Polymarket V2 Gamma + CLOB REST (`--mock` fallback when geo-blocked); Envio HyperSync for Arc state.
-- **Trace storage:** local disk → IPFS via Irys (optional); CIDv1 hashes logged on Arc through `TraceLog`.
-- **Bridging:** Circle CCTP — revenue-only, Polygon → Arc for accrued builder fees.
+- **Trace storage:** local disk + content hash logged on Arc through `TraceLog` (the on-chain field is named `ipfsCid` and is forward-compatible); IPFS pinning via Irys is planned post-submission.
+- **Bridging:** Circle CCTP — planned revenue-only Polygon → Arc bridge for accrued builder fees; not wired today (see [STATUS.md](STATUS.md)).
 - **Bot:** python-telegram-bot 22+.
 - **Web:** Next.js 16, App Router, Tailwind v4, Fraunces + JetBrains Mono. Pick feed, trace explorer, unlock CTAs.
 
@@ -50,7 +50,7 @@ pythia/
 │   ├── src/
 │   │   ├── PythiaVault.sol           # ERC4626-shaped USDC vault, paper-PnL track-record
 │   │   ├── TraceLog.sol              # event emitter for reasoning-trace hashes
-│   │   ├── UnlockMarket.sol          # per-trace USDC unlock + EIP-3009 receipt
+│   │   ├── UnlockMarket.sol          # per-trace USDC unlock (plain `transferFrom`)
 │   │   └── DevUSDC.sol               # EIP-3009 testnet USDC (open mint, gasless authz)
 │   ├── test/                         # 12 + 6 + 13 + 8 = 39 forge tests
 │   └── script/Deploy.s.sol           # deploys all 4
