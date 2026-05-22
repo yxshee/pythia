@@ -106,7 +106,7 @@ export default async function PickPage({ params }: Props) {
 
               <ul className="relative space-y-3 font-display text-[15px] leading-[1.45] text-ink-soft">
                 {[
-                  `${lockedSteps} step reasoning chain (LLM-attested, IPFS-pinned)`,
+                  `${lockedSteps} step reasoning chain`,
                   "Suggested USDC size for conservative / balanced / aggressive profiles",
                   "Explicit “why the agent may be wrong” section",
                   "Expected value math + edge in basis points",
@@ -124,13 +124,13 @@ export default async function PickPage({ params }: Props) {
                   type="button"
                   className="group inline-flex items-center gap-3 rounded-md bg-ink px-5 py-3 mono text-[12px] uppercase tracking-[0.22em] text-marble shadow-[0_2px_0_rgba(15,14,12,0.4)] transition hover:bg-oxblood disabled:cursor-not-allowed disabled:opacity-60"
                   disabled
-                  aria-label="Unlock the full trace - wallet flow lands Day 4"
+                  aria-label="Unlock the full trace - wallet flow coming soon"
                 >
                   Unlock 0.10 USDC
                   <span aria-hidden className="transition group-hover:translate-x-0.5">→</span>
                 </button>
                 <span className="mono text-[10px] uppercase tracking-[0.22em] text-ink-faint">
-                  Wallet flow lands <span className="text-ink">Day 4 (May 16)</span>
+                  Wallet flow <span className="text-ink">coming soon</span>
                 </span>
               </div>
             </div>
