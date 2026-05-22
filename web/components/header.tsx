@@ -11,9 +11,6 @@ export function Header() {
           <span className="mono text-base font-bold tracking-tight text-ink">
             ALPHA
           </span>
-          <span aria-hidden className="mono text-[11px] text-oxblood">
-            v0.3
-          </span>
         </Link>
         <nav className="flex items-center gap-7 mono text-[12px] uppercase tracking-[0.22em] text-ink-soft">
           <Link href="/" className="hover:text-ink">

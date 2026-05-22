@@ -130,7 +130,7 @@ export default async function PickPage({ params }: Props) {
                   <span aria-hidden className="transition group-hover:translate-x-0.5">→</span>
                 </button>
                 <span className="mono text-[10px] uppercase tracking-[0.22em] text-ink-faint">
-                  Wallet flow <span className="text-ink">coming soon</span>
+                  Wallet flow lands <span className="text-ink">soon</span>
                 </span>
               </div>
             </div>

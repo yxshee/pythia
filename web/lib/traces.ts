@@ -15,11 +15,11 @@ import { readFile, readdir, stat } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
 
-export type Decision = "BUY_YES" | "BUY_NO" | "HOLD";
-export type Confidence = "low" | "medium" | "high";
-export type Risk = "conservative" | "balanced" | "aggressive";
+type Decision = "BUY_YES" | "BUY_NO" | "HOLD";
+type Confidence = "low" | "medium" | "high";
+type Risk = "conservative" | "balanced" | "aggressive";
 
-export type TracePreview = {
+type TracePreview = {
   trace_id: number;
   trace_hash: string;
   market_id: string;
@@ -34,7 +34,7 @@ export type TracePreview = {
   end_date_iso: string;
 };
 
-export type TraceFull = TracePreview & {
+type TraceFull = TracePreview & {
   edge_bps: number;
   expected_value_pct: number;
   suggested_size_usdc: number;
@@ -130,8 +130,4 @@ export function shortHash(hash: string, head = 6, tail = 4): string {
 
 export function fmtProb(p: number): string {
   return `${(p * 100).toFixed(1)}%`;
-}
-
-export function fmtUsdc(cents: number, dp = 2): string {
-  return `${cents.toFixed(dp)} USDC`;
 }
