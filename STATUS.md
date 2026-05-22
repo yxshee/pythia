@@ -28,6 +28,13 @@ Last updated: 2026-05-22.
   viem v2) → approve exact 0.10 USDC → `UnlockMarket.unlock(traceId)`
   on Arc. Inline `DevUSDC.mint()` faucet for first-time visitors. Real
   USDC moves to the treasury on each unlock.
+- **Server-side SIWE paywall.** `/api/traces/[id]/full` requires a
+  SIWE-signed message bound to `(traceId, wallet)` plus a fresh
+  on-chain `UnlockMarket.isUnlocked(traceId, wallet)` check before
+  returning the paid reasoning payload. The home page and
+  `/pick/[id]` SSR HTML never carry `trace.full`, and the public
+  picks bundle in `web/data/picks-preview.json` is preview-only —
+  view-source no longer bypasses the gate.
 - **Vercel deploy live** at <https://agoraalpha.vercel.app>. Home, pick
   feed, and pick-detail pages all serve.
 - **builderCode threaded** into copy-trade URLs: `to_full()` emits
@@ -39,12 +46,6 @@ Last updated: 2026-05-22.
 
 ## Partially works
 
-- **Paywall is a visual UI gate, not a cryptographic fetch.** The
-  full reasoning payload is rendered into the pick page's SSR HTML and
-  hidden until `UnlockMarket.isUnlocked(traceId, wallet)` returns true
-  for the visitor. View-source bypasses the UI gate. A SIWE-signed
-  server-side fetch (`/api/traces/[id]/full`) is the v2 path tracked in
-  the master plan as PR-19B.
 - **builderCode is a URL query parameter**, not a bytes32 attached
   to V2 CLOB orders. Polymarket attributes order-level fees via the
   `builderCode` field on the official `py-clob-client-v2` SDK; the URL
