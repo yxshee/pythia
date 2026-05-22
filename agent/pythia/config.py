@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     arc_chain_id: int = 5042002
     private_key: str = "0x" + "0" * 64
 
-    # Deployed contracts (filled in after Day 2 deploy)
+    # Deployed contracts (see Deployments table in README)
     pythia_vault_address: str | None = None
     trace_log_address: str | None = None
     usdc_address_arc: str | None = None

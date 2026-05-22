@@ -174,7 +174,14 @@ class TracePublisher:
         cid_hex = "0x" + hashlib.sha256(body).hexdigest()
 
         preview = to_preview(report, plan, market, trace_id=trace_id, trace_hash=cid_hex)
-        full = to_full(report, plan, market, trace_id=trace_id, trace_hash=cid_hex)
+        full = to_full(
+            report,
+            plan,
+            market,
+            trace_id=trace_id,
+            trace_hash=cid_hex,
+            builder_code=self._settings.polymarket_builder_code,
+        )
         payload: dict[str, Any] = {
             **canonical,
             "preview": preview,

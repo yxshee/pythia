@@ -23,6 +23,7 @@ from typing import Any, Literal
 
 from .analyst import AnalystReport
 from .pm import TradePlan
+from .publisher import copy_trade_url
 from .scout import MarketCandidate
 
 RiskLabel = Literal["conservative", "balanced", "aggressive"]
@@ -41,7 +42,7 @@ def _risk_label(plan: TradePlan, market: MarketCandidate) -> RiskLabel:
     """Map plan size + market liquidity to a coarse risk label for the preview.
 
     Larger size and thinner liquidity = more aggressive. The exact bucketing
-    here is intentionally simple; the user-profile-aware sizing lands Day 7.
+    here is intentionally simple; user-profile-aware sizing is future work.
     """
     size_fraction = plan.size_usdc / 50.0  # 50 is the default max position
     liq_ok = market.liquidity_usd >= 100_000
@@ -84,6 +85,7 @@ def to_full(
     *,
     trace_id: int | None = None,
     trace_hash: str | None = None,
+    builder_code: str | None = None,
 ) -> dict[str, Any]:
     """Full unlocked payload. Served only to buyers who paid via UnlockMarket."""
     yes_price = max(0.01, min(0.99, market.yes_price))
@@ -96,6 +98,7 @@ def to_full(
     else:
         ev = 0.0
 
+    market_url = f"https://polymarket.com/event/{market.raw.get('slug', market.market_id)}"
     return {
         **to_preview(report, plan, market, trace_id=trace_id, trace_hash=trace_hash),
         "edge_bps": report.edge_bps,
@@ -107,9 +110,15 @@ def to_full(
             "aggressive": round(plan.size_usdc * 1.6, 2),
         },
         "reasoning": [asdict(step) for step in report.reasoning],
-        "sources": [],  # Day 5: Cambrian / news citations land here.
-        "risk_factors": [],  # Day 9: "why the agent may be wrong" lands here.
-        "market_url": f"https://polymarket.com/event/{market.raw.get('slug', market.market_id)}",
+        "sources": [
+            {"kind": "model", "name": report.model},
+            {"kind": "market", "name": "Polymarket", "url": market_url},
+        ],
+        "risk_factors": [
+            step.text for step in report.reasoning if step.kind == "risk"
+        ],
+        "market_url": market_url,
+        "copy_trade_url": copy_trade_url(market, report.decision, builder_code),
         "market_volume_24h_usd": market.volume_24h_usd,
         "market_liquidity_usd": market.liquidity_usd,
     }

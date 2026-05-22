@@ -55,9 +55,9 @@ class AnalystReport:
 class Analyst:
     """Reasoning analyst.
 
-    The default implementation in Day 1 is a deterministic heuristic so the loop runs
+    The default implementation is a deterministic heuristic so the loop runs
     end-to-end without an API key. When ``settings.anthropic_api_key`` is set, the
-    analyst will route reasoning through Claude with a structured JSON output schema.
+    analyst routes reasoning through Claude with a structured JSON output schema.
     """
 
     def __init__(self, settings: Settings):
@@ -82,12 +82,12 @@ class Analyst:
     #  Heuristic baseline - deterministic, runs without API keys
     # ------------------------------------------------------------------
     def _score_heuristic(self, market: MarketCandidate) -> AnalystReport:
-        """Deterministic placeholder baseline. **Not for live trading.**
+        """Deterministic fallback baseline. **Not for live trading.**
 
-        This is intentionally conservative so Day-1 demo output is believable:
-        we only fire on deep-liquidity markets sitting at extreme prices, and
-        even then we take a tiny mean-reversion bet. The LLM-driven analyst
-        on Day 3 replaces this entirely.
+        Runs when no ``ANTHROPIC_API_KEY`` is configured or when the LLM call
+        fails. Intentionally conservative: we only fire on deep-liquidity
+        markets sitting at extreme prices, and even then we take a tiny
+        mean-reversion bet. The LLM-driven analyst is the primary path.
         """
         yes = max(0.01, min(0.99, market.yes_price))
         liq = market.liquidity_usd
@@ -132,7 +132,7 @@ class Analyst:
             )
         )
         steps.append(
-            ReasoningStep("risk", "Placeholder model: confidence is artificially capped at 60% until the LLM analyst lands.")
+            ReasoningStep("risk", "Heuristic-only fallback: confidence is artificially capped at 60%; the LLM analyst produces calibrated estimates when an API key is configured.")
         )
         steps.append(ReasoningStep("conclusion", f"Decision: {decision} @ conf={confidence_bps / 100:.1f}%"))
 
