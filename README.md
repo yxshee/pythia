@@ -119,9 +119,11 @@ Web demo: `https://agoraalpha.vercel.app` (Vercel deploy alias).
 
 ## Status
 
-Day 12 of 15 (submission May 25). Contracts: 39 forge tests green, deployed to Arc testnet (addresses above). Web shell live at https://agoraalpha.vercel.app with fixture trace feed. Agent loop runs end-to-end against fixtures with builder-code links rendered; LLM analyst code path wired with heuristic fallback.
+Day 12 of 15 (submission May 25). Contracts: 39 forge tests green, deployed to Arc testnet (addresses above). Web shell live at https://agoraalpha.vercel.app with fixture trace feed. Agent loop runs end-to-end against fixtures with builder-code links rendered; LLM analyst code path wired with heuristic fallback. Pick pages have a working USDC unlock flow against `UnlockMarket` on Arc (connect → approve → unlock); test USDC available via the inline `DevUSDC.mint()` faucet — note that `mint()` is open by design on testnet only, mainnet USDC has no such function.
 
-Open work: activate live LLM call path in `analyst.py` (needs `ANTHROPIC_API_KEY` in `.env`; heuristic is the live runtime today); wallet-connect on the pick page; resolver → `PythiaVault.recordTrade` close-out.
+Web env vars (all `NEXT_PUBLIC_*`, all address-shape data, none secret — see `web/.env.local.example`): `UNLOCK_MARKET_ADDRESS`, `USDC_ADDRESS_ARC`, `ARC_CHAIN_ID`, `ARC_EXPLORER_URL`. The wallet provides its own RPC once the user connects; `ARC_RPC_URL` stays server-side only (Canteen-issued token).
+
+Open work: activate live LLM call path in `analyst.py` (needs `ANTHROPIC_API_KEY` in `.env`; heuristic is the live runtime today); resolver → `PythiaVault.recordTrade` close-out; cryptographic server-side paywall (current unlock is a visual UI gate against on-chain payment, not a SIWE-signed fetch).
 
 Polymarket APIs are geo-blocked from this development machine — see `docs/POLYMARKET-INTEGRATION.md` for mitigations (cloud-region deploy, direct Polygon-RPC scout, or HTTPS proxy).
 

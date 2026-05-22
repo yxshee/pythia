@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/header";
+import { UnlockButton } from "@/components/unlock-button";
 import { fmtProb, loadPick, shortHash } from "@/lib/traces";
 
 export const revalidate = 30;
@@ -14,7 +15,6 @@ export default async function PickPage({ params }: Props) {
 
   const p = trace.preview;
   const delta = p.agent_probability_yes - p.current_implied_yes;
-  const lockedSteps = trace.full.reasoning.length;
   const direction =
     p.decision === "BUY_YES" ? "yes" : p.decision === "BUY_NO" ? "no" : "hold";
   const directionAccent =
@@ -142,50 +142,7 @@ export default async function PickPage({ params }: Props) {
             </section>
           )}
 
-          <section className="mt-14">
-            <div className="flex items-baseline justify-between border-b border-ink/15 pb-3">
-              <h2 className="mono text-[12px] uppercase tracking-[0.32em] text-ink">
-                Behind the paywall
-              </h2>
-              <span className="mono text-[10px] uppercase tracking-[0.22em] text-oxblood">
-                0.10 USDC · Arc
-              </span>
-            </div>
-
-            <div className="relative mt-6 overflow-hidden rounded-md border border-ink/15 bg-marble/70 p-6">
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-marble/0 via-parchment-warm/60 to-parchment" />
-
-              <ul className="relative space-y-3 font-display text-[15px] leading-[1.45] text-ink-soft">
-                {[
-                  `${lockedSteps} step reasoning chain`,
-                  "Suggested USDC size for conservative / balanced / aggressive profiles",
-                  "Explicit “why the agent may be wrong” section",
-                  "Expected value math + edge in basis points",
-                  "Source citations with weighted credibility",
-                ].map((row) => (
-                  <li key={row} className="flex items-baseline gap-3">
-                    <span aria-hidden className="mono text-ink-faint">▸</span>
-                    <span>{row}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="relative mt-7 flex flex-wrap items-center gap-4">
-                <button
-                  type="button"
-                  className="group inline-flex items-center gap-3 rounded-md bg-ink px-5 py-3 mono text-[12px] uppercase tracking-[0.22em] text-marble shadow-[0_2px_0_rgba(15,14,12,0.4)] transition hover:bg-oxblood disabled:cursor-not-allowed disabled:opacity-60"
-                  disabled
-                  aria-label="Unlock the full trace - wallet flow coming soon"
-                >
-                  Unlock 0.10 USDC
-                  <span aria-hidden className="transition group-hover:translate-x-0.5">→</span>
-                </button>
-                <span className="mono text-[10px] uppercase tracking-[0.22em] text-ink-faint">
-                  Wallet flow lands <span className="text-ink">soon</span>
-                </span>
-              </div>
-            </div>
-          </section>
+          <UnlockButton traceId={p.trace_id} full={trace.full} />
         </article>
       </main>
     </>
