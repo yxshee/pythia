@@ -64,7 +64,7 @@ export default async function HomePage() {
               Today&rsquo;s picks &middot; {picks.length}
             </h2>
             <span className="mono text-[10px] uppercase tracking-[0.28em] text-ink-faint">
-              cached 30s · Arc trace + IPFS pin Day 6
+              cached 30s · Arc trace
             </span>
           </div>
 

@@ -8,8 +8,8 @@
  *   - `canonical`: raw analyst/plan/publication for replay
  *
  * On Vercel / static builds where `../traces/` isn't shipped, we fall back to a
- * snapshot under `web/data/picks.json` if present. Day 3 reads from the live
- * directory; Day 5+ swaps to an indexer over Arc TraceLog events.
+ * snapshot under `web/data/picks.json` if present. A future iteration may
+ * swap the directory read for an indexer over Arc TraceLog events.
  */
 import { readFile, readdir, stat } from "node:fs/promises";
 import { existsSync } from "node:fs";
