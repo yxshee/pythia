@@ -1,5 +1,6 @@
 import { Header } from "@/components/header";
 import { PickCard } from "@/components/pick-card";
+import { TractionStrip } from "@/components/traction-strip";
 import { loadPicks } from "@/lib/traces";
 
 export const revalidate = 30;
@@ -57,6 +58,8 @@ export default async function HomePage() {
             </ol>
           </aside>
         </section>
+
+        <TractionStrip />
 
         <section className="mt-20">
           <div className="flex items-baseline justify-between border-b border-ink/15 pb-3">
