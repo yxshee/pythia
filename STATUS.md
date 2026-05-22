@@ -1,115 +1,102 @@
-# Pythia — delivery status
+# Pythia - delivery status
 
-> Honest, current-state status for the hackathon submission. Pairs with
-> [`README.md`](README.md) which describes the architecture and intended
-> behaviour. When the README and this file disagree about *what is shipping
-> today*, this file wins.
+> Honest current-state status for the hackathon submission. When this file and
+> the README disagree about what is shipping today, this file wins.
 
-Last updated: 2026-05-22.
+Last updated: 2026-05-23 (Asia/Kolkata).
 
-## Works today
+## Works Today
 
-- **4 contracts deployed to Arc testnet** (chain ID `5042002`):
-  `PythiaVault`, `TraceLog`, `UnlockMarket`, `DevUSDC`. Addresses in the
-  README Deployments table.
-- **39/39 forge tests green** across the four contracts (`via_ir = true`).
-- **Agent loop wired end-to-end**: Scout → Analyst → PM → Publisher → Trace.
-  Runs in `--mock` mode with bundled fixtures so the pipeline is
-  reproducible offline.
-- **LLM analyst code path** (`agent/pythia/analyst.py`): Claude
-  Sonnet 4.6 via forced tool-use with a deterministic heuristic-v1
-  fallback. The LLM is the primary path when `ANTHROPIC_API_KEY` is set
-  in `.env`; the heuristic ships as a safety net for offline demos.
-- **TraceLog on-chain anchoring**: `trace.py` calls `TraceLog.publish(...)`
-  when `TRACE_LOG_ADDRESS` is set in `.env`. Trace receipts (tx hash,
-  block, contract address) are written back into the trace JSON and
-  surfaced as the "On-chain anchor" card on `/pick/[id]`.
-- **Wallet flow on `/pick/[id]`**: injected-wallet connect (wagmi v2 +
-  viem v2) → approve exact 0.10 USDC → `UnlockMarket.unlock(traceId)`
-  on Arc. Inline `DevUSDC.mint()` faucet for first-time visitors. Real
-  USDC moves to the treasury on each unlock.
-- **Server-side SIWE paywall.** `/api/traces/[id]/full` requires a
-  SIWE-signed message bound to `(traceId, wallet)` plus a fresh
-  on-chain `UnlockMarket.isUnlocked(traceId, wallet)` check before
-  returning the paid reasoning payload. The home page and
-  `/pick/[id]` SSR HTML never carry `trace.full`, and the public
-  picks bundle in `web/data/picks-preview.json` is preview-only —
-  view-source no longer bypasses the gate.
-- **Vercel deploy live** at <https://agoraalpha.vercel.app>. Home, pick
-  feed, and pick-detail pages all serve.
-- **builderCode threaded** into copy-trade URLs: `to_full()` emits
-  `copy_trade_url` with `?builderCode=…` so the paid CTA carries the
-  attribution string.
-- **Preview / full data-model split**: `preview.py` projects every trace
-  into a free `preview` payload and a paid `full` payload; the split is
-  enforced at the source-of-truth level, not bolted on at render time.
+- **Arc contracts exist on testnet** for the current demo stack:
+  `PythiaVault`, `TraceLog`, `UnlockMarket`, and `DevUSDC`. Addresses live in
+  the README Deployments table.
+- **`UnlockMarket` is hardened for the demo path.** It now requires registered
+  trace IDs, supports owner-only batch registration, updates state before token
+  transfer, uses a simple `nonReentrant` guard, and wraps `transferFrom` with an
+  internal SafeERC20-style low-level call.
+- **Agent loop is wired end to end**: Scout -> Analyst -> PM -> Publisher ->
+  Trace. The final public feed must be produced by
+  `python -m pythia.scripts.publish_live_feed`, which refuses fixture data,
+  heuristic analyses, duplicate markets, and local-only traces.
+- **Preview/full split is structural.** `web/data/picks-preview.json` is the
+  public browser bundle. Full paid traces are loaded from
+  `web/data/picks-full.private.json` when present locally/server-side and are
+  excluded from the public submission zip.
+- **Server-side signed-message paywall.** `/api/traces/[id]/full` now issues a
+  short-lived nonce with `GET`, requires the wallet to sign the exact
+  host/trace/address/chain/contract/nonce message, checks
+  `UnlockMarket.isUnlocked(traceId, wallet)` on Arc, then consumes the nonce
+  before returning the private full payload.
+- **RPC proxy has guardrails.** `/api/rpc` is read-only allowlisted, caps body
+  size and batch size, and has lightweight in-memory per-IP rate limiting.
+- **Wallet flow uses DevUSDC/testnet wording.** The UI no longer presents the
+  demo unlock as production USDC.
+- **Polymarket attribution is worded as placeholder-only.** The app does not
+  claim builder-fee revenue until a registered V2 bytes32 builder code is
+  attached to actual orders.
 
-## Partially works
+## Final Release State
 
-- **builderCode is a URL query parameter**, not a bytes32 attached
-  to V2 CLOB orders. Polymarket attributes order-level fees via the
-  `builderCode` field on the official `py-clob-client-v2` SDK; the URL
-  form is a placeholder until the bytes32 builder code is registered
-  in Polymarket's builder portal. The publisher's
-  `copy_trade_url` helper is structured so the registered bytes32
-  form drops in with a one-line change.
-- **Trace hashes are sha256, not CIDv1.** The on-chain field stored
-  by `TraceLog` is named `ipfsCid` and is forward-compatible (string
-  bytes), but the value written today is a local sha256 of the
-  canonical trace JSON. Once IPFS/Irys pinning lands, the CIDv1 string
-  drops into the same field with no migration.
-- **LLM analyst requires `ANTHROPIC_API_KEY`** in `.env` to activate.
-  Without it, the deterministic heuristic is the live runtime path
-  (and is calibrated never to over-claim confidence > 6000 bps).
-- **`sources` and `risk_factors`** in the paid `full` payload are
-  derived from the analyst's own `ReasoningStep` items
-  (`kind == "risk"`) plus the canonical Polymarket market URL. Live
-  ingestion from external sources (news, Cambrian, etc.) is
-  post-submission work.
+- **Top-3 final gate passed on 2026-05-23.** The public feed now has 8 unique
+  live Polymarket traces, all generated by `claude-sonnet-4-6`, all anchored on
+  Arc, and none sourced from fixture data.
+- **Replacement `UnlockMarket` deployed and registered.** The current
+  `UnlockMarket` at `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` registers
+  trace IDs `9,10,11,12,13,14,15,16`. On-chain reads confirmed those IDs return
+  `true` for `traceExists`, while trace `999` returns `false`.
+- **Production smoke passed.** The production alias
+  `https://agoraalpha.vercel.app` serves 8 public picks, `/pick/16` returns
+  200, `/pick/1` returns 404, SSR HTML contains no full payload JSON fields,
+  `/api/rpc` rejects writes/oversized bodies/oversized batches, and a CLI
+  wallet-equivalent flow successfully minted DevUSDC, approved exact unlock
+  price, unlocked trace `16`, signed the nonce-bound message, fetched the full
+  payload, and then received `nonce-used` on replay.
 
-## Does not yet work
+## Partially Works
 
-- **EIP-3009 gasless unlock.** `DevUSDC` ships
-  `transferWithAuthorization` + `cancelAuthorization` + an EIP-712
-  domain — the primitives are in place — but `UnlockMarket.unlock()`
-  calls plain `transferFrom`. Wiring the gasless authorization path
-  through the unlock flow is post-submission work.
-- **CCTP revenue bridge.** The README references Circle CCTP for
-  bridging accrued builder fees Polygon → Arc. The integration is
-  planned, not wired.
-- **`PythiaVault.recordTrade` resolver close-out.**
-  `agent/pythia/resolver.py` does not exist. Paper PnL is computed and
-  written into the trace JSON when the publisher decides; the on-chain
-  `recordTrade` call from a resolved market is post-submission.
-- **Telegram broadcast at scale.** `pythia-bot broadcast …` works on a
-  single trace JSON, but there is no production channel or scheduled
-  broadcast loop. The pitch video uses a manual broadcast against a
-  dev channel.
-- **`UnlockMarket` hardening for mainnet.** The contract is testnet-only
-  by intent: no `nonReentrant` modifier, no registry against `TraceLog`
-  for trace-id existence, no per-trace price ceiling. Mainnet readiness
-  requires both, plus an external review pass.
+- **Trace hashes are sha256 today, not pinned CIDv1.** `TraceLog` keeps the
+  historical `ipfsCid` field name for forward compatibility, but current
+  payloads are private/local full JSON plus Arc hash anchoring. IPFS/Irys
+  pinning is planned.
+- **LLM analyst requires `ANTHROPIC_API_KEY`.** Without it, the deterministic
+  heuristic path is available for local development only and must not be used
+  for the final public feed.
+- **Source bundles are market-data first.** Live traces include model,
+  Polymarket market data, and resolution text. Broader news/sentiment/source
+  credibility ingestion remains post-submission work.
+- **Rate limiting is in-memory.** It is useful for a demo server instance, but
+  durable production rate limiting should use Vercel/Upstash or another shared
+  store.
 
-## Why "partially works" is the right framing
+## Does Not Yet Work
 
-Every item in *Works today* runs in production against the live Arc
-deployment. Every item in *Partially works* ships real on-chain
-behaviour but a meaningful capability is conceded (visual gate, URL
-param vs. bytes32, sha256 vs. pinned CID). Items in *Does not yet
-work* are tracked as post-submission deliverables and explicitly *not*
-claimed as shipping in the pitch video or README scoring table.
+- **Circle Wallets / App Kit / Gateway / Paymaster / CCTP.** The shipping buyer
+  flow uses injected wallets through wagmi/viem. Those Circle products remain
+  planned integrations.
+- **`PythiaVault.recordTrade` resolver close-out.** `agent/pythia/resolver.py`
+  does not exist yet. Paper PnL close-out after market resolution is planned.
+- **Production Polymarket builder attribution.** Current links are
+  recommendation deep-links. Production fee attribution requires the official
+  V2 order object to include the registered bytes32 `builderCode`.
+- **Durable private storage.** The private full snapshot is a server-side file
+  for the hackathon deploy path. Production should move paid traces to Vercel
+  Blob, S3, Supabase private tables, or encrypted object storage.
 
-## Repo conventions
+## Verification Run Before Packaging
 
-**Public-repo trace files are demo fixtures, not the production
-paywall surface.** `traces/trace-*.json` and `web/data/picks-full.json`
-are committed to the public repo so judges can reproduce the agent
-loop and the preview/full data-model split end-to-end. They are also
-what `pythia-loop --once --mock` reads when running offline.
+```bash
+cd agent && uv run python -m unittest discover -s tests
+# 12 tests passed
 
-Production paid-content access goes through `/api/traces/[id]/full`,
-which enforces SIWE + on-chain `UnlockMarket.isUnlocked(traceId, wallet)`
-before returning the full payload (see *Works today* → "Server-side
-SIWE paywall"). The deployed paywall route is the production gate;
-the git-tracked fixture files exist for reproducibility and narrative
-inspection, not for live access control.
+cd agent && uv run python -m pythia.scripts.validate_submission
+# submission data ok: 8 home markets, 8 private full traces
+
+cd web && pnpm exec tsc --noEmit && pnpm build
+# TypeScript and Next.js production build passed
+
+cd contracts && forge test -vvv
+# 42 tests passed
+
+python3 scripts/package_submission.py
+# creates submission.zip only after validation passes
+```

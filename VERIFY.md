@@ -1,11 +1,48 @@
 # Pythia Agora Alpha — Master Deploy Verification Prompt
 
+## Release evidence — 2026-05-23
+
+Final local and production checks passed before creating `submission.zip`:
+
+```text
+agent:     uv run python -m unittest discover -s tests
+           12 tests passed
+
+agent:     uv run python -m pythia.scripts.validate_submission
+           submission data ok: 8 home markets, 8 private full traces
+
+web:       pnpm exec tsc --noEmit
+           passed
+
+web:       pnpm build
+           Next.js production build passed
+
+contracts: forge test -vvv
+           42 tests passed
+
+live:      https://agoraalpha.vercel.app
+           / returned 200 with 8 pick links and security headers
+           /pick/16 returned 200
+           /pick/1 returned 404
+           SSR HTML had 0 occurrences of full-payload JSON keys, private snapshot names, or fixture source markers
+           /api/rpc rejected eth_sendRawTransaction with 403
+           /api/rpc rejected oversized body with 413
+           /api/rpc rejected 11-call batch with 400
+           /api/traces/16/full rejected missing fields with 400
+           CLI wallet-equivalent flow minted DevUSDC, approved 0.10, unlocked registered trace 16,
+           signed a nonce-bound message, fetched full payload with 200, and rejected replay with nonce-used
+
+onchain:   UnlockMarket 0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA
+           traceExists(9..16) = true
+           traceExists(999) = false
+```
+
 You are a senior QA engineer auditing the production deploy. Be exhaustive. Be skeptical. Cite file:line for every finding.
 
 ## Target
 - **Live URL**: `https://agoraalpha.vercel.app` (override with first argument if the user passes a different URL)
 - **Repo**: `/Users/Shared/pythia` (web app under `web/`)
-- **Stack**: Next.js 16 App Router · React 19 · Tailwind v4 · static + 30s ISR · server routes: `/api/rpc` (Arc proxy) and `/api/traces/[id]/full` (SIWE-gated paywall fetch)
+- **Stack**: Next.js 16 App Router · React 19 · Tailwind v4 · static + 30s ISR · server routes: `/api/rpc` (Arc proxy) and `/api/traces/[id]/full` (wallet-signature-gated paywall fetch)
 
 ## Required tools
 - **Chrome DevTools MCP** — primary browser (`navigate_page`, `take_snapshot`, `list_console_messages`, `list_network_requests`, `lighthouse_audit`, `take_screenshot`, `resize_page`, `evaluate_script`)
@@ -37,13 +74,13 @@ Execute Phase 1 → Phase 12 in order. Keep a running scratchpad of findings. Pr
 - [ ] Click logo "Agora / ALPHA" → lands on `/`.
 - [ ] Click "Picks" → `/`.
 - [ ] "Hackathon ↗" link: `href = https://agora.thecanteenapp.com/`, `target=_blank`, `rel` contains `noopener`. Reach the external URL with `curl -sIL` → final status 200.
-- [ ] Grep `web/components/header.tsx` and any layout for nav links; confirm **no** dead routes (e.g., `/leaderboard` was removed in `e6d521e` — verify it's gone).
+- [ ] Grep `web/components/header.tsx` and any layout for nav links; confirm **no** dead routes.
 
 ### Phase 4 — Functional flows
 - [ ] Click the first pick card on `/` → routes to `/pick/{trace_id}`.
 - [ ] On the detail page:
   - "← back to picks" link returns to `/`.
-  - "Unlock 0.10 USDC" button is wired: connect-wallet opens an injected-wallet picker; on Arc (chain `5042002`) the button approves exact 0.10 USDC and calls `UnlockMarket.unlock(traceId)`. Verify the call lands by checking the on-chain anchor card refreshes. **DO** flag any stale date copy adjacent to the button.
+  - "Unlock 0.10 DevUSDC" button is wired: connect-wallet opens an injected-wallet picker; on Arc (chain `5042002`) the button approves exact 0.10 USDC and calls `UnlockMarket.unlock(traceId)`. Verify the call lands by checking the on-chain anchor card refreshes. **DO** flag any stale date copy adjacent to the button.
   - Arc trace hash element exposes the full hash via `title` (hover tooltip).
   - Every external link (`docs.arc.network`, etc.) opens in a new tab with `rel=noopener`.
 
@@ -93,27 +130,23 @@ Use `resize_page` and take a screenshot at each:
 - [ ] `x-content-type-options: nosniff` present.
 - [ ] `referrer-policy` set to `strict-origin-when-cross-origin` or stricter.
 - [ ] `x-frame-options: DENY` OR CSP `frame-ancestors 'none'`.
-- [ ] CSP — currently **absent**. Flag as gap, do not add in this pass.
+- [ ] CSP — confirm the minimal policy from `next.config.ts` is present.
 
 ### Phase 12 — Code-level audit
 - [ ] `cd web && npx tsc --noEmit` — zero errors.
 - [ ] `cd web && npm run build` — succeeds; note bundle sizes.
-- [ ] `grep -rn "TODO\|FIXME\|XXX" web/` — list findings.
+- [ ] Search web source for unfinished-code sentinels and list findings.
 - [ ] `grep -rn "console\.log" web/` — none in production code.
 - [ ] Unused-export sweep: any export in `web/lib/**` and `web/components/**` with zero importers — list them.
-- [ ] Hardcoded dates in source (e.g., "May 16", year literals in copy) — list each.
+- [ ] Hardcoded dates in source — list each.
 
 ---
 
-## Known issues — confirmed at writing time
+## Known issues — recheck before reporting
 
-Resolve these first, before phase work:
-
-| # | Location | Issue | Required action |
-|---|----------|-------|-----------------|
-| 1 | `web/lib/traces.ts:135` | `fmtUsdc()` exported, zero importers | **AUTO-FIX**: delete the function (re-confirm zero importers with `grep -rn "fmtUsdc" web/` first) |
-| 2 | `web/app/pick/[traceId]/page.tsx:133` | Hardcoded "Day 4 (May 16)" — date is past | **AUTO-FIX**: replace with non-dated copy (suggested: `"Wallet flow lands soon"`) — preserve the visual style of the surrounding `<span>` |
-| 3 | `web/components/header.tsx:15` | Hardcoded `v0.3` badge with no source of truth | **ASK FIRST**: propose either (a) import `version` from `package.json` and render, or (b) remove the badge. Don't pick unilaterally. |
+The previous dead export, stale dated badge, and hardcoded version badge were
+removed before this prompt was refreshed. Reconfirm they remain absent during
+Phase 12, then report any new findings from the current tree.
 
 ## Fix protocol
 - **Auto-fix without asking**: dead exports, unused imports, stale hardcoded dates that have already passed, missing `rel=noopener`, missing `aria-hidden` on decorative SVGs, obvious typos in non-product copy.

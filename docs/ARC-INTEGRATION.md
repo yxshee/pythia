@@ -17,27 +17,27 @@
 | Contract | Purpose | Source |
 |---|---|---|
 | `PythiaVault` | Paper-portfolio track-record vault (operator-gated; outsiders cannot pool USDC) | `contracts/src/PythiaVault.sol` |
-| `TraceLog` | Authorized event emitter for IPFS-pinned reasoning traces | `contracts/src/TraceLog.sol` |
+| `TraceLog` | Authorized event emitter for reasoning-trace content hashes | `contracts/src/TraceLog.sol` |
 | `UnlockMarket` | Pay-per-unlock for full reasoning traces (USDC on Arc) | `contracts/src/UnlockMarket.sol` |
 
-Tests: `cd contracts && forge test` (39/39 passing).
+Tests: `cd contracts && forge test` (42/42 passing).
 
 ### UnlockMarket flow
 
 ```
-+----------+  approve N USDC   +-------------+
++----------+  approve N test USDC +-------------+
 |  Buyer   | ----------------> |    USDC     |
 | (web app)|                   +-------------+
 |          |
-|          |  unlock(traceId)  +---------------+   USDC    +----------+
+|          |  unlock(traceId)  +---------------+ DevUSDC   +----------+
 |          | ----------------> | UnlockMarket  | --------> | Treasury |
 +----------+                   |   (Arc)       |           +----------+
      |                         |               |
      |  isUnlocked?            +---------------+
-     | <--------- gated `full` payload from IPFS via the web API
+     | <--------- gated private `full` payload via the web API
 ```
 
-Pricing has two tiers - a flat `defaultPrice` and an optional per-trace override. Default at deploy is `0.10 USDC` (100_000 in 6-decimal base units), overridable via `UNLOCK_DEFAULT_PRICE` env. The web app reads `priceFor(traceId)` to show the price in the unlock CTA, then watches for the `Unlocked` event before serving the full trace.
+Pricing has two tiers - a flat `defaultPrice` and an optional per-trace override. Default at deploy is `0.10` in 6-decimal USDC-style base units, overridable via `UNLOCK_DEFAULT_PRICE` env. The current hackathon deploy uses `DevUSDC` on Arc testnet. `UnlockMarket` only unlocks owner-registered trace IDs, so users cannot pay for content the API cannot serve. The web app reads `priceFor(traceId)` to show the price in the unlock CTA, then verifies `isUnlocked(traceId, buyer)` before serving the full trace.
 
 ## Deployment
 
@@ -60,7 +60,7 @@ forge script script/Deploy.s.sol \
     --skip-simulation
 ```
 
-If `USDC_ADDRESS_ARC` is unset, `Deploy.s.sol` will spin up a `_DevUSDC` and use that. This is fine for the very first deploy while the real USDC address is pending; subsequent deploys should point to canonical USDC.
+If `USDC_ADDRESS_ARC` is unset, `Deploy.s.sol` will spin up a `_DevUSDC` and use that. This is fine for the hackathon deploy while the canonical Arc USDC address is pending; subsequent deploys should point to canonical USDC.
 
 After the script runs, copy the printed addresses into `.env`:
 
@@ -74,10 +74,10 @@ USDC_ADDRESS_ARC=0x...
 
 | Product | Where | Notes |
 |---|---|---|
-| USDC | `PythiaVault.asset` + `UnlockMarket.usdc` | Denomination for paper PnL accounting *and* the actual unlock payment. |
-| Wallets | operator + buyer EOAs | Dev-controlled wallet for the agent; user EOAs for unlocks (wagmi/viem on the web side). |
+| USDC | `PythiaVault.asset` + `UnlockMarket.usdc` | USDC-denominated accounting. The current demo token is open-mint `DevUSDC` on Arc testnet; production uses canonical Circle USDC. |
+| Wallets | operator + buyer EOAs | Dev-controlled wallet for the agent; user EOAs for unlocks (wagmi/viem on the web side). Circle Wallets are planned, not shipped. |
 | Contracts | `PythiaVault`, `TraceLog`, `UnlockMarket` | Three Arc-native deployments. |
-| App Kit | Connect Wallet + unlock UX | Drop-in components for the buyer flow on the web app (wired today via wagmi + viem; App Kit drop-in is post-submission). |
+| App Kit | Planned | Arc App Kit can provide Send, Bridge, Swap, and Unified Balance flows; the current buyer flow is hand-wired via wagmi + viem. |
 | CCTP | Planned (post-submission) | Bridge accrued unlock revenue from Arc to other chains; revenue-flow demo only. |
 | Paymaster | Stretch | Public Paymaster page does not list Arc; Arc already uses USDC as gas natively, so this is mostly redundant. |
 | USYC | Stretch | Requires allowlist + $100k institutional minimum; out of MVP scope. |
