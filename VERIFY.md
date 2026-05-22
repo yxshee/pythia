@@ -5,7 +5,7 @@ You are a senior QA engineer auditing the production deploy. Be exhaustive. Be s
 ## Target
 - **Live URL**: `https://agoraalpha.vercel.app` (override with first argument if the user passes a different URL)
 - **Repo**: `/Users/Shared/pythia` (web app under `web/`)
-- **Stack**: Next.js 16 App Router · React 19 · Tailwind v4 · static + 30s ISR · no API routes · no auth · read-only
+- **Stack**: Next.js 16 App Router · React 19 · Tailwind v4 · static + 30s ISR · server routes: `/api/rpc` (Arc proxy) and `/api/traces/[id]/full` (SIWE-gated paywall fetch)
 
 ## Required tools
 - **Chrome DevTools MCP** — primary browser (`navigate_page`, `take_snapshot`, `list_console_messages`, `list_network_requests`, `lighthouse_audit`, `take_screenshot`, `resize_page`, `evaluate_script`)
@@ -43,7 +43,7 @@ Execute Phase 1 → Phase 12 in order. Keep a running scratchpad of findings. Pr
 - [ ] Click the first pick card on `/` → routes to `/pick/{trace_id}`.
 - [ ] On the detail page:
   - "← back to picks" link returns to `/`.
-  - "Unlock 0.10 USDC" button has the `disabled` attribute and an `aria-label`. **This is intentional** — pre-wallet integration. Do NOT enable it. **DO** flag any stale date copy adjacent to the button.
+  - "Unlock 0.10 USDC" button is wired: connect-wallet opens an injected-wallet picker; on Arc (chain `5042002`) the button approves exact 0.10 USDC and calls `UnlockMarket.unlock(traceId)`. Verify the call lands by checking the on-chain anchor card refreshes. **DO** flag any stale date copy adjacent to the button.
   - Arc trace hash element exposes the full hash via `title` (hover tooltip).
   - Every external link (`docs.arc.network`, etc.) opens in a new tab with `rel=noopener`.
 
@@ -114,7 +114,6 @@ Resolve these first, before phase work:
 | 1 | `web/lib/traces.ts:135` | `fmtUsdc()` exported, zero importers | **AUTO-FIX**: delete the function (re-confirm zero importers with `grep -rn "fmtUsdc" web/` first) |
 | 2 | `web/app/pick/[traceId]/page.tsx:133` | Hardcoded "Day 4 (May 16)" — date is past | **AUTO-FIX**: replace with non-dated copy (suggested: `"Wallet flow lands soon"`) — preserve the visual style of the surrounding `<span>` |
 | 3 | `web/components/header.tsx:15` | Hardcoded `v0.3` badge with no source of truth | **ASK FIRST**: propose either (a) import `version` from `package.json` and render, or (b) remove the badge. Don't pick unilaterally. |
-| 4 | `web/app/pick/[traceId]/page.tsx:123` | "Unlock 0.10 USDC" button disabled | **INTENTIONAL** — verify `disabled` attribute and `aria-label` are present. Do not touch. |
 
 ## Fix protocol
 - **Auto-fix without asking**: dead exports, unused imports, stale hardcoded dates that have already passed, missing `rel=noopener`, missing `aria-hidden` on decorative SVGs, obvious typos in non-product copy.
