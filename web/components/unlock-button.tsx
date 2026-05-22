@@ -192,10 +192,15 @@ export function UnlockButton({ traceId }: Props) {
     setFetchError(null);
     try {
       const issued = new Date().toISOString();
+      // Keep the literal `address:` lowercase to match the server's
+      // lowercased haystack in messageMatchesContext (see route.ts).
+      // The server lowercases the whole message before comparing, so
+      // either case works at runtime — but lock-stepping the source
+      // makes the contract obvious to a future reader.
       const message =
         "agoraalpha.vercel.app — unlock trace\n" +
         `Trace ID: ${traceId}\n` +
-        `Address: ${address.toLowerCase()}\n` +
+        `address: ${address.toLowerCase()}\n` +
         `Issued: ${issued}`;
       const signature = await signMessageAsync({ message });
       const res = await fetch(`/api/traces/${traceId}/full`, {
