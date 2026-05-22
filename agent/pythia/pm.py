@@ -80,13 +80,22 @@ class PortfolioManager:
         return (r.confidence_bps / 10_000.0) * abs(r.edge_bps)
 
     def _size(self, r: AnalystReport) -> float:
-        """Linear sizing in confidence; capped by max position env."""
+        """Linear sizing in confidence; capped by max position env and market depth."""
         # 3500 bps (35%) is a deliberately low confidence floor; below this we skip.
         if r.confidence_bps < 3500:
             return 0.0
+        # Edge floor: under 200 bps the round-trip slippage eats the edge.
+        # Mirrors the analyst's HOLD discipline; backstop for any BUY that
+        # slipped past with thin edge.
+        if abs(r.edge_bps) < 200:
+            return 0.0
         confidence = r.confidence_bps / 10_000.0
         max_pos = self._settings.pythia_max_position_usdc
-        return round(max_pos * confidence, 2)
+        # Never take more than 10 bps of available market depth. When the
+        # analyst report predates the liquidity_usd field (default 0.0), fall
+        # back to the env cap so the loop still publishes against fixtures.
+        liq_cap = r.liquidity_usd * 0.001 if r.liquidity_usd > 0 else max_pos
+        return round(min(max_pos * confidence, liq_cap), 2)
 
     def _maybe_roll_day(self) -> None:
         today = date.today()

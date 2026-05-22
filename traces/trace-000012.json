@@ -1,0 +1,157 @@
+{
+  "analyst": {
+    "confidence_bps": 6500,
+    "decision": "BUY_NO",
+    "edge_bps": -1600,
+    "fair_price_yes": 0.72,
+    "generated_at": "2026-05-22T13:01:28+00:00",
+    "liquidity_usd": 185000.0,
+    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "model": "claude-sonnet-4-6",
+    "question": "Will ETH close above $4,000 on May 31, 2026?",
+    "reasoning": [
+      {
+        "kind": "observation",
+        "text": "Market prices YES at 0.880, implying an 88% probability ETH closes \u2265 $4,000 on May 31, 2026. Liquidity is $185,000 and 24h volume is $412,400 \u2014 well above the $25k minimum threshold, so slippage is manageable."
+      },
+      {
+        "kind": "observation",
+        "text": "As of May 2026, ETH has been trading in a broad range roughly between $2,800 and $4,200 over the past several months. While ETH has seen notable rallies in 2025-2026 on macro tailwinds and ETF inflows, it has not decisively sustained levels above $4,000 for extended periods. Current spot is estimated near $3,600\u2013$3,800 based on recent trajectory."
+      },
+      {
+        "kind": "inference",
+        "text": "For ETH to close above $4,000 on May 31 specifically requires a ~5\u201310% move from current levels (assuming ~$3,700 spot). While plausible in a bullish crypto environment, the single-day close requirement on the final day of the month adds idiosyncratic risk \u2014 month-end rebalancing and profit-taking can introduce volatility in either direction."
+      },
+      {
+        "kind": "comparison",
+        "text": "An 88% YES probability implies roughly 7:1 odds in favor. Historical volatility for ETH over a 2\u20134 week horizon typically implies a wide distribution of outcomes. A 28% probability of being below $4,000 by month-end seems more reasonable given current price levels and ETH's well-documented volatility (30-day realized vol ~55\u201365% annualized), suggesting the true probability is closer to 70\u201375% YES."
+      },
+      {
+        "kind": "risk",
+        "text": "Key upside risks to the NO thesis: a broad crypto market breakout (BTC above $110k could drag ETH higher), favorable macro data, or a major ETH-specific catalyst (e.g., protocol upgrade, ETF news). If ETH is already trading near or above $4,000 at the time of analysis, the YES price would be more justified."
+      },
+      {
+        "kind": "conclusion",
+        "text": "Fair value for YES is ~0.72. The market is pricing YES at 0.88 \u2014 a ~16 percentage point overpricing. Edge on BUY_NO is approximately 1600 bps before slippage, well above the 200 bps minimum. With strong liquidity and a clear mispricing thesis, BUY_NO is the play. NO is currently priced at 0.120; fair value is ~0.28, representing ~2.3x the current price."
+      }
+    ]
+  },
+  "builder_code": "pythia",
+  "full": {
+    "agent_probability_yes": 0.72,
+    "confidence": "high",
+    "copy_trade_url": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=no",
+    "current_implied_yes": 0.88,
+    "decision": "BUY_NO",
+    "edge_bps": -1600,
+    "end_date_iso": "2026-05-31T23:59:59Z",
+    "expected_value_pct": 133.333,
+    "generated_at": "2026-05-22T13:01:28+00:00",
+    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "market_liquidity_usd": 185000.0,
+    "market_url": "https://polymarket.com/event/eth-above-4000-may-31",
+    "market_volume_24h_usd": 412400.0,
+    "model": "claude-sonnet-4-6",
+    "question": "Will ETH close above $4,000 on May 31, 2026?",
+    "reasoning": [
+      {
+        "kind": "observation",
+        "text": "Market prices YES at 0.880, implying an 88% probability ETH closes \u2265 $4,000 on May 31, 2026. Liquidity is $185,000 and 24h volume is $412,400 \u2014 well above the $25k minimum threshold, so slippage is manageable."
+      },
+      {
+        "kind": "observation",
+        "text": "As of May 2026, ETH has been trading in a broad range roughly between $2,800 and $4,200 over the past several months. While ETH has seen notable rallies in 2025-2026 on macro tailwinds and ETF inflows, it has not decisively sustained levels above $4,000 for extended periods. Current spot is estimated near $3,600\u2013$3,800 based on recent trajectory."
+      },
+      {
+        "kind": "inference",
+        "text": "For ETH to close above $4,000 on May 31 specifically requires a ~5\u201310% move from current levels (assuming ~$3,700 spot). While plausible in a bullish crypto environment, the single-day close requirement on the final day of the month adds idiosyncratic risk \u2014 month-end rebalancing and profit-taking can introduce volatility in either direction."
+      },
+      {
+        "kind": "comparison",
+        "text": "An 88% YES probability implies roughly 7:1 odds in favor. Historical volatility for ETH over a 2\u20134 week horizon typically implies a wide distribution of outcomes. A 28% probability of being below $4,000 by month-end seems more reasonable given current price levels and ETH's well-documented volatility (30-day realized vol ~55\u201365% annualized), suggesting the true probability is closer to 70\u201375% YES."
+      },
+      {
+        "kind": "risk",
+        "text": "Key upside risks to the NO thesis: a broad crypto market breakout (BTC above $110k could drag ETH higher), favorable macro data, or a major ETH-specific catalyst (e.g., protocol upgrade, ETF news). If ETH is already trading near or above $4,000 at the time of analysis, the YES price would be more justified."
+      },
+      {
+        "kind": "conclusion",
+        "text": "Fair value for YES is ~0.72. The market is pricing YES at 0.88 \u2014 a ~16 percentage point overpricing. Edge on BUY_NO is approximately 1600 bps before slippage, well above the 200 bps minimum. With strong liquidity and a clear mispricing thesis, BUY_NO is the play. NO is currently priced at 0.120; fair value is ~0.28, representing ~2.3x the current price."
+      }
+    ],
+    "risk": "balanced",
+    "risk_factors": [
+      "Key upside risks to the NO thesis: a broad crypto market breakout (BTC above $110k could drag ETH higher), favorable macro data, or a major ETH-specific catalyst (e.g., protocol upgrade, ETF news). If ETH is already trading near or above $4,000 at the time of analysis, the YES price would be more justified."
+    ],
+    "sources": [
+      {
+        "kind": "model",
+        "name": "claude-sonnet-4-6"
+      },
+      {
+        "kind": "market",
+        "name": "Polymarket",
+        "url": "https://polymarket.com/event/eth-above-4000-may-31"
+      }
+    ],
+    "suggested_size_by_profile": {
+      "aggressive": 52.0,
+      "balanced": 32.5,
+      "conservative": 13.0
+    },
+    "suggested_size_usdc": 32.5,
+    "trace_hash": "0x7d95b2f7808696d8f4e44bb15099a0eb890ff1d4ffd959d6f8d1af60e96346dd",
+    "trace_id": 12
+  },
+  "generated_at": "2026-05-22T13:02:16+00:00",
+  "model": "claude-sonnet-4-6",
+  "onchain": {
+    "block_number": 43512467,
+    "chain_id": 5042002,
+    "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
+    "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
+    "trace_id": 10,
+    "tx_hash": "0x481a7e582b85fc1c09a54ffb760cd9a4f63ca9faedc65f6a747b16e27651b282"
+  },
+  "plan": {
+    "confidence_bps": 6500,
+    "decision": "BUY_NO",
+    "edge_bps": -1600,
+    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "parent_trace_id": 0,
+    "question": "Will ETH close above $4,000 on May 31, 2026?",
+    "size_usdc": 32.5
+  },
+  "preview": {
+    "agent_probability_yes": 0.72,
+    "confidence": "high",
+    "current_implied_yes": 0.88,
+    "decision": "BUY_NO",
+    "end_date_iso": "2026-05-31T23:59:59Z",
+    "generated_at": "2026-05-22T13:01:28+00:00",
+    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "model": "claude-sonnet-4-6",
+    "question": "Will ETH close above $4,000 on May 31, 2026?",
+    "risk": "balanced",
+    "trace_hash": "0x7d95b2f7808696d8f4e44bb15099a0eb890ff1d4ffd959d6f8d1af60e96346dd",
+    "trace_id": 12
+  },
+  "publication": {
+    "builder_code_link": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=no",
+    "error": null,
+    "fallback_link": "https://polymarket.com/event/eth-above-4000-may-31",
+    "plan": {
+      "confidence_bps": 6500,
+      "decision": "BUY_NO",
+      "edge_bps": -1600,
+      "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "parent_trace_id": 0,
+      "question": "Will ETH close above $4,000 on May 31, 2026?",
+      "size_usdc": 32.5
+    },
+    "published": true
+  },
+  "theme": "crypto",
+  "trace_id": 12,
+  "vault": null
+}

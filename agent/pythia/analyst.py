@@ -42,6 +42,10 @@ class AnalystReport:
     reasoning: list[ReasoningStep] = field(default_factory=list)
     model: str = ""
     generated_at: str = ""
+    # Market depth at scoring time. Default-valued for backwards-compat with
+    # any AnalystReport instantiated before this field landed; PM sizing reads
+    # it to cap position size at 10 bps of available depth.
+    liquidity_usd: float = 0.0
 
     def summary(self) -> str:
         return (
@@ -146,6 +150,7 @@ class Analyst:
             reasoning=steps,
             model="heuristic-v1-placeholder",
             generated_at=_now(),
+            liquidity_usd=market.liquidity_usd,
         )
 
     # ------------------------------------------------------------------
@@ -163,6 +168,8 @@ class Analyst:
         here because we publish paper picks, not execute trades.
         """
         system_prompt = (
+            "Today is May 2026. Reason about market conditions as they exist NOW; "
+            "do not reference 'as of early 2025' or 'mid-2025'.\n\n"
             "You are Pythia, a prediction-market analyst. Your job: score one market "
             "for +EV and explain your reasoning concisely.\n\n"
             "Discipline:\n"
@@ -254,16 +261,54 @@ class Analyst:
         fair = max(0.01, min(0.99, float(payload["fair_price_yes"])))
         edge_bps = int(round((fair - market.yes_price) * 10_000))
         steps = [ReasoningStep(kind=s["kind"], text=s["text"]) for s in payload["reasoning"]]
+        decision: DecisionLabel = payload["decision"]
+
+        # Post-LLM validation gates. Cheap belt-and-braces against Claude
+        # returning a BUY with thin edge or low liquidity. The heuristic
+        # fallback enforces the same thresholds; mirror them here so the
+        # LLM and the safety net agree.
+        if decision == "BUY_YES" and edge_bps < 200:
+            log.warning(
+                "analyst.flipped_to_hold",
+                reason="edge_below_200_bps",
+                market_id=market.market_id,
+                orig_decision=decision,
+                edge_bps=edge_bps,
+                liquidity=market.liquidity_usd,
+            )
+            decision = "HOLD"
+        elif decision == "BUY_NO" and edge_bps > -200:
+            log.warning(
+                "analyst.flipped_to_hold",
+                reason="edge_above_neg_200_bps",
+                market_id=market.market_id,
+                orig_decision=decision,
+                edge_bps=edge_bps,
+                liquidity=market.liquidity_usd,
+            )
+            decision = "HOLD"
+        if decision != "HOLD" and market.liquidity_usd < 25_000:
+            log.warning(
+                "analyst.flipped_to_hold",
+                reason="liquidity_below_25k",
+                market_id=market.market_id,
+                orig_decision=decision,
+                edge_bps=edge_bps,
+                liquidity=market.liquidity_usd,
+            )
+            decision = "HOLD"
+
         return AnalystReport(
             market_id=market.market_id,
             question=market.question,
-            decision=payload["decision"],
+            decision=decision,
             confidence_bps=max(0, min(10_000, int(payload["confidence_bps"]))),
             fair_price_yes=fair,
             edge_bps=edge_bps,
             reasoning=steps,
             model=self._model,
             generated_at=_now(),
+            liquidity_usd=market.liquidity_usd,
         )
 
 
@@ -278,6 +323,7 @@ def _hold(market: MarketCandidate, fair: float, steps: list[ReasoningStep]) -> A
         reasoning=steps,
         model="heuristic-v1-placeholder",
         generated_at=_now(),
+        liquidity_usd=market.liquidity_usd,
     )
 
 
