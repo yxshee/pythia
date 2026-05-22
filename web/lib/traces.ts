@@ -201,6 +201,55 @@ export async function loadPickFull(
   return null;
 }
 
+/**
+ * Filter a raw `loadPicks()` result down to the home-feed view.
+ *
+ * The agent has run multiple times against the same Polymarket markets,
+ * so `traces/*.json` contains duplicate `market_id` entries (15 traces,
+ * 3 unique markets at the time of writing). The home page is the
+ * agent's traction surface — showing the same market 7 times misleads
+ * a visitor about coverage breadth.
+ *
+ * Rules, in order:
+ *  1. Drop heuristic-fallback picks. The home page leads with "AI
+ *     reasoning traces"; the heuristic is the deterministic safety
+ *     net, not an LLM analyst output.
+ *  2. Drop entries without an on-chain anchor. The home page claims
+ *     "every trace is hashed on Arc" — only anchored traces belong on
+ *     the public traction surface.
+ *  3. Group by `market_id`, keep the latest `generated_at` per market.
+ *  4. Sort newest-first by `generated_at`.
+ *
+ * `loadPick(id)` is intentionally unaffected — direct trace URLs still
+ * resolve for any trace id, including duplicates and heuristic outputs.
+ */
+export function filterHomeFeed(picks: Trace[]): Trace[] {
+  const eligible = picks.filter(
+    (t) =>
+      t.preview.model !== "heuristic-v1-placeholder" &&
+      typeof t.onchain?.tx_hash === "string" &&
+      t.onchain.tx_hash.length > 0,
+  );
+
+  const byMarket = new Map<string, Trace>();
+  for (const t of eligible) {
+    const prev = byMarket.get(t.preview.market_id);
+    if (
+      !prev ||
+      new Date(t.preview.generated_at).getTime() >
+        new Date(prev.preview.generated_at).getTime()
+    ) {
+      byMarket.set(t.preview.market_id, t);
+    }
+  }
+
+  return Array.from(byMarket.values()).sort(
+    (a, b) =>
+      new Date(b.preview.generated_at).getTime() -
+      new Date(a.preview.generated_at).getTime(),
+  );
+}
+
 export function shortHash(hash: string, head = 6, tail = 4): string {
   if (!hash) return "";
   if (hash.length <= head + tail + 1) return hash;
