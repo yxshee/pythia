@@ -2,27 +2,29 @@
 
 /**
  * Gated content card. Renders the full reasoning + sizing payload only
- * after the visitor has paid 0.10 USDC and the on-chain `isUnlocked`
- * read returns true.
+ * after the visitor has paid 0.10 USDC, the on-chain `isUnlocked` read
+ * returns true, AND the server has returned the full payload over the
+ * authenticated `/api/traces/[id]/full` route.
  *
- * Honest scope note: the gate is visual. The server-rendered HTML still
- * contains `trace.full` because the pick page is a server component that
- * pre-renders everything; we hide the content in the DOM tree based on
- * client wallet state. A cryptographic server-side paywall (SIWE-signed
- * fetch) is a v2 stretch — far more code, marginal demo gain.
+ * The server-rendered HTML on the public pick page carries preview +
+ * on-chain anchor only — never `trace.full`. UnlockButton signs a
+ * domain-bound message after the unlock tx confirms, posts it to the
+ * route, and feeds the response into this component via `full`. While
+ * the fetch is in flight (`isUnlocked && !full`), we render a skeleton.
  *
  * When `isUnlocked` is false this component returns null, so the home
  * page and the locked state of the pick page remain unaffected.
  */
-import type { Trace } from "@/lib/traces";
+import type { TraceFull } from "@/lib/traces";
 
 type Props = {
-  full: Trace["full"];
+  full: TraceFull | null | undefined;
   isUnlocked: boolean;
 };
 
 export function UnlockedContent({ full, isUnlocked }: Props) {
   if (!isUnlocked) return null;
+  if (!full) return <UnlockedSkeleton />;
 
   const sizing = full.suggested_size_by_profile;
   const evPct = full.expected_value_pct;
@@ -136,5 +138,43 @@ function SizeRow({ label, value }: { label: string; value: number }) {
         {value.toFixed(2)} <span className="text-[10px] text-ink-faint">USDC</span>
       </span>
     </div>
+  );
+}
+
+function UnlockedSkeleton() {
+  // Rendered after on-chain unlock confirms but before the server has
+  // returned the gated payload. Parchment-themed placeholder shapes; no
+  // animation library — pure CSS pulse via Tailwind.
+  return (
+    <section className="mt-10" aria-busy="true" aria-live="polite">
+      <div className="flex items-baseline justify-between border-b border-laurel/40 pb-3">
+        <h2 className="mono text-[12px] uppercase tracking-[0.32em] text-ink">Full trace</h2>
+        <span className="mono text-[10px] uppercase tracking-[0.22em] text-laurel">
+          Unlocked · fetching…
+        </span>
+      </div>
+
+      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {[0, 1, 2].map((i) => (
+          <div
+            key={i}
+            className="h-[88px] rounded-md border border-laurel/20 bg-marble/40"
+          >
+            <div className="h-3 w-20 rounded bg-ink/10 mt-4 ml-4 animate-pulse" />
+            <div className="h-6 w-24 rounded bg-ink/15 mt-3 ml-4 animate-pulse" />
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-8 space-y-3">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="h-4 w-full rounded bg-ink/10 animate-pulse" />
+        ))}
+      </div>
+
+      <p className="mt-6 mono text-[10px] uppercase tracking-[0.22em] text-ink-faint">
+        Signature + on-chain ownership verified. Loading reasoning…
+      </p>
+    </section>
   );
 }

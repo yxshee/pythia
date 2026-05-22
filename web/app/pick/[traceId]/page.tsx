@@ -142,7 +142,7 @@ export default async function PickPage({ params }: Props) {
             </section>
           )}
 
-          <UnlockButton traceId={p.trace_id} full={trace.full} />
+          <UnlockButton traceId={p.trace_id} />
         </article>
       </main>
     </>

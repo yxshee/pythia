@@ -15,22 +15,10 @@
  *   hydrates client-side after the Providers boundary mounts.
  */
 import { createConfig, http } from "wagmi";
-import { defineChain } from "viem";
 import { injected } from "wagmi/connectors";
+import { arc } from "./arc-chain";
 
-const chainId = Number(process.env.NEXT_PUBLIC_ARC_CHAIN_ID ?? 5042002);
-const explorerUrl =
-  process.env.NEXT_PUBLIC_ARC_EXPLORER_URL ?? "https://testnet.arcscan.app";
-
-export const arc = defineChain({
-  id: chainId,
-  name: "Arc Testnet",
-  network: "arc-testnet",
-  nativeCurrency: { name: "USDC", symbol: "USDC", decimals: 6 },
-  rpcUrls: { default: { http: [] } },
-  blockExplorers: { default: { name: "Arcscan", url: explorerUrl } },
-  testnet: true,
-});
+export { arc };
 
 export const wagmiConfig = createConfig({
   chains: [arc],
