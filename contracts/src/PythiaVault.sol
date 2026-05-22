@@ -257,7 +257,7 @@ contract PythiaVault {
 
     /// @notice Record the PnL of a settled off-chain trade.
     /// @param pnl Signed PnL in USDC base units. Positive = profit, negative = loss.
-    /// @param traceHash IPFS CIDv1 (multihash) of the reasoning trace as bytes32.
+    /// @param traceHash Content hash of the reasoning trace as bytes32.
     function recordTrade(int256 pnl, bytes32 traceHash) external onlyOperator {
         require(!paused, "PV: paused");
         if (pnl >= 0) {

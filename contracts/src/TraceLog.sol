@@ -3,9 +3,9 @@ pragma solidity ^0.8.24;
 
 /// @title TraceLog
 /// @notice On-chain anchor for off-chain reasoning traces. Each Pythia decision
-///         emits one event with the IPFS hash of the full reasoning trace plus
-///         a compact decision summary. The IPFS payload is the inspectable
-///         product; this contract is the verifiable, monotonic ledger.
+///         emits one event with the content hash of the private reasoning trace
+///         plus a compact decision summary. IPFS/Irys pinning is planned; this
+///         contract is the verifiable, monotonic ledger.
 /// @dev Cheap by design - sub-second Arc finality + ~$0.01 fees means publishing
 ///      a trace per decision does not erode strategy PnL.
 contract TraceLog {
@@ -34,7 +34,7 @@ contract TraceLog {
     /// @param decision Compact decision code.
     /// @param positionUsdc Size in USDC base units (0 for HOLD).
     /// @param confidenceBps Agent's stated confidence in basis points (0-10000).
-    /// @param ipfsCid IPFS CIDv1 (multihash) of the full reasoning trace payload.
+    /// @param ipfsCid Content hash today; CIDv1 once IPFS/Irys pinning is wired.
     /// @param parentTraceId 0 for new threads; otherwise the trace this follows up on (revisions, exits, etc.).
     event Trace(
         uint256 indexed traceId,
