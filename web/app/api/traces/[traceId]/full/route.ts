@@ -57,13 +57,15 @@ function messageMatchesContext(
   traceId: number,
   address: string,
 ): boolean {
-  const traceLine = `Trace ID: ${traceId}`;
-  const addressLine = `Address: ${address.toLowerCase()}`;
+  // We lowercase the haystack so that EIP-55 mixed-case addresses in
+  // the message body still match. Needles must therefore also be
+  // lowercase literals — historically `Address:` (capital A) was used
+  // here and silently never matched the lowercased haystack, so every
+  // valid signature 401'd with `message-context-mismatch`.
+  const traceLine = `trace id: ${traceId}`;
+  const addressLine = `address: ${address.toLowerCase()}`;
   const lower = message.toLowerCase();
-  return (
-    lower.includes(traceLine.toLowerCase()) &&
-    lower.includes(addressLine)
-  );
+  return lower.includes(traceLine) && lower.includes(addressLine);
 }
 
 export async function POST(
@@ -78,7 +80,10 @@ export async function POST(
 
   const { traceId: traceIdParam } = await ctx.params;
   const traceId = Number(traceIdParam);
-  if (!Number.isFinite(traceId) || traceId < 0) {
+  // trace_id counter starts at 1; reject 0 explicitly so that
+  // `priceFor(0)` (which silently returns defaultPrice) cannot be
+  // exploited to look up a phantom unlock against trace #0.
+  if (!Number.isFinite(traceId) || traceId <= 0) {
     return bad("invalid-trace-id");
   }
 
@@ -154,12 +159,20 @@ export async function POST(
   }
 
   // 5. Authorized. Load the full payload from the server-only bundle.
-  const full = await loadPickFull(traceId);
-  if (!full) {
+  //    `loadPickFull` returns the OUTER `Trace` wrapper (with .preview /
+  //    .full / .analyst / ...); the client only needs the inner
+  //    `TraceFull` and casts the body as `TraceFull`. Returning the
+  //    wrapper here made the client crash with
+  //    `Cannot read properties of undefined (reading 'toFixed')` because
+  //    fields like expected_value_pct sit on .full, not the wrapper.
+  //    We also guard `!trace.full` so a malformed snapshot 404s here
+  //    instead of leaking an empty body that crashes downstream.
+  const trace = await loadPickFull(traceId);
+  if (!trace || !trace.full) {
     return bad("trace-not-found", 404);
   }
 
-  return NextResponse.json(full, {
+  return NextResponse.json(trace.full, {
     headers: {
       // Don't let anyone (CDN, browser) cache the gated payload.
       "Cache-Control": "private, no-store, max-age=0",
