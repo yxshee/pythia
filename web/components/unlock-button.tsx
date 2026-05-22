@@ -37,7 +37,6 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
-import { injected } from "wagmi/connectors";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { arc } from "@/lib/wagmi-config";
@@ -98,7 +97,7 @@ export function UnlockButton({ traceId }: Props) {
   const chainId = useChainId();
   const onArc = chainId === arc.id;
 
-  const { connect, isPending: isConnecting, error: connectError } = useConnect();
+  const { connect, connectors, isPending: isConnecting, error: connectError } = useConnect();
   const { disconnect } = useDisconnect();
   const { switchChain, isPending: isSwitching, error: switchError } = useSwitchChain();
   const { signMessageAsync, isPending: isSigning } = useSignMessage();
@@ -274,7 +273,13 @@ export function UnlockButton({ traceId }: Props) {
       window.open("https://metamask.io/download", "_blank", "noopener,noreferrer");
       return;
     }
-    connect({ connector: injected({ shimDisconnect: true }) });
+    // Use the connector instance wagmi already registered in wagmiConfig.
+    // Constructing a fresh injected({...}) per click breaks wagmi v2's
+    // state machine (it keys connection by registered-instance reference)
+    // and silently disables shimDisconnect's autoConnect across reloads.
+    const connector = connectors[0];
+    if (!connector) return;
+    connect({ connector });
   };
 
   const onSwitch = () => switchChain({ chainId: arc.id });
