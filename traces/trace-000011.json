@@ -4,7 +4,7 @@
     "decision": "BUY_YES",
     "edge_bps": 5600,
     "fair_price_yes": 0.72,
-    "generated_at": "2026-05-22T13:01:59+00:00",
+    "generated_at": "2026-05-22T18:58:33+00:00",
     "liquidity_usd": 540000.0,
     "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
     "model": "claude-sonnet-4-6",
@@ -12,31 +12,31 @@
     "reasoning": [
       {
         "kind": "observation",
-        "text": "BTC's 2024 ATH was ~$108,000 (set in December 2024). As of May 2026, BTC has had over 17 months of price action since that ATH. The market is pricing only a 16% chance of a new ATH by end of 2026 \u2014 an extremely bearish implied probability."
+        "text": "The market prices YES at 0.160, implying only a 16% probability BTC sets a new all-time high at any point in calendar 2026. With ~7 months remaining in the resolution window (June\u2013December 2026), this is an extremely low implied probability for an asset with well-documented historical cyclicality and multiple active macro tailwinds."
       },
       {
         "kind": "observation",
-        "text": "Liquidity is $540,000 and 24h volume is $1.2M \u2014 well above the $25k minimum threshold. Slippage is manageable and there is sufficient depth to take a meaningful position."
+        "text": "Liquidity is $540,000 and 24h volume is $1.2M \u2014 both well above the $25k hard floor. Slippage is manageable and a YES position can be taken with meaningful size. This market is actionable."
       },
       {
         "kind": "inference",
-        "text": "Historical BTC 4-year cycle dynamics: every halving cycle (2012, 2016, 2020, 2024) has produced a new ATH within ~18 months of the halving event. The April 2024 halving would place the cycle peak window squarely in late 2025 to mid-2026. Even if the cycle peaked in late 2025, a re-test or new ATH in 2026 remains highly plausible."
+        "text": "Bitcoin has historically experienced post-halving appreciation cycles. The most recent halving occurred in April 2024, and cycle dynamics typically play out over 12\u201324 months post-halving. With May 2026 representing roughly 24 months post-halving, the cycle is not exhausted and peak price discovery windows have historically included this timeframe."
       },
       {
         "kind": "comparison",
-        "text": "A 16% YES price implies ~84% probability BTC stays below ~$108k for the entirety of 2026. This is consistent with a severe bear scenario. Historical base rates: BTC has set a new ATH in 4 of the last 6 calendar years, and in every post-halving year. Even in bearish cycles (2018, 2022), the *following* year saw major recovery. The odds of BTC failing to breach $108k for ALL of 2026 are far lower than 84%."
+        "text": "The resolution condition only requires a single daily close above the prior ATH \u2014 this is a low bar relative to a sustained price level requirement. Even moderate bullish momentum at any point during the remaining ~7 months satisfies resolution. The asymmetry between 'any single day' and a sustained threshold strongly favors YES."
       },
       {
         "kind": "risk",
-        "text": "Key risks to YES: a prolonged macro bear market (rising rates, risk-off), regulatory crackdown, or a structural BTC bear cycle that breaks historical patterns. If BTC already peaked well below its prior ATH in this cycle (a 'lower high'), the 16% price could be closer to fair. However, BTC was trading near or above $90k as recently as early 2025, making a full year below $108k increasingly unlikely if any bullish catalyst emerges."
+        "text": "Key risks that could suppress YES resolution: (1) Macro deterioration \u2014 persistent inflation, recession fears, or tightening financial conditions could weigh on risk assets. (2) Regulatory shocks \u2014 an unexpected adverse ruling or legislative action in a major jurisdiction. (3) Crypto-native contagion \u2014 a major exchange/protocol failure. These are real but already partially priced in by the broader macro environment, and none individually makes a new ATH impossible over 7 months."
       },
       {
         "kind": "inference",
-        "text": "With ~7 months remaining in 2026 and ample time for a catalyst (ETF inflows, institutional adoption, macro pivot, dollar weakness), the market's 16% is a severe underestimate. Fair value is closer to 70-75%, representing a massive +EV edge of ~55 percentage points."
+        "text": "Institutional adoption dynamics \u2014 spot BTC ETF inflows, sovereign accumulation narratives, and corporate treasury adoption \u2014 have structurally elevated the demand baseline. These flows create persistent upward pressure that was not present in prior cycles, increasing the probability of new ATH formation."
       },
       {
         "kind": "conclusion",
-        "text": "BUY YES at 0.160. Fair price ~0.72. Edge of ~56 percentage points \u2014 among the largest mispricings seen in liquid BTC markets. The 16% YES price only makes sense if you assign >84% probability to BTC never breaching $108k for 7+ remaining months, which contradicts cycle history and current market structure. Strong BUY with 72% confidence."
+        "text": "Fair value estimate: ~72% probability YES. The market is pricing YES at 16%, implying a ~56 percentage-point mispricing. Even under bearish scenario weighting (30% chance of a prolonged bear market preventing a new ATH), the fair price far exceeds 0.160. Edge is approximately +5,600 bps, well above the 200 bps threshold. Strong BUY YES."
       }
     ]
   },
@@ -50,7 +50,7 @@
     "edge_bps": 5600,
     "end_date_iso": "2026-12-31T23:59:59Z",
     "expected_value_pct": 350.0,
-    "generated_at": "2026-05-22T13:01:59+00:00",
+    "generated_at": "2026-05-22T18:58:33+00:00",
     "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
     "market_liquidity_usd": 540000.0,
     "market_url": "https://polymarket.com/event/btc-new-ath-2026",
@@ -60,36 +60,36 @@
     "reasoning": [
       {
         "kind": "observation",
-        "text": "BTC's 2024 ATH was ~$108,000 (set in December 2024). As of May 2026, BTC has had over 17 months of price action since that ATH. The market is pricing only a 16% chance of a new ATH by end of 2026 \u2014 an extremely bearish implied probability."
+        "text": "The market prices YES at 0.160, implying only a 16% probability BTC sets a new all-time high at any point in calendar 2026. With ~7 months remaining in the resolution window (June\u2013December 2026), this is an extremely low implied probability for an asset with well-documented historical cyclicality and multiple active macro tailwinds."
       },
       {
         "kind": "observation",
-        "text": "Liquidity is $540,000 and 24h volume is $1.2M \u2014 well above the $25k minimum threshold. Slippage is manageable and there is sufficient depth to take a meaningful position."
+        "text": "Liquidity is $540,000 and 24h volume is $1.2M \u2014 both well above the $25k hard floor. Slippage is manageable and a YES position can be taken with meaningful size. This market is actionable."
       },
       {
         "kind": "inference",
-        "text": "Historical BTC 4-year cycle dynamics: every halving cycle (2012, 2016, 2020, 2024) has produced a new ATH within ~18 months of the halving event. The April 2024 halving would place the cycle peak window squarely in late 2025 to mid-2026. Even if the cycle peaked in late 2025, a re-test or new ATH in 2026 remains highly plausible."
+        "text": "Bitcoin has historically experienced post-halving appreciation cycles. The most recent halving occurred in April 2024, and cycle dynamics typically play out over 12\u201324 months post-halving. With May 2026 representing roughly 24 months post-halving, the cycle is not exhausted and peak price discovery windows have historically included this timeframe."
       },
       {
         "kind": "comparison",
-        "text": "A 16% YES price implies ~84% probability BTC stays below ~$108k for the entirety of 2026. This is consistent with a severe bear scenario. Historical base rates: BTC has set a new ATH in 4 of the last 6 calendar years, and in every post-halving year. Even in bearish cycles (2018, 2022), the *following* year saw major recovery. The odds of BTC failing to breach $108k for ALL of 2026 are far lower than 84%."
+        "text": "The resolution condition only requires a single daily close above the prior ATH \u2014 this is a low bar relative to a sustained price level requirement. Even moderate bullish momentum at any point during the remaining ~7 months satisfies resolution. The asymmetry between 'any single day' and a sustained threshold strongly favors YES."
       },
       {
         "kind": "risk",
-        "text": "Key risks to YES: a prolonged macro bear market (rising rates, risk-off), regulatory crackdown, or a structural BTC bear cycle that breaks historical patterns. If BTC already peaked well below its prior ATH in this cycle (a 'lower high'), the 16% price could be closer to fair. However, BTC was trading near or above $90k as recently as early 2025, making a full year below $108k increasingly unlikely if any bullish catalyst emerges."
+        "text": "Key risks that could suppress YES resolution: (1) Macro deterioration \u2014 persistent inflation, recession fears, or tightening financial conditions could weigh on risk assets. (2) Regulatory shocks \u2014 an unexpected adverse ruling or legislative action in a major jurisdiction. (3) Crypto-native contagion \u2014 a major exchange/protocol failure. These are real but already partially priced in by the broader macro environment, and none individually makes a new ATH impossible over 7 months."
       },
       {
         "kind": "inference",
-        "text": "With ~7 months remaining in 2026 and ample time for a catalyst (ETF inflows, institutional adoption, macro pivot, dollar weakness), the market's 16% is a severe underestimate. Fair value is closer to 70-75%, representing a massive +EV edge of ~55 percentage points."
+        "text": "Institutional adoption dynamics \u2014 spot BTC ETF inflows, sovereign accumulation narratives, and corporate treasury adoption \u2014 have structurally elevated the demand baseline. These flows create persistent upward pressure that was not present in prior cycles, increasing the probability of new ATH formation."
       },
       {
         "kind": "conclusion",
-        "text": "BUY YES at 0.160. Fair price ~0.72. Edge of ~56 percentage points \u2014 among the largest mispricings seen in liquid BTC markets. The 16% YES price only makes sense if you assign >84% probability to BTC never breaching $108k for 7+ remaining months, which contradicts cycle history and current market structure. Strong BUY with 72% confidence."
+        "text": "Fair value estimate: ~72% probability YES. The market is pricing YES at 16%, implying a ~56 percentage-point mispricing. Even under bearish scenario weighting (30% chance of a prolonged bear market preventing a new ATH), the fair price far exceeds 0.160. Edge is approximately +5,600 bps, well above the 200 bps threshold. Strong BUY YES."
       }
     ],
     "risk": "aggressive",
     "risk_factors": [
-      "Key risks to YES: a prolonged macro bear market (rising rates, risk-off), regulatory crackdown, or a structural BTC bear cycle that breaks historical patterns. If BTC already peaked well below its prior ATH in this cycle (a 'lower high'), the 16% price could be closer to fair. However, BTC was trading near or above $90k as recently as early 2025, making a full year below $108k increasingly unlikely if any bullish catalyst emerges."
+      "Key risks that could suppress YES resolution: (1) Macro deterioration \u2014 persistent inflation, recession fears, or tightening financial conditions could weigh on risk assets. (2) Regulatory shocks \u2014 an unexpected adverse ruling or legislative action in a major jurisdiction. (3) Crypto-native contagion \u2014 a major exchange/protocol failure. These are real but already partially priced in by the broader macro environment, and none individually makes a new ATH impossible over 7 months."
     ],
     "sources": [
       {
@@ -108,18 +108,18 @@
       "conservative": 14.4
     },
     "suggested_size_usdc": 36.0,
-    "trace_hash": "0xc2d8d49b750c7bf1eb06743a94e4da992127fbdd844c542ca336389623a98675",
+    "trace_hash": "0x4298f4d34cd9792941a65ab0b8e91ca8230563287e263efd20d4b199a7dac4b3",
     "trace_id": 11
   },
-  "generated_at": "2026-05-22T13:02:13+00:00",
+  "generated_at": "2026-05-22T18:58:33+00:00",
   "model": "claude-sonnet-4-6",
   "onchain": {
-    "block_number": 43512462,
+    "block_number": 43548050,
     "chain_id": 5042002,
     "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
     "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-    "trace_id": 9,
-    "tx_hash": "0xbb95cd38439b370ef727091aeef34373e157bce3625fd00f1811b35c23f7a936"
+    "trace_id": 21,
+    "tx_hash": "0x4ca7e6e75a47abe388ea328c6934d10fec622c2ae9e07845798bf332b4896b13"
   },
   "plan": {
     "confidence_bps": 7200,
@@ -136,12 +136,12 @@
     "current_implied_yes": 0.16,
     "decision": "BUY_YES",
     "end_date_iso": "2026-12-31T23:59:59Z",
-    "generated_at": "2026-05-22T13:01:59+00:00",
+    "generated_at": "2026-05-22T18:58:33+00:00",
     "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
     "model": "claude-sonnet-4-6",
     "question": "Will BTC reach a new all-time high in 2026?",
     "risk": "aggressive",
-    "trace_hash": "0xc2d8d49b750c7bf1eb06743a94e4da992127fbdd844c542ca336389623a98675",
+    "trace_hash": "0x4298f4d34cd9792941a65ab0b8e91ca8230563287e263efd20d4b199a7dac4b3",
     "trace_id": 11
   },
   "publication": {

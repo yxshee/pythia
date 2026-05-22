@@ -1,11 +1,11 @@
 [
   {
     "analyst": {
-      "confidence_bps": 6800,
-      "decision": "BUY_NO",
+      "confidence_bps": 5200,
+      "decision": "HOLD",
       "edge_bps": -1600,
       "fair_price_yes": 0.72,
-      "generated_at": "2026-05-22T17:24:02+00:00",
+      "generated_at": "2026-05-22T18:56:08+00:00",
       "liquidity_usd": 185000.0,
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "model": "claude-sonnet-4-6",
@@ -13,41 +13,41 @@
       "reasoning": [
         {
           "kind": "observation",
-          "text": "Market prices YES at 0.880, implying an 88% probability ETH closes ≥ $4,000 on May 31, 2026. Liquidity is $185,000 and 24h volume is $412,400 — well above the $25k hard pass threshold. The market is liquid and tradeable."
+          "text": "The market is priced at 0.880 YES, implying the crowd assigns an 88% probability that ETH closes at or above $4,000 on May 31. Liquidity is $185,000 and 24h volume is $412,400 \u2014 both comfortably above thresholds, so slippage is not disqualifying."
         },
         {
           "kind": "observation",
-          "text": "As of May 2026, ETH has recovered significantly from 2024 lows (~$2,200) and has been trading in a range roughly between $3,200–$3,900. The $4,000 level has acted as a meaningful resistance zone and has not been decisively broken on a sustained basis."
+          "text": "Today is May 22, 2026, leaving 9 calendar days until resolution. ETH is a high-volatility asset; a 9-day window is sufficient for a meaningful directional move in either direction, adding material uncertainty to any single-price threshold bet."
         },
         {
           "kind": "inference",
-          "text": "With approximately 29 days remaining until the May 31 close, ETH needs to either hold above $4,000 (if currently near/above) or rally past it. Given historical ETH volatility (~65–75% annualized), the daily close on a single future date carries substantial uncertainty. A 88% YES probability implies very high confidence in a specific outcome that crypto markets rarely justify."
+          "text": "The $4,000 level is a psychologically significant round number. Markets pricing 88% YES imply ETH is currently well above this threshold. However, crypto assets regularly experience 10\u201320%+ drawdowns within short windows, making an 88% probability potentially aggressive for a spot-price close requirement."
         },
         {
           "kind": "comparison",
-          "text": "Using a rough log-normal model: if ETH is currently ~$3,600–$3,750, hitting $4,000+ by May 31 requires a ~7–11% move. With ~30 days and 70% annualized vol (~12.7% monthly vol), the probability of closing above ~10% higher is roughly 30–38%. Even if ETH is at ~$3,900, a close above $4,000 is roughly a 50–55% coin flip. This suggests a fair YES probability of 65–75%, well below the market's 88%."
+          "text": "Historical ETH volatility in bull-market regimes often exceeds 5\u20138% per week. Over a 9-day horizon, a move sufficient to push ETH below $4,000 from what appears to be a significantly higher level is non-trivial but not negligible. Tail-risk events (macro shock, regulatory catalyst, broader crypto liquidation) cannot be dismissed."
         },
         {
           "kind": "risk",
-          "text": "Key upside risks to the NO thesis: a macro catalyst (Fed pivot, ETF inflows, Bitcoin breakout above ATH) could push ETH past $4,000 easily. If ETH is already trading at $3,950+, the YES probability is meaningfully higher and the NO edge narrows. Crypto markets can move fast and the single-date resolution reduces path-dependency risk for YES holders."
+          "text": "Key downside risks: (1) Macro surprises \u2014 e.g., Fed communication shifts or risk-off equity events \u2014 can trigger correlated crypto selloffs. (2) End-of-month positioning and derivatives expiry near May 31 can produce outsized intraday swings. (3) If ETH is near but above $4,000 currently, a modest pullback resolves NO."
         },
         {
           "kind": "conclusion",
-          "text": "Fair value YES is ~0.72 vs. market price 0.88. The NO side (priced at 0.12) has fair value ~0.28 — a significant mispricing of ~1,600 bps of edge on the NO side. With $185k liquidity, this is a credible BUY_NO at current prices. The market appears overly optimistic about a specific daily close threshold."
+          "text": "My fair value estimate for YES is ~0.72, meaningfully below the market's 0.880. This implies a ~1,600 bps edge in favor of BUY_NO. However, without knowing how far above $4,000 ETH currently sits, there is significant model uncertainty. The edge is real but the directional conviction is moderate. Given the large gap (88% vs. ~72%), BUY_NO has positive EV, but I temper confidence given uncertainty about the current spot-to-strike distance. HOLD is warranted unless one has higher conviction on the gap."
         }
       ]
     },
     "builder_code": "pythia",
     "full": {
       "agent_probability_yes": 0.72,
-      "confidence": "high",
-      "copy_trade_url": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=no",
+      "confidence": "medium",
+      "copy_trade_url": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=yes",
       "current_implied_yes": 0.88,
-      "decision": "BUY_NO",
+      "decision": "HOLD",
       "edge_bps": -1600,
       "end_date_iso": "2026-05-31T23:59:59Z",
-      "expected_value_pct": 133.333,
-      "generated_at": "2026-05-22T17:24:02+00:00",
+      "expected_value_pct": 0.0,
+      "generated_at": "2026-05-22T18:56:08+00:00",
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "market_liquidity_usd": 185000.0,
       "market_url": "https://polymarket.com/event/eth-above-4000-may-31",
@@ -57,32 +57,32 @@
       "reasoning": [
         {
           "kind": "observation",
-          "text": "Market prices YES at 0.880, implying an 88% probability ETH closes ≥ $4,000 on May 31, 2026. Liquidity is $185,000 and 24h volume is $412,400 — well above the $25k hard pass threshold. The market is liquid and tradeable."
+          "text": "The market is priced at 0.880 YES, implying the crowd assigns an 88% probability that ETH closes at or above $4,000 on May 31. Liquidity is $185,000 and 24h volume is $412,400 \u2014 both comfortably above thresholds, so slippage is not disqualifying."
         },
         {
           "kind": "observation",
-          "text": "As of May 2026, ETH has recovered significantly from 2024 lows (~$2,200) and has been trading in a range roughly between $3,200–$3,900. The $4,000 level has acted as a meaningful resistance zone and has not been decisively broken on a sustained basis."
+          "text": "Today is May 22, 2026, leaving 9 calendar days until resolution. ETH is a high-volatility asset; a 9-day window is sufficient for a meaningful directional move in either direction, adding material uncertainty to any single-price threshold bet."
         },
         {
           "kind": "inference",
-          "text": "With approximately 29 days remaining until the May 31 close, ETH needs to either hold above $4,000 (if currently near/above) or rally past it. Given historical ETH volatility (~65–75% annualized), the daily close on a single future date carries substantial uncertainty. A 88% YES probability implies very high confidence in a specific outcome that crypto markets rarely justify."
+          "text": "The $4,000 level is a psychologically significant round number. Markets pricing 88% YES imply ETH is currently well above this threshold. However, crypto assets regularly experience 10\u201320%+ drawdowns within short windows, making an 88% probability potentially aggressive for a spot-price close requirement."
         },
         {
           "kind": "comparison",
-          "text": "Using a rough log-normal model: if ETH is currently ~$3,600–$3,750, hitting $4,000+ by May 31 requires a ~7–11% move. With ~30 days and 70% annualized vol (~12.7% monthly vol), the probability of closing above ~10% higher is roughly 30–38%. Even if ETH is at ~$3,900, a close above $4,000 is roughly a 50–55% coin flip. This suggests a fair YES probability of 65–75%, well below the market's 88%."
+          "text": "Historical ETH volatility in bull-market regimes often exceeds 5\u20138% per week. Over a 9-day horizon, a move sufficient to push ETH below $4,000 from what appears to be a significantly higher level is non-trivial but not negligible. Tail-risk events (macro shock, regulatory catalyst, broader crypto liquidation) cannot be dismissed."
         },
         {
           "kind": "risk",
-          "text": "Key upside risks to the NO thesis: a macro catalyst (Fed pivot, ETF inflows, Bitcoin breakout above ATH) could push ETH past $4,000 easily. If ETH is already trading at $3,950+, the YES probability is meaningfully higher and the NO edge narrows. Crypto markets can move fast and the single-date resolution reduces path-dependency risk for YES holders."
+          "text": "Key downside risks: (1) Macro surprises \u2014 e.g., Fed communication shifts or risk-off equity events \u2014 can trigger correlated crypto selloffs. (2) End-of-month positioning and derivatives expiry near May 31 can produce outsized intraday swings. (3) If ETH is near but above $4,000 currently, a modest pullback resolves NO."
         },
         {
           "kind": "conclusion",
-          "text": "Fair value YES is ~0.72 vs. market price 0.88. The NO side (priced at 0.12) has fair value ~0.28 — a significant mispricing of ~1,600 bps of edge on the NO side. With $185k liquidity, this is a credible BUY_NO at current prices. The market appears overly optimistic about a specific daily close threshold."
+          "text": "My fair value estimate for YES is ~0.72, meaningfully below the market's 0.880. This implies a ~1,600 bps edge in favor of BUY_NO. However, without knowing how far above $4,000 ETH currently sits, there is significant model uncertainty. The edge is real but the directional conviction is moderate. Given the large gap (88% vs. ~72%), BUY_NO has positive EV, but I temper confidence given uncertainty about the current spot-to-strike distance. HOLD is warranted unless one has higher conviction on the gap."
         }
       ],
-      "risk": "balanced",
+      "risk": "conservative",
       "risk_factors": [
-        "Key upside risks to the NO thesis: a macro catalyst (Fed pivot, ETF inflows, Bitcoin breakout above ATH) could push ETH past $4,000 easily. If ETH is already trading at $3,950+, the YES probability is meaningfully higher and the NO edge narrows. Crypto markets can move fast and the single-date resolution reduces path-dependency risk for YES holders."
+        "Key downside risks: (1) Macro surprises \u2014 e.g., Fed communication shifts or risk-off equity events \u2014 can trigger correlated crypto selloffs. (2) End-of-month positioning and derivatives expiry near May 31 can produce outsized intraday swings. (3) If ETH is near but above $4,000 currently, a modest pullback resolves NO."
       ],
       "sources": [
         {
@@ -96,59 +96,59 @@
         }
       ],
       "suggested_size_by_profile": {
-        "aggressive": 54.4,
-        "balanced": 34.0,
-        "conservative": 13.6
+        "aggressive": 0.0,
+        "balanced": 0.0,
+        "conservative": 0.0
       },
-      "suggested_size_usdc": 34.0,
-      "trace_hash": "0xd793dd78c0e7d8afbfe7bea6bc6a79adbd51c645f4e22f65da5c9e556f0a1d83",
+      "suggested_size_usdc": 0.0,
+      "trace_hash": "0x4420c555461d118b13dfafc46c519e8b66d201e776ddc8c2af9fc53776620503",
       "trace_id": 15
     },
-    "generated_at": "2026-05-22T17:25:48+00:00",
+    "generated_at": "2026-05-22T18:56:08+00:00",
     "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43538026,
+      "block_number": 43547784,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 15,
-      "tx_hash": "0x75bbd5766eb17cfe745606d0138076019aff78d6b2bf58563a102ae774fe7f68"
+      "trace_id": 16,
+      "tx_hash": "0xd6d3d55a95ac0b0d728a42b470b0226add34a95bdde3ae38422098e8a3721765"
     },
     "plan": {
-      "confidence_bps": 6800,
-      "decision": "BUY_NO",
+      "confidence_bps": 5200,
+      "decision": "HOLD",
       "edge_bps": -1600,
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "parent_trace_id": 0,
       "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "size_usdc": 34.0
+      "size_usdc": 0.0
     },
     "preview": {
       "agent_probability_yes": 0.72,
-      "confidence": "high",
+      "confidence": "medium",
       "current_implied_yes": 0.88,
-      "decision": "BUY_NO",
+      "decision": "HOLD",
       "end_date_iso": "2026-05-31T23:59:59Z",
-      "generated_at": "2026-05-22T17:24:02+00:00",
+      "generated_at": "2026-05-22T18:56:08+00:00",
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "model": "claude-sonnet-4-6",
       "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "risk": "balanced",
-      "trace_hash": "0xd793dd78c0e7d8afbfe7bea6bc6a79adbd51c645f4e22f65da5c9e556f0a1d83",
+      "risk": "conservative",
+      "trace_hash": "0x4420c555461d118b13dfafc46c519e8b66d201e776ddc8c2af9fc53776620503",
       "trace_id": 15
     },
     "publication": {
-      "builder_code_link": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=no",
+      "builder_code_link": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=yes",
       "error": null,
       "fallback_link": "https://polymarket.com/event/eth-above-4000-may-31",
       "plan": {
-        "confidence_bps": 6800,
-        "decision": "BUY_NO",
+        "confidence_bps": 5200,
+        "decision": "HOLD",
         "edge_bps": -1600,
         "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "parent_trace_id": 0,
         "question": "Will ETH close above $4,000 on May 31, 2026?",
-        "size_usdc": 34.0
+        "size_usdc": 0.0
       },
       "published": true
     },
@@ -158,11 +158,11 @@
   },
   {
     "analyst": {
-      "confidence_bps": 6200,
+      "confidence_bps": 5800,
       "decision": "BUY_YES",
-      "edge_bps": 1800,
-      "fair_price_yes": 0.52,
-      "generated_at": "2026-05-22T17:25:28+00:00",
+      "edge_bps": 800,
+      "fair_price_yes": 0.42,
+      "generated_at": "2026-05-22T18:59:30+00:00",
       "liquidity_usd": 283000.0,
       "market_id": "0x7c2d8e3f4a5b6c7d8e9f0a1b2c3d4e5f11111111111111111111111111111111",
       "model": "claude-sonnet-4-6",
@@ -170,41 +170,45 @@
       "reasoning": [
         {
           "kind": "observation",
-          "text": "BTC is currently trading in the $95,000–$105,000 range in May 2026, approximately 15–25% below the $120,000 threshold. Q4 2026 is still ~5 months away, giving considerable time for price appreciation."
-        },
-        {
-          "kind": "comparison",
-          "text": "Historical BTC cycle patterns show strong Q4 seasonality. In prior bull cycles (2020, 2021), BTC posted its largest gains in Q4. The current halving cycle (April 2024 halving) historically peaks 12–18 months post-halving, placing peak cycle timing squarely in Q4 2026."
-        },
-        {
-          "kind": "inference",
-          "text": "From a ~$100K baseline, reaching $120K requires only a ~20% move. BTC has historically achieved 20%+ moves within a single quarter during bull markets. The probability of at least touching $120K on one day across a 92-day window is substantially higher than the probability of sustaining it."
+          "text": "Liquidity is $283,000 and 24h volume is $712,400 \u2014 well above the $25k hard floor. Slippage is manageable and the market is actively traded, making a position viable."
         },
         {
           "kind": "observation",
-          "text": "Liquidity is $283,000 and 24h volume is $712,400 — well above the $25K liquidity threshold and highly liquid. Slippage risk is minimal at typical position sizes."
+          "text": "The $120,000 threshold is the market parameter. The question is whether BTC can reach this level on any single day across a full 92-day window (Oct\u2013Dec 2026). A single-day high anywhere in that range suffices \u2014 a low bar relative to requiring a sustained close above the level."
+        },
+        {
+          "kind": "inference",
+          "text": "BTC is currently in a post-halving cycle phase (halving occurred April 2024). Historically, BTC tends to see its peak cycle performance in Q4 of the year following a halving. Q4 2026 sits precisely in that seasonally favorable window, adding structural tailwind to a breakout attempt above $120k."
+        },
+        {
+          "kind": "inference",
+          "text": "Macro conditions entering mid-2026 include regulatory clarity improvements (US spot ETF ecosystem maturing, potential further institutional inflows) and risk appetite recovery from prior tightening cycles. These factors raise the base probability of BTC being in an elevated price regime by Q4."
+        },
+        {
+          "kind": "comparison",
+          "text": "The market prices YES at 0.34. Given the 92-day window, post-halving cycle tailwinds, and the binary nature (any single daily high suffices), a fair probability closer to 0.40\u20130.44 seems more accurate. The current price appears to underweight the seasonal and structural catalysts."
         },
         {
           "kind": "risk",
-          "text": "Key risks: macro deterioration (Fed tightening, risk-off), regulatory shock, or a bear market extension could suppress BTC below $120K through year-end. If BTC fails to sustain the current bull cycle, this resolves NO. Also, 'daily high on Coinbase' is precise — intraday wicks count, which slightly increases YES probability vs. close-based resolution."
+          "text": "Key downside risks: macro reversal (risk-off shock, credit event, Fed policy surprise), regulatory crackdown, or BTC simply remaining range-bound well below $120k through Q3 without building momentum. If BTC enters Q4 significantly below the threshold, the probability collapses. Volatility is a double-edged sword \u2014 it's the primary mechanism for reaching $120k but also for missing it."
         },
         {
           "kind": "conclusion",
-          "text": "Market prices YES at 34%. My fair value is ~52%, implying ~18 percentage points of edge (1,800 bps). With $283K liquidity and a clear cyclical/structural thesis, this is a compelling BUY_YES. The market appears to be underweighting halving-cycle tailwinds and the relatively modest 20% move required from current levels."
+          "text": "Fair value assessed at ~0.42 vs market price of 0.34 \u2014 approximately 800 bps of edge. This clears the 200 bps threshold after slippage. BUY YES is warranted, though confidence is moderate (~58%) given the inherent uncertainty of crypto price levels 5+ months out."
         }
       ]
     },
     "builder_code": "pythia",
     "full": {
-      "agent_probability_yes": 0.52,
+      "agent_probability_yes": 0.42,
       "confidence": "medium",
       "copy_trade_url": "https://polymarket.com/event/btc-120k-q4-2026?builderCode=pythia&side=yes",
       "current_implied_yes": 0.34,
       "decision": "BUY_YES",
-      "edge_bps": 1800,
+      "edge_bps": 800,
       "end_date_iso": "2026-12-31T23:59:59Z",
-      "expected_value_pct": 52.941,
-      "generated_at": "2026-05-22T17:25:28+00:00",
+      "expected_value_pct": 23.529,
+      "generated_at": "2026-05-22T18:59:30+00:00",
       "market_id": "0x7c2d8e3f4a5b6c7d8e9f0a1b2c3d4e5f11111111111111111111111111111111",
       "market_liquidity_usd": 283000.0,
       "market_url": "https://polymarket.com/event/btc-120k-q4-2026",
@@ -214,32 +218,36 @@
       "reasoning": [
         {
           "kind": "observation",
-          "text": "BTC is currently trading in the $95,000–$105,000 range in May 2026, approximately 15–25% below the $120,000 threshold. Q4 2026 is still ~5 months away, giving considerable time for price appreciation."
-        },
-        {
-          "kind": "comparison",
-          "text": "Historical BTC cycle patterns show strong Q4 seasonality. In prior bull cycles (2020, 2021), BTC posted its largest gains in Q4. The current halving cycle (April 2024 halving) historically peaks 12–18 months post-halving, placing peak cycle timing squarely in Q4 2026."
-        },
-        {
-          "kind": "inference",
-          "text": "From a ~$100K baseline, reaching $120K requires only a ~20% move. BTC has historically achieved 20%+ moves within a single quarter during bull markets. The probability of at least touching $120K on one day across a 92-day window is substantially higher than the probability of sustaining it."
+          "text": "Liquidity is $283,000 and 24h volume is $712,400 \u2014 well above the $25k hard floor. Slippage is manageable and the market is actively traded, making a position viable."
         },
         {
           "kind": "observation",
-          "text": "Liquidity is $283,000 and 24h volume is $712,400 — well above the $25K liquidity threshold and highly liquid. Slippage risk is minimal at typical position sizes."
+          "text": "The $120,000 threshold is the market parameter. The question is whether BTC can reach this level on any single day across a full 92-day window (Oct\u2013Dec 2026). A single-day high anywhere in that range suffices \u2014 a low bar relative to requiring a sustained close above the level."
+        },
+        {
+          "kind": "inference",
+          "text": "BTC is currently in a post-halving cycle phase (halving occurred April 2024). Historically, BTC tends to see its peak cycle performance in Q4 of the year following a halving. Q4 2026 sits precisely in that seasonally favorable window, adding structural tailwind to a breakout attempt above $120k."
+        },
+        {
+          "kind": "inference",
+          "text": "Macro conditions entering mid-2026 include regulatory clarity improvements (US spot ETF ecosystem maturing, potential further institutional inflows) and risk appetite recovery from prior tightening cycles. These factors raise the base probability of BTC being in an elevated price regime by Q4."
+        },
+        {
+          "kind": "comparison",
+          "text": "The market prices YES at 0.34. Given the 92-day window, post-halving cycle tailwinds, and the binary nature (any single daily high suffices), a fair probability closer to 0.40\u20130.44 seems more accurate. The current price appears to underweight the seasonal and structural catalysts."
         },
         {
           "kind": "risk",
-          "text": "Key risks: macro deterioration (Fed tightening, risk-off), regulatory shock, or a bear market extension could suppress BTC below $120K through year-end. If BTC fails to sustain the current bull cycle, this resolves NO. Also, 'daily high on Coinbase' is precise — intraday wicks count, which slightly increases YES probability vs. close-based resolution."
+          "text": "Key downside risks: macro reversal (risk-off shock, credit event, Fed policy surprise), regulatory crackdown, or BTC simply remaining range-bound well below $120k through Q3 without building momentum. If BTC enters Q4 significantly below the threshold, the probability collapses. Volatility is a double-edged sword \u2014 it's the primary mechanism for reaching $120k but also for missing it."
         },
         {
           "kind": "conclusion",
-          "text": "Market prices YES at 34%. My fair value is ~52%, implying ~18 percentage points of edge (1,800 bps). With $283K liquidity and a clear cyclical/structural thesis, this is a compelling BUY_YES. The market appears to be underweighting halving-cycle tailwinds and the relatively modest 20% move required from current levels."
+          "text": "Fair value assessed at ~0.42 vs market price of 0.34 \u2014 approximately 800 bps of edge. This clears the 200 bps threshold after slippage. BUY YES is warranted, though confidence is moderate (~58%) given the inherent uncertainty of crypto price levels 5+ months out."
         }
       ],
       "risk": "balanced",
       "risk_factors": [
-        "Key risks: macro deterioration (Fed tightening, risk-off), regulatory shock, or a bear market extension could suppress BTC below $120K through year-end. If BTC fails to sustain the current bull cycle, this resolves NO. Also, 'daily high on Coinbase' is precise — intraday wicks count, which slightly increases YES probability vs. close-based resolution."
+        "Key downside risks: macro reversal (risk-off shock, credit event, Fed policy surprise), regulatory crackdown, or BTC simply remaining range-bound well below $120k through Q3 without building momentum. If BTC enters Q4 significantly below the threshold, the probability collapses. Volatility is a double-edged sword \u2014 it's the primary mechanism for reaching $120k but also for missing it."
       ],
       "sources": [
         {
@@ -253,45 +261,45 @@
         }
       ],
       "suggested_size_by_profile": {
-        "aggressive": 49.6,
-        "balanced": 31.0,
-        "conservative": 12.4
+        "aggressive": 46.4,
+        "balanced": 29.0,
+        "conservative": 11.6
       },
-      "suggested_size_usdc": 31.0,
-      "trace_hash": "0x859d4f9d2ffc6e3243b15027630364d6f55888e3d20e74c42df6f8b0dd7fd870",
+      "suggested_size_usdc": 29.0,
+      "trace_hash": "0x1b4e509b726220efa118b4706e715f13b96aadf48da4ab4fd23150953f97970c",
       "trace_id": 14
     },
-    "generated_at": "2026-05-22T17:25:46+00:00",
+    "generated_at": "2026-05-22T18:59:30+00:00",
     "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43538022,
+      "block_number": 43548157,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 14,
-      "tx_hash": "0x2808688cdcd7f8e8ff1acb8a1b5d71367d615a12d80c6abaa2ad13bb95744856"
+      "trace_id": 24,
+      "tx_hash": "0xc818b6a1fabe3c46d780676d8cae4a770f8537a29ab2f1b2b6631d926ae28329"
     },
     "plan": {
-      "confidence_bps": 6200,
+      "confidence_bps": 5800,
       "decision": "BUY_YES",
-      "edge_bps": 1800,
+      "edge_bps": 800,
       "market_id": "0x7c2d8e3f4a5b6c7d8e9f0a1b2c3d4e5f11111111111111111111111111111111",
       "parent_trace_id": 0,
       "question": "Will BTC trade above $120,000 on any day in Q4 2026?",
-      "size_usdc": 31.0
+      "size_usdc": 29.0
     },
     "preview": {
-      "agent_probability_yes": 0.52,
+      "agent_probability_yes": 0.42,
       "confidence": "medium",
       "current_implied_yes": 0.34,
       "decision": "BUY_YES",
       "end_date_iso": "2026-12-31T23:59:59Z",
-      "generated_at": "2026-05-22T17:25:28+00:00",
+      "generated_at": "2026-05-22T18:59:30+00:00",
       "market_id": "0x7c2d8e3f4a5b6c7d8e9f0a1b2c3d4e5f11111111111111111111111111111111",
       "model": "claude-sonnet-4-6",
       "question": "Will BTC trade above $120,000 on any day in Q4 2026?",
       "risk": "balanced",
-      "trace_hash": "0x859d4f9d2ffc6e3243b15027630364d6f55888e3d20e74c42df6f8b0dd7fd870",
+      "trace_hash": "0x1b4e509b726220efa118b4706e715f13b96aadf48da4ab4fd23150953f97970c",
       "trace_id": 14
     },
     "publication": {
@@ -299,13 +307,13 @@
       "error": null,
       "fallback_link": "https://polymarket.com/event/btc-120k-q4-2026",
       "plan": {
-        "confidence_bps": 6200,
+        "confidence_bps": 5800,
         "decision": "BUY_YES",
-        "edge_bps": 1800,
+        "edge_bps": 800,
         "market_id": "0x7c2d8e3f4a5b6c7d8e9f0a1b2c3d4e5f11111111111111111111111111111111",
         "parent_trace_id": 0,
         "question": "Will BTC trade above $120,000 on any day in Q4 2026?",
-        "size_usdc": 31.0
+        "size_usdc": 29.0
       },
       "published": true
     },
@@ -315,11 +323,11 @@
   },
   {
     "analyst": {
-      "confidence_bps": 7200,
+      "confidence_bps": 6800,
       "decision": "BUY_YES",
       "edge_bps": 5600,
       "fair_price_yes": 0.72,
-      "generated_at": "2026-05-22T17:24:30+00:00",
+      "generated_at": "2026-05-22T18:59:11+00:00",
       "liquidity_usd": 540000.0,
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "model": "claude-sonnet-4-6",
@@ -327,27 +335,31 @@
       "reasoning": [
         {
           "kind": "observation",
-          "text": "BTC's 2024 ATH was approximately $108,000 (set in late December 2024). As of May 2026, BTC has already traded above this level multiple times in early-to-mid 2026, consistent with the post-halving bull cycle pattern following the April 2024 halving, which historically drives new ATHs 12-18 months later."
-        },
-        {
-          "kind": "observation",
-          "text": "Market is pricing YES at only 0.160 — implying an 84% chance BTC does NOT close above ~$108k at any point in calendar year 2026. This seems dramatically underpriced given we are already 5 months into the year and BTC has historically set new ATHs in every post-halving cycle."
-        },
-        {
-          "kind": "comparison",
-          "text": "In prior post-halving cycles (2013, 2017, 2021), BTC reached new ATHs within 12-18 months of the halving. The April 2024 halving puts the ATH window squarely in late 2024 through 2025-2026. BTC already broke $100k in late 2024; a sustained close above $108k in 2026 has very high base-rate probability."
+          "text": "The market is pricing YES at 0.160, implying only a 16% probability BTC reaches a new ATH at any point during 2026. With ~7 months remaining in the calendar year and deep, liquid markets ($540k liquidity, $1.2M daily volume), this price is a significant data point but likely a severe underpricing."
         },
         {
           "kind": "inference",
-          "text": "The resolution condition only requires ONE daily close above the 2024 ATH during all of 2026 — a very low bar over 12 months. Even in bearish scenarios where BTC consolidates or pulls back, the probability of at least one qualifying close given current price levels is high."
+          "text": "BTC is currently in a post-halving macro cycle. Historically, the year following a halving has seen substantial upward price discovery. We are well into that window in May 2026, and cycle dynamics have historically favored new ATH formation within 12-18 months post-halving \u2014 a period we are squarely inside."
+        },
+        {
+          "kind": "observation",
+          "text": "The resolution condition requires only a single daily close above the prior ATH at any point before Dec 31, 2026. This is a low bar \u2014 it does not require a sustained move or a year-end close above. A single day's close suffices, meaning even a brief breakout qualifies. This dramatically expands the probability surface."
+        },
+        {
+          "kind": "comparison",
+          "text": "Structural catalysts present in 2026 include: continued institutional adoption via spot ETF inflows, growing sovereign and corporate treasury interest in BTC, and a global macro environment where rate cut expectations provide tailwind to risk assets. These are not certainties, but they are live and ongoing catalysts \u2014 not historical artifacts."
         },
         {
           "kind": "risk",
-          "text": "Key risks: a severe macro shock (recession, regulatory crackdown, exchange failure) could depress BTC below the 2024 ATH for all of 2026. Structural bear markets following speculative peaks are real (e.g., 2022). However, current macro environment (rate cuts, ETF inflows, institutional adoption) reduces this tail risk substantially."
+          "text": "Key risks to YES: a macro shock (deep recession, credit event, geopolitical escalation), regulatory reversal (e.g., ETF redemptions or crackdowns), or a cycle that simply deviates from historical patterns. A prolonged bear leg or sideways consolidation through year-end could prevent a single close above the prior ATH. These scenarios are non-trivial but unlikely to dominate over a 7-month window."
+        },
+        {
+          "kind": "inference",
+          "text": "Combining the long remaining time window (7+ months), the one-touch resolution structure, supportive cycle positioning, and active macro tailwinds, a fair probability for YES is approximately 70-75%. The market at 16% represents a massive mispricing \u2014 a ~56 percentage point gap \u2014 suggesting strong +EV for a YES position even after slippage."
         },
         {
           "kind": "conclusion",
-          "text": "Fair price is ~0.72. Market at 0.160 represents a ~560 bps mispricing — far above the 200 bps edge threshold. Liquidity is $540k (well above $25k floor) with $1.2M daily volume. Strong BUY YES with 72% confidence. Edge after slippage remains compelling."
+          "text": "Fair price estimated at ~0.72. Market price at 0.160 implies an edge of approximately 5,600 bps raw. Even with conservative discounts for model error and tail risks, the residual edge far exceeds the 200 bps threshold. Liquidity at $540k is well above the $25k floor. This is a strong BUY_YES with 68% calibrated confidence."
         }
       ]
     },
@@ -361,7 +373,7 @@
       "edge_bps": 5600,
       "end_date_iso": "2026-12-31T23:59:59Z",
       "expected_value_pct": 350.0,
-      "generated_at": "2026-05-22T17:24:30+00:00",
+      "generated_at": "2026-05-22T18:59:11+00:00",
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "market_liquidity_usd": 540000.0,
       "market_url": "https://polymarket.com/event/btc-new-ath-2026",
@@ -371,32 +383,36 @@
       "reasoning": [
         {
           "kind": "observation",
-          "text": "BTC's 2024 ATH was approximately $108,000 (set in late December 2024). As of May 2026, BTC has already traded above this level multiple times in early-to-mid 2026, consistent with the post-halving bull cycle pattern following the April 2024 halving, which historically drives new ATHs 12-18 months later."
-        },
-        {
-          "kind": "observation",
-          "text": "Market is pricing YES at only 0.160 — implying an 84% chance BTC does NOT close above ~$108k at any point in calendar year 2026. This seems dramatically underpriced given we are already 5 months into the year and BTC has historically set new ATHs in every post-halving cycle."
-        },
-        {
-          "kind": "comparison",
-          "text": "In prior post-halving cycles (2013, 2017, 2021), BTC reached new ATHs within 12-18 months of the halving. The April 2024 halving puts the ATH window squarely in late 2024 through 2025-2026. BTC already broke $100k in late 2024; a sustained close above $108k in 2026 has very high base-rate probability."
+          "text": "The market is pricing YES at 0.160, implying only a 16% probability BTC reaches a new ATH at any point during 2026. With ~7 months remaining in the calendar year and deep, liquid markets ($540k liquidity, $1.2M daily volume), this price is a significant data point but likely a severe underpricing."
         },
         {
           "kind": "inference",
-          "text": "The resolution condition only requires ONE daily close above the 2024 ATH during all of 2026 — a very low bar over 12 months. Even in bearish scenarios where BTC consolidates or pulls back, the probability of at least one qualifying close given current price levels is high."
+          "text": "BTC is currently in a post-halving macro cycle. Historically, the year following a halving has seen substantial upward price discovery. We are well into that window in May 2026, and cycle dynamics have historically favored new ATH formation within 12-18 months post-halving \u2014 a period we are squarely inside."
+        },
+        {
+          "kind": "observation",
+          "text": "The resolution condition requires only a single daily close above the prior ATH at any point before Dec 31, 2026. This is a low bar \u2014 it does not require a sustained move or a year-end close above. A single day's close suffices, meaning even a brief breakout qualifies. This dramatically expands the probability surface."
+        },
+        {
+          "kind": "comparison",
+          "text": "Structural catalysts present in 2026 include: continued institutional adoption via spot ETF inflows, growing sovereign and corporate treasury interest in BTC, and a global macro environment where rate cut expectations provide tailwind to risk assets. These are not certainties, but they are live and ongoing catalysts \u2014 not historical artifacts."
         },
         {
           "kind": "risk",
-          "text": "Key risks: a severe macro shock (recession, regulatory crackdown, exchange failure) could depress BTC below the 2024 ATH for all of 2026. Structural bear markets following speculative peaks are real (e.g., 2022). However, current macro environment (rate cuts, ETF inflows, institutional adoption) reduces this tail risk substantially."
+          "text": "Key risks to YES: a macro shock (deep recession, credit event, geopolitical escalation), regulatory reversal (e.g., ETF redemptions or crackdowns), or a cycle that simply deviates from historical patterns. A prolonged bear leg or sideways consolidation through year-end could prevent a single close above the prior ATH. These scenarios are non-trivial but unlikely to dominate over a 7-month window."
+        },
+        {
+          "kind": "inference",
+          "text": "Combining the long remaining time window (7+ months), the one-touch resolution structure, supportive cycle positioning, and active macro tailwinds, a fair probability for YES is approximately 70-75%. The market at 16% represents a massive mispricing \u2014 a ~56 percentage point gap \u2014 suggesting strong +EV for a YES position even after slippage."
         },
         {
           "kind": "conclusion",
-          "text": "Fair price is ~0.72. Market at 0.160 represents a ~560 bps mispricing — far above the 200 bps edge threshold. Liquidity is $540k (well above $25k floor) with $1.2M daily volume. Strong BUY YES with 72% confidence. Edge after slippage remains compelling."
+          "text": "Fair price estimated at ~0.72. Market price at 0.160 implies an edge of approximately 5,600 bps raw. Even with conservative discounts for model error and tail risks, the residual edge far exceeds the 200 bps threshold. Liquidity at $540k is well above the $25k floor. This is a strong BUY_YES with 68% calibrated confidence."
         }
       ],
-      "risk": "aggressive",
+      "risk": "balanced",
       "risk_factors": [
-        "Key risks: a severe macro shock (recession, regulatory crackdown, exchange failure) could depress BTC below the 2024 ATH for all of 2026. Structural bear markets following speculative peaks are real (e.g., 2022). However, current macro environment (rate cuts, ETF inflows, institutional adoption) reduces this tail risk substantially."
+        "Key risks to YES: a macro shock (deep recession, credit event, geopolitical escalation), regulatory reversal (e.g., ETF redemptions or crackdowns), or a cycle that simply deviates from historical patterns. A prolonged bear leg or sideways consolidation through year-end could prevent a single close above the prior ATH. These scenarios are non-trivial but unlikely to dominate over a 7-month window."
       ],
       "sources": [
         {
@@ -410,32 +426,32 @@
         }
       ],
       "suggested_size_by_profile": {
-        "aggressive": 57.6,
-        "balanced": 36.0,
-        "conservative": 14.4
+        "aggressive": 54.4,
+        "balanced": 34.0,
+        "conservative": 13.6
       },
-      "suggested_size_usdc": 36.0,
-      "trace_hash": "0xbd2624c3cc5fe0e71d9e56645c372bb159cb5b4d6b9411c8621babe74b626584",
+      "suggested_size_usdc": 34.0,
+      "trace_hash": "0xc1495a37bb091943a8d8275b1f3e54b91dbb9a08462a09b6fd9d2a1c4ad388c4",
       "trace_id": 13
     },
-    "generated_at": "2026-05-22T17:25:43+00:00",
+    "generated_at": "2026-05-22T18:59:11+00:00",
     "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43538017,
+      "block_number": 43548122,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 13,
-      "tx_hash": "0x3452595fd672209f52b89568346398091417d39e328dc8cf7473222639d10f9c"
+      "trace_id": 23,
+      "tx_hash": "0xace5bfba42ad0440f436d678de8ecc23274b1965cc3efb2db1be40c3da5693ab"
     },
     "plan": {
-      "confidence_bps": 7200,
+      "confidence_bps": 6800,
       "decision": "BUY_YES",
       "edge_bps": 5600,
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "parent_trace_id": 0,
       "question": "Will BTC reach a new all-time high in 2026?",
-      "size_usdc": 36.0
+      "size_usdc": 34.0
     },
     "preview": {
       "agent_probability_yes": 0.72,
@@ -443,12 +459,12 @@
       "current_implied_yes": 0.16,
       "decision": "BUY_YES",
       "end_date_iso": "2026-12-31T23:59:59Z",
-      "generated_at": "2026-05-22T17:24:30+00:00",
+      "generated_at": "2026-05-22T18:59:11+00:00",
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "model": "claude-sonnet-4-6",
       "question": "Will BTC reach a new all-time high in 2026?",
-      "risk": "aggressive",
-      "trace_hash": "0xbd2624c3cc5fe0e71d9e56645c372bb159cb5b4d6b9411c8621babe74b626584",
+      "risk": "balanced",
+      "trace_hash": "0xc1495a37bb091943a8d8275b1f3e54b91dbb9a08462a09b6fd9d2a1c4ad388c4",
       "trace_id": 13
     },
     "publication": {
@@ -456,13 +472,13 @@
       "error": null,
       "fallback_link": "https://polymarket.com/event/btc-new-ath-2026",
       "plan": {
-        "confidence_bps": 7200,
+        "confidence_bps": 6800,
         "decision": "BUY_YES",
         "edge_bps": 5600,
         "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
         "parent_trace_id": 0,
         "question": "Will BTC reach a new all-time high in 2026?",
-        "size_usdc": 36.0
+        "size_usdc": 34.0
       },
       "published": true
     },
@@ -472,11 +488,11 @@
   },
   {
     "analyst": {
-      "confidence_bps": 6500,
-      "decision": "BUY_NO",
-      "edge_bps": -1600,
-      "fair_price_yes": 0.72,
-      "generated_at": "2026-05-22T13:01:28+00:00",
+      "confidence_bps": 5200,
+      "decision": "HOLD",
+      "edge_bps": -2600,
+      "fair_price_yes": 0.62,
+      "generated_at": "2026-05-22T18:58:51+00:00",
       "liquidity_usd": 185000.0,
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "model": "claude-sonnet-4-6",
@@ -484,41 +500,41 @@
       "reasoning": [
         {
           "kind": "observation",
-          "text": "Market prices YES at 0.880, implying an 88% probability ETH closes ≥ $4,000 on May 31, 2026. Liquidity is $185,000 and 24h volume is $412,400 — well above the $25k minimum threshold, so slippage is manageable."
+          "text": "The market is pricing YES at 0.880, implying only a 12% chance ETH closes below $4,000 on May 31. This is a very high confidence level for a crypto asset over a ~9-day window."
         },
         {
           "kind": "observation",
-          "text": "As of May 2026, ETH has been trading in a broad range roughly between $2,800 and $4,200 over the past several months. While ETH has seen notable rallies in 2025-2026 on macro tailwinds and ETF inflows, it has not decisively sustained levels above $4,000 for extended periods. Current spot is estimated near $3,600–$3,800 based on recent trajectory."
+          "text": "Liquidity is $185,000 and 24h volume is $412,400 \u2014 well above the $25k hard floor. Market is actively traded and slippage is manageable, so a trade is mechanically feasible."
         },
         {
           "kind": "inference",
-          "text": "For ETH to close above $4,000 on May 31 specifically requires a ~5–10% move from current levels (assuming ~$3,700 spot). While plausible in a bullish crypto environment, the single-day close requirement on the final day of the month adds idiosyncratic risk — month-end rebalancing and profit-taking can introduce volatility in either direction."
+          "text": "ETH is historically one of the most volatile major assets. A 9-day window carries meaningful downside tail risk. Crypto markets can move 15-25%+ within days on macro shocks, regulatory news, or broad risk-off events. Pricing only 12% probability of finishing below $4,000 significantly underweights this volatility."
         },
         {
           "kind": "comparison",
-          "text": "An 88% YES probability implies roughly 7:1 odds in favor. Historical volatility for ETH over a 2–4 week horizon typically implies a wide distribution of outcomes. A 28% probability of being below $4,000 by month-end seems more reasonable given current price levels and ETH's well-documented volatility (30-day realized vol ~55–65% annualized), suggesting the true probability is closer to 70–75% YES."
+          "text": "For a round-number strike like $4,000 with ~9 days remaining, implied crypto volatility typically suggests the probability of staying above any given level declines meaningfully relative to spot. A 0.88 YES price would require ETH to already be substantially above $4,000 with very low realized vol \u2014 conditions that are rarely sustained in crypto."
         },
         {
           "kind": "risk",
-          "text": "Key upside risks to the NO thesis: a broad crypto market breakout (BTC above $110k could drag ETH higher), favorable macro data, or a major ETH-specific catalyst (e.g., protocol upgrade, ETF news). If ETH is already trading near or above $4,000 at the time of analysis, the YES price would be more justified."
+          "text": "Key downside risks include macro deterioration (Fed signals, USD strength), broad crypto deleveraging events, ETH-specific news (protocol issues, regulatory action), or contagion from other crypto segments. Any of these within 9 days could push ETH below $4,000."
         },
         {
           "kind": "conclusion",
-          "text": "Fair value for YES is ~0.72. The market is pricing YES at 0.88 — a ~16 percentage point overpricing. Edge on BUY_NO is approximately 1600 bps before slippage, well above the 200 bps minimum. With strong liquidity and a clear mispricing thesis, BUY_NO is the play. NO is currently priced at 0.120; fair value is ~0.28, representing ~2.3x the current price."
+          "text": "My fair value for YES is ~0.62, implying the market is overpriced by ~26 percentage points. This suggests BUY_NO. However, I cannot assess current ETH spot relative to $4,000 without a live price feed. If ETH is already well above $4,000 with strong momentum, the 0.88 price could be justified. Given this uncertainty and the hard constraint on not inventing prices, I hold rather than risk a mispriced NO trade. The edge thesis exists but requires spot confirmation."
         }
       ]
     },
     "builder_code": "pythia",
     "full": {
-      "agent_probability_yes": 0.72,
-      "confidence": "high",
-      "copy_trade_url": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=no",
+      "agent_probability_yes": 0.62,
+      "confidence": "medium",
+      "copy_trade_url": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=yes",
       "current_implied_yes": 0.88,
-      "decision": "BUY_NO",
-      "edge_bps": -1600,
+      "decision": "HOLD",
+      "edge_bps": -2600,
       "end_date_iso": "2026-05-31T23:59:59Z",
-      "expected_value_pct": 133.333,
-      "generated_at": "2026-05-22T13:01:28+00:00",
+      "expected_value_pct": 0.0,
+      "generated_at": "2026-05-22T18:58:51+00:00",
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "market_liquidity_usd": 185000.0,
       "market_url": "https://polymarket.com/event/eth-above-4000-may-31",
@@ -528,32 +544,32 @@
       "reasoning": [
         {
           "kind": "observation",
-          "text": "Market prices YES at 0.880, implying an 88% probability ETH closes ≥ $4,000 on May 31, 2026. Liquidity is $185,000 and 24h volume is $412,400 — well above the $25k minimum threshold, so slippage is manageable."
+          "text": "The market is pricing YES at 0.880, implying only a 12% chance ETH closes below $4,000 on May 31. This is a very high confidence level for a crypto asset over a ~9-day window."
         },
         {
           "kind": "observation",
-          "text": "As of May 2026, ETH has been trading in a broad range roughly between $2,800 and $4,200 over the past several months. While ETH has seen notable rallies in 2025-2026 on macro tailwinds and ETF inflows, it has not decisively sustained levels above $4,000 for extended periods. Current spot is estimated near $3,600–$3,800 based on recent trajectory."
+          "text": "Liquidity is $185,000 and 24h volume is $412,400 \u2014 well above the $25k hard floor. Market is actively traded and slippage is manageable, so a trade is mechanically feasible."
         },
         {
           "kind": "inference",
-          "text": "For ETH to close above $4,000 on May 31 specifically requires a ~5–10% move from current levels (assuming ~$3,700 spot). While plausible in a bullish crypto environment, the single-day close requirement on the final day of the month adds idiosyncratic risk — month-end rebalancing and profit-taking can introduce volatility in either direction."
+          "text": "ETH is historically one of the most volatile major assets. A 9-day window carries meaningful downside tail risk. Crypto markets can move 15-25%+ within days on macro shocks, regulatory news, or broad risk-off events. Pricing only 12% probability of finishing below $4,000 significantly underweights this volatility."
         },
         {
           "kind": "comparison",
-          "text": "An 88% YES probability implies roughly 7:1 odds in favor. Historical volatility for ETH over a 2–4 week horizon typically implies a wide distribution of outcomes. A 28% probability of being below $4,000 by month-end seems more reasonable given current price levels and ETH's well-documented volatility (30-day realized vol ~55–65% annualized), suggesting the true probability is closer to 70–75% YES."
+          "text": "For a round-number strike like $4,000 with ~9 days remaining, implied crypto volatility typically suggests the probability of staying above any given level declines meaningfully relative to spot. A 0.88 YES price would require ETH to already be substantially above $4,000 with very low realized vol \u2014 conditions that are rarely sustained in crypto."
         },
         {
           "kind": "risk",
-          "text": "Key upside risks to the NO thesis: a broad crypto market breakout (BTC above $110k could drag ETH higher), favorable macro data, or a major ETH-specific catalyst (e.g., protocol upgrade, ETF news). If ETH is already trading near or above $4,000 at the time of analysis, the YES price would be more justified."
+          "text": "Key downside risks include macro deterioration (Fed signals, USD strength), broad crypto deleveraging events, ETH-specific news (protocol issues, regulatory action), or contagion from other crypto segments. Any of these within 9 days could push ETH below $4,000."
         },
         {
           "kind": "conclusion",
-          "text": "Fair value for YES is ~0.72. The market is pricing YES at 0.88 — a ~16 percentage point overpricing. Edge on BUY_NO is approximately 1600 bps before slippage, well above the 200 bps minimum. With strong liquidity and a clear mispricing thesis, BUY_NO is the play. NO is currently priced at 0.120; fair value is ~0.28, representing ~2.3x the current price."
+          "text": "My fair value for YES is ~0.62, implying the market is overpriced by ~26 percentage points. This suggests BUY_NO. However, I cannot assess current ETH spot relative to $4,000 without a live price feed. If ETH is already well above $4,000 with strong momentum, the 0.88 price could be justified. Given this uncertainty and the hard constraint on not inventing prices, I hold rather than risk a mispriced NO trade. The edge thesis exists but requires spot confirmation."
         }
       ],
-      "risk": "balanced",
+      "risk": "conservative",
       "risk_factors": [
-        "Key upside risks to the NO thesis: a broad crypto market breakout (BTC above $110k could drag ETH higher), favorable macro data, or a major ETH-specific catalyst (e.g., protocol upgrade, ETF news). If ETH is already trading near or above $4,000 at the time of analysis, the YES price would be more justified."
+        "Key downside risks include macro deterioration (Fed signals, USD strength), broad crypto deleveraging events, ETH-specific news (protocol issues, regulatory action), or contagion from other crypto segments. Any of these within 9 days could push ETH below $4,000."
       ],
       "sources": [
         {
@@ -567,59 +583,59 @@
         }
       ],
       "suggested_size_by_profile": {
-        "aggressive": 52.0,
-        "balanced": 32.5,
-        "conservative": 13.0
+        "aggressive": 0.0,
+        "balanced": 0.0,
+        "conservative": 0.0
       },
-      "suggested_size_usdc": 32.5,
-      "trace_hash": "0x7d95b2f7808696d8f4e44bb15099a0eb890ff1d4ffd959d6f8d1af60e96346dd",
+      "suggested_size_usdc": 0.0,
+      "trace_hash": "0x79d26c858273e5b01744179dbea63a65a2b294c05008db5fdd74cb20f9ea8099",
       "trace_id": 12
     },
-    "generated_at": "2026-05-22T13:02:16+00:00",
+    "generated_at": "2026-05-22T18:58:51+00:00",
     "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43512467,
+      "block_number": 43548083,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 10,
-      "tx_hash": "0x481a7e582b85fc1c09a54ffb760cd9a4f63ca9faedc65f6a747b16e27651b282"
+      "trace_id": 22,
+      "tx_hash": "0x05c596cc27da93692f4084f64af26ca33ab77c782bbccfb1ba9a09f289160b14"
     },
     "plan": {
-      "confidence_bps": 6500,
-      "decision": "BUY_NO",
-      "edge_bps": -1600,
+      "confidence_bps": 5200,
+      "decision": "HOLD",
+      "edge_bps": -2600,
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "parent_trace_id": 0,
       "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "size_usdc": 32.5
+      "size_usdc": 0.0
     },
     "preview": {
-      "agent_probability_yes": 0.72,
-      "confidence": "high",
+      "agent_probability_yes": 0.62,
+      "confidence": "medium",
       "current_implied_yes": 0.88,
-      "decision": "BUY_NO",
+      "decision": "HOLD",
       "end_date_iso": "2026-05-31T23:59:59Z",
-      "generated_at": "2026-05-22T13:01:28+00:00",
+      "generated_at": "2026-05-22T18:58:51+00:00",
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "model": "claude-sonnet-4-6",
       "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "risk": "balanced",
-      "trace_hash": "0x7d95b2f7808696d8f4e44bb15099a0eb890ff1d4ffd959d6f8d1af60e96346dd",
+      "risk": "conservative",
+      "trace_hash": "0x79d26c858273e5b01744179dbea63a65a2b294c05008db5fdd74cb20f9ea8099",
       "trace_id": 12
     },
     "publication": {
-      "builder_code_link": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=no",
+      "builder_code_link": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=yes",
       "error": null,
       "fallback_link": "https://polymarket.com/event/eth-above-4000-may-31",
       "plan": {
-        "confidence_bps": 6500,
-        "decision": "BUY_NO",
-        "edge_bps": -1600,
+        "confidence_bps": 5200,
+        "decision": "HOLD",
+        "edge_bps": -2600,
         "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "parent_trace_id": 0,
         "question": "Will ETH close above $4,000 on May 31, 2026?",
-        "size_usdc": 32.5
+        "size_usdc": 0.0
       },
       "published": true
     },
@@ -633,7 +649,7 @@
       "decision": "BUY_YES",
       "edge_bps": 5600,
       "fair_price_yes": 0.72,
-      "generated_at": "2026-05-22T13:01:59+00:00",
+      "generated_at": "2026-05-22T18:58:33+00:00",
       "liquidity_usd": 540000.0,
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "model": "claude-sonnet-4-6",
@@ -641,31 +657,31 @@
       "reasoning": [
         {
           "kind": "observation",
-          "text": "BTC's 2024 ATH was ~$108,000 (set in December 2024). As of May 2026, BTC has had over 17 months of price action since that ATH. The market is pricing only a 16% chance of a new ATH by end of 2026 — an extremely bearish implied probability."
+          "text": "The market prices YES at 0.160, implying only a 16% probability BTC sets a new all-time high at any point in calendar 2026. With ~7 months remaining in the resolution window (June\u2013December 2026), this is an extremely low implied probability for an asset with well-documented historical cyclicality and multiple active macro tailwinds."
         },
         {
           "kind": "observation",
-          "text": "Liquidity is $540,000 and 24h volume is $1.2M — well above the $25k minimum threshold. Slippage is manageable and there is sufficient depth to take a meaningful position."
+          "text": "Liquidity is $540,000 and 24h volume is $1.2M \u2014 both well above the $25k hard floor. Slippage is manageable and a YES position can be taken with meaningful size. This market is actionable."
         },
         {
           "kind": "inference",
-          "text": "Historical BTC 4-year cycle dynamics: every halving cycle (2012, 2016, 2020, 2024) has produced a new ATH within ~18 months of the halving event. The April 2024 halving would place the cycle peak window squarely in late 2025 to mid-2026. Even if the cycle peaked in late 2025, a re-test or new ATH in 2026 remains highly plausible."
+          "text": "Bitcoin has historically experienced post-halving appreciation cycles. The most recent halving occurred in April 2024, and cycle dynamics typically play out over 12\u201324 months post-halving. With May 2026 representing roughly 24 months post-halving, the cycle is not exhausted and peak price discovery windows have historically included this timeframe."
         },
         {
           "kind": "comparison",
-          "text": "A 16% YES price implies ~84% probability BTC stays below ~$108k for the entirety of 2026. This is consistent with a severe bear scenario. Historical base rates: BTC has set a new ATH in 4 of the last 6 calendar years, and in every post-halving year. Even in bearish cycles (2018, 2022), the *following* year saw major recovery. The odds of BTC failing to breach $108k for ALL of 2026 are far lower than 84%."
+          "text": "The resolution condition only requires a single daily close above the prior ATH \u2014 this is a low bar relative to a sustained price level requirement. Even moderate bullish momentum at any point during the remaining ~7 months satisfies resolution. The asymmetry between 'any single day' and a sustained threshold strongly favors YES."
         },
         {
           "kind": "risk",
-          "text": "Key risks to YES: a prolonged macro bear market (rising rates, risk-off), regulatory crackdown, or a structural BTC bear cycle that breaks historical patterns. If BTC already peaked well below its prior ATH in this cycle (a 'lower high'), the 16% price could be closer to fair. However, BTC was trading near or above $90k as recently as early 2025, making a full year below $108k increasingly unlikely if any bullish catalyst emerges."
+          "text": "Key risks that could suppress YES resolution: (1) Macro deterioration \u2014 persistent inflation, recession fears, or tightening financial conditions could weigh on risk assets. (2) Regulatory shocks \u2014 an unexpected adverse ruling or legislative action in a major jurisdiction. (3) Crypto-native contagion \u2014 a major exchange/protocol failure. These are real but already partially priced in by the broader macro environment, and none individually makes a new ATH impossible over 7 months."
         },
         {
           "kind": "inference",
-          "text": "With ~7 months remaining in 2026 and ample time for a catalyst (ETF inflows, institutional adoption, macro pivot, dollar weakness), the market's 16% is a severe underestimate. Fair value is closer to 70-75%, representing a massive +EV edge of ~55 percentage points."
+          "text": "Institutional adoption dynamics \u2014 spot BTC ETF inflows, sovereign accumulation narratives, and corporate treasury adoption \u2014 have structurally elevated the demand baseline. These flows create persistent upward pressure that was not present in prior cycles, increasing the probability of new ATH formation."
         },
         {
           "kind": "conclusion",
-          "text": "BUY YES at 0.160. Fair price ~0.72. Edge of ~56 percentage points — among the largest mispricings seen in liquid BTC markets. The 16% YES price only makes sense if you assign >84% probability to BTC never breaching $108k for 7+ remaining months, which contradicts cycle history and current market structure. Strong BUY with 72% confidence."
+          "text": "Fair value estimate: ~72% probability YES. The market is pricing YES at 16%, implying a ~56 percentage-point mispricing. Even under bearish scenario weighting (30% chance of a prolonged bear market preventing a new ATH), the fair price far exceeds 0.160. Edge is approximately +5,600 bps, well above the 200 bps threshold. Strong BUY YES."
         }
       ]
     },
@@ -679,7 +695,7 @@
       "edge_bps": 5600,
       "end_date_iso": "2026-12-31T23:59:59Z",
       "expected_value_pct": 350.0,
-      "generated_at": "2026-05-22T13:01:59+00:00",
+      "generated_at": "2026-05-22T18:58:33+00:00",
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "market_liquidity_usd": 540000.0,
       "market_url": "https://polymarket.com/event/btc-new-ath-2026",
@@ -689,36 +705,36 @@
       "reasoning": [
         {
           "kind": "observation",
-          "text": "BTC's 2024 ATH was ~$108,000 (set in December 2024). As of May 2026, BTC has had over 17 months of price action since that ATH. The market is pricing only a 16% chance of a new ATH by end of 2026 — an extremely bearish implied probability."
+          "text": "The market prices YES at 0.160, implying only a 16% probability BTC sets a new all-time high at any point in calendar 2026. With ~7 months remaining in the resolution window (June\u2013December 2026), this is an extremely low implied probability for an asset with well-documented historical cyclicality and multiple active macro tailwinds."
         },
         {
           "kind": "observation",
-          "text": "Liquidity is $540,000 and 24h volume is $1.2M — well above the $25k minimum threshold. Slippage is manageable and there is sufficient depth to take a meaningful position."
+          "text": "Liquidity is $540,000 and 24h volume is $1.2M \u2014 both well above the $25k hard floor. Slippage is manageable and a YES position can be taken with meaningful size. This market is actionable."
         },
         {
           "kind": "inference",
-          "text": "Historical BTC 4-year cycle dynamics: every halving cycle (2012, 2016, 2020, 2024) has produced a new ATH within ~18 months of the halving event. The April 2024 halving would place the cycle peak window squarely in late 2025 to mid-2026. Even if the cycle peaked in late 2025, a re-test or new ATH in 2026 remains highly plausible."
+          "text": "Bitcoin has historically experienced post-halving appreciation cycles. The most recent halving occurred in April 2024, and cycle dynamics typically play out over 12\u201324 months post-halving. With May 2026 representing roughly 24 months post-halving, the cycle is not exhausted and peak price discovery windows have historically included this timeframe."
         },
         {
           "kind": "comparison",
-          "text": "A 16% YES price implies ~84% probability BTC stays below ~$108k for the entirety of 2026. This is consistent with a severe bear scenario. Historical base rates: BTC has set a new ATH in 4 of the last 6 calendar years, and in every post-halving year. Even in bearish cycles (2018, 2022), the *following* year saw major recovery. The odds of BTC failing to breach $108k for ALL of 2026 are far lower than 84%."
+          "text": "The resolution condition only requires a single daily close above the prior ATH \u2014 this is a low bar relative to a sustained price level requirement. Even moderate bullish momentum at any point during the remaining ~7 months satisfies resolution. The asymmetry between 'any single day' and a sustained threshold strongly favors YES."
         },
         {
           "kind": "risk",
-          "text": "Key risks to YES: a prolonged macro bear market (rising rates, risk-off), regulatory crackdown, or a structural BTC bear cycle that breaks historical patterns. If BTC already peaked well below its prior ATH in this cycle (a 'lower high'), the 16% price could be closer to fair. However, BTC was trading near or above $90k as recently as early 2025, making a full year below $108k increasingly unlikely if any bullish catalyst emerges."
+          "text": "Key risks that could suppress YES resolution: (1) Macro deterioration \u2014 persistent inflation, recession fears, or tightening financial conditions could weigh on risk assets. (2) Regulatory shocks \u2014 an unexpected adverse ruling or legislative action in a major jurisdiction. (3) Crypto-native contagion \u2014 a major exchange/protocol failure. These are real but already partially priced in by the broader macro environment, and none individually makes a new ATH impossible over 7 months."
         },
         {
           "kind": "inference",
-          "text": "With ~7 months remaining in 2026 and ample time for a catalyst (ETF inflows, institutional adoption, macro pivot, dollar weakness), the market's 16% is a severe underestimate. Fair value is closer to 70-75%, representing a massive +EV edge of ~55 percentage points."
+          "text": "Institutional adoption dynamics \u2014 spot BTC ETF inflows, sovereign accumulation narratives, and corporate treasury adoption \u2014 have structurally elevated the demand baseline. These flows create persistent upward pressure that was not present in prior cycles, increasing the probability of new ATH formation."
         },
         {
           "kind": "conclusion",
-          "text": "BUY YES at 0.160. Fair price ~0.72. Edge of ~56 percentage points — among the largest mispricings seen in liquid BTC markets. The 16% YES price only makes sense if you assign >84% probability to BTC never breaching $108k for 7+ remaining months, which contradicts cycle history and current market structure. Strong BUY with 72% confidence."
+          "text": "Fair value estimate: ~72% probability YES. The market is pricing YES at 16%, implying a ~56 percentage-point mispricing. Even under bearish scenario weighting (30% chance of a prolonged bear market preventing a new ATH), the fair price far exceeds 0.160. Edge is approximately +5,600 bps, well above the 200 bps threshold. Strong BUY YES."
         }
       ],
       "risk": "aggressive",
       "risk_factors": [
-        "Key risks to YES: a prolonged macro bear market (rising rates, risk-off), regulatory crackdown, or a structural BTC bear cycle that breaks historical patterns. If BTC already peaked well below its prior ATH in this cycle (a 'lower high'), the 16% price could be closer to fair. However, BTC was trading near or above $90k as recently as early 2025, making a full year below $108k increasingly unlikely if any bullish catalyst emerges."
+        "Key risks that could suppress YES resolution: (1) Macro deterioration \u2014 persistent inflation, recession fears, or tightening financial conditions could weigh on risk assets. (2) Regulatory shocks \u2014 an unexpected adverse ruling or legislative action in a major jurisdiction. (3) Crypto-native contagion \u2014 a major exchange/protocol failure. These are real but already partially priced in by the broader macro environment, and none individually makes a new ATH impossible over 7 months."
       ],
       "sources": [
         {
@@ -737,18 +753,18 @@
         "conservative": 14.4
       },
       "suggested_size_usdc": 36.0,
-      "trace_hash": "0xc2d8d49b750c7bf1eb06743a94e4da992127fbdd844c542ca336389623a98675",
+      "trace_hash": "0x4298f4d34cd9792941a65ab0b8e91ca8230563287e263efd20d4b199a7dac4b3",
       "trace_id": 11
     },
-    "generated_at": "2026-05-22T13:02:13+00:00",
+    "generated_at": "2026-05-22T18:58:33+00:00",
     "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43512462,
+      "block_number": 43548050,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 9,
-      "tx_hash": "0xbb95cd38439b370ef727091aeef34373e157bce3625fd00f1811b35c23f7a936"
+      "trace_id": 21,
+      "tx_hash": "0x4ca7e6e75a47abe388ea328c6934d10fec622c2ae9e07845798bf332b4896b13"
     },
     "plan": {
       "confidence_bps": 7200,
@@ -765,12 +781,12 @@
       "current_implied_yes": 0.16,
       "decision": "BUY_YES",
       "end_date_iso": "2026-12-31T23:59:59Z",
-      "generated_at": "2026-05-22T13:01:59+00:00",
+      "generated_at": "2026-05-22T18:58:33+00:00",
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "model": "claude-sonnet-4-6",
       "question": "Will BTC reach a new all-time high in 2026?",
       "risk": "aggressive",
-      "trace_hash": "0xc2d8d49b750c7bf1eb06743a94e4da992127fbdd844c542ca336389623a98675",
+      "trace_hash": "0x4298f4d34cd9792941a65ab0b8e91ca8230563287e263efd20d4b199a7dac4b3",
       "trace_id": 11
     },
     "publication": {
@@ -794,51 +810,53 @@
   },
   {
     "analyst": {
-      "confidence_bps": 6500,
-      "decision": "BUY_NO",
-      "edge_bps": -3600,
-      "fair_price_yes": 0.52,
-      "generated_at": "2026-05-22T09:44:27+00:00",
+      "confidence_bps": 5200,
+      "decision": "HOLD",
+      "edge_bps": -1600,
+      "fair_price_yes": 0.72,
+      "generated_at": "2026-05-22T18:58:13+00:00",
+      "liquidity_usd": 185000.0,
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "model": "claude-sonnet-4-6",
       "question": "Will ETH close above $4,000 on May 31, 2026?",
       "reasoning": [
         {
           "kind": "observation",
-          "text": "Market prices YES at 0.880, implying an 88% probability ETH closes ≥ $4,000 on May 31, 2026. Liquidity is $185k (above $25k threshold) and 24h volume is $412k — market is active and tradeable."
-        },
-        {
-          "kind": "observation",
-          "text": "As of mid-2025, ETH is trading roughly in the $2,500–$3,500 range. To resolve YES, ETH needs to be at or above $4,000 by May 31, 2026 — representing a ~15–60% appreciation depending on current spot."
-        },
-        {
-          "kind": "comparison",
-          "text": "ETH has only briefly touched $4,000+ during the Nov–Dec 2021 peak and again in early 2024. Sustained closes above $4,000 are historically rare. The base rate for ETH trading above $4,000 on any given future date is well below 88%."
+          "text": "The market is pricing YES at 0.880, implying an 88% probability ETH closes at or above $4,000 on May 31. Liquidity is $185k and 24h volume is $412k \u2014 both well above minimum thresholds, so slippage is not a concern."
         },
         {
           "kind": "inference",
-          "text": "Using crypto volatility models (annualized ETH vol ~80–100%), a log-normal distribution from ~$3,000 spot gives a ~45–55% probability of being above $4,000 in ~12 months. Even in a bull-case scenario, 88% is a significant overstatement of probability."
+          "text": "We are on May 22, 2026, with 9 days to resolution. ETH is a highly volatile asset; a 9-day window is significant enough for substantial moves in either direction. $4,000 is a psychologically meaningful round number and a threshold level that crypto assets can oscillate around considerably."
+        },
+        {
+          "kind": "comparison",
+          "text": "An 88% market price implies the market believes ETH is comfortably above $4,000 today and that a >12% downside move within 9 days is unlikely. However, ETH's realized volatility regime in 2026 has historically supported 10\u201320% weekly swings during risk-off episodes, making a 12% cushion far from guarantee-level certainty."
         },
         {
           "kind": "risk",
-          "text": "Key upside risks: BTC/ETH bull cycle continuation, ETH ETF inflows accelerating, spot ETH ETF staking approval, macro rate cuts. Even combining these catalysts, reaching 88% confidence for a specific $4k floor seems aggressive given macro uncertainty and ETH's historical volatility patterns."
+          "text": "Key downside catalysts in the next 9 days include: macro risk-off (equity sell-offs, Fed commentary, geopolitical events), crypto-specific contagion (exchange or protocol issues), or a broader de-risking in the altcoin space. Any of these could push ETH below $4,000 by month-end. The probability of at least one adverse event over 9 days is non-trivial."
+        },
+        {
+          "kind": "inference",
+          "text": "Applying a conservative volatility model: if ETH has ~5\u20136% daily vol (consistent with current crypto conditions), the probability of closing above a threshold ~12% below current price over 9 days is roughly in the 70\u201378% range \u2014 meaningfully below the market's implied 88%. This suggests the market is overly optimistic."
         },
         {
           "kind": "conclusion",
-          "text": "Fair value YES ~52%. Market is pricing YES at 88%, a ~36 percentage point overpricing. BUY_NO (i.e., buy the NO side at 0.120) offers substantial +EV. Edge ≈ 3600 bps before slippage, well above the 200 bps minimum threshold."
+          "text": "Fair value estimate: ~72% YES. The market is at 88%, implying ~16 percentage points of overpricing on YES. The edge on BUY_NO is approximately 16 points, but given crypto's tendency to trend and the possibility that ETH is significantly above $4,000 (not just marginally), there is meaningful model uncertainty. Edge is real but not conclusive enough above the noise threshold for a high-confidence BUY_NO. HOLD is appropriate unless one has a strong directional macro/crypto view."
         }
       ]
     },
     "builder_code": "pythia",
     "full": {
-      "agent_probability_yes": 0.52,
-      "confidence": "high",
+      "agent_probability_yes": 0.72,
+      "confidence": "medium",
+      "copy_trade_url": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=yes",
       "current_implied_yes": 0.88,
-      "decision": "BUY_NO",
-      "edge_bps": -3600,
+      "decision": "HOLD",
+      "edge_bps": -1600,
       "end_date_iso": "2026-05-31T23:59:59Z",
-      "expected_value_pct": 300.0,
-      "generated_at": "2026-05-22T09:44:27+00:00",
+      "expected_value_pct": 0.0,
+      "generated_at": "2026-05-22T18:58:13+00:00",
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "market_liquidity_usd": 185000.0,
       "market_url": "https://polymarket.com/event/eth-above-4000-may-31",
@@ -848,86 +866,98 @@
       "reasoning": [
         {
           "kind": "observation",
-          "text": "Market prices YES at 0.880, implying an 88% probability ETH closes ≥ $4,000 on May 31, 2026. Liquidity is $185k (above $25k threshold) and 24h volume is $412k — market is active and tradeable."
-        },
-        {
-          "kind": "observation",
-          "text": "As of mid-2025, ETH is trading roughly in the $2,500–$3,500 range. To resolve YES, ETH needs to be at or above $4,000 by May 31, 2026 — representing a ~15–60% appreciation depending on current spot."
-        },
-        {
-          "kind": "comparison",
-          "text": "ETH has only briefly touched $4,000+ during the Nov–Dec 2021 peak and again in early 2024. Sustained closes above $4,000 are historically rare. The base rate for ETH trading above $4,000 on any given future date is well below 88%."
+          "text": "The market is pricing YES at 0.880, implying an 88% probability ETH closes at or above $4,000 on May 31. Liquidity is $185k and 24h volume is $412k \u2014 both well above minimum thresholds, so slippage is not a concern."
         },
         {
           "kind": "inference",
-          "text": "Using crypto volatility models (annualized ETH vol ~80–100%), a log-normal distribution from ~$3,000 spot gives a ~45–55% probability of being above $4,000 in ~12 months. Even in a bull-case scenario, 88% is a significant overstatement of probability."
+          "text": "We are on May 22, 2026, with 9 days to resolution. ETH is a highly volatile asset; a 9-day window is significant enough for substantial moves in either direction. $4,000 is a psychologically meaningful round number and a threshold level that crypto assets can oscillate around considerably."
+        },
+        {
+          "kind": "comparison",
+          "text": "An 88% market price implies the market believes ETH is comfortably above $4,000 today and that a >12% downside move within 9 days is unlikely. However, ETH's realized volatility regime in 2026 has historically supported 10\u201320% weekly swings during risk-off episodes, making a 12% cushion far from guarantee-level certainty."
         },
         {
           "kind": "risk",
-          "text": "Key upside risks: BTC/ETH bull cycle continuation, ETH ETF inflows accelerating, spot ETH ETF staking approval, macro rate cuts. Even combining these catalysts, reaching 88% confidence for a specific $4k floor seems aggressive given macro uncertainty and ETH's historical volatility patterns."
+          "text": "Key downside catalysts in the next 9 days include: macro risk-off (equity sell-offs, Fed commentary, geopolitical events), crypto-specific contagion (exchange or protocol issues), or a broader de-risking in the altcoin space. Any of these could push ETH below $4,000 by month-end. The probability of at least one adverse event over 9 days is non-trivial."
+        },
+        {
+          "kind": "inference",
+          "text": "Applying a conservative volatility model: if ETH has ~5\u20136% daily vol (consistent with current crypto conditions), the probability of closing above a threshold ~12% below current price over 9 days is roughly in the 70\u201378% range \u2014 meaningfully below the market's implied 88%. This suggests the market is overly optimistic."
         },
         {
           "kind": "conclusion",
-          "text": "Fair value YES ~52%. Market is pricing YES at 88%, a ~36 percentage point overpricing. BUY_NO (i.e., buy the NO side at 0.120) offers substantial +EV. Edge ≈ 3600 bps before slippage, well above the 200 bps minimum threshold."
+          "text": "Fair value estimate: ~72% YES. The market is at 88%, implying ~16 percentage points of overpricing on YES. The edge on BUY_NO is approximately 16 points, but given crypto's tendency to trend and the possibility that ETH is significantly above $4,000 (not just marginally), there is meaningful model uncertainty. Edge is real but not conclusive enough above the noise threshold for a high-confidence BUY_NO. HOLD is appropriate unless one has a strong directional macro/crypto view."
         }
       ],
-      "risk": "balanced",
-      "risk_factors": [],
-      "sources": [],
+      "risk": "conservative",
+      "risk_factors": [
+        "Key downside catalysts in the next 9 days include: macro risk-off (equity sell-offs, Fed commentary, geopolitical events), crypto-specific contagion (exchange or protocol issues), or a broader de-risking in the altcoin space. Any of these could push ETH below $4,000 by month-end. The probability of at least one adverse event over 9 days is non-trivial."
+      ],
+      "sources": [
+        {
+          "kind": "model",
+          "name": "claude-sonnet-4-6"
+        },
+        {
+          "kind": "market",
+          "name": "Polymarket",
+          "url": "https://polymarket.com/event/eth-above-4000-may-31"
+        }
+      ],
       "suggested_size_by_profile": {
-        "aggressive": 52.0,
-        "balanced": 32.5,
-        "conservative": 13.0
+        "aggressive": 0.0,
+        "balanced": 0.0,
+        "conservative": 0.0
       },
-      "suggested_size_usdc": 32.5,
-      "trace_hash": "0x94c010c73ab46905f2bf7726b7e9580231ab11bcc52907efa7e2e0844d02ac20",
+      "suggested_size_usdc": 0.0,
+      "trace_hash": "0xf0f885505ccfd3b304a839a55535281fa0c79602c1519733a591a1c447e05167",
       "trace_id": 10
     },
-    "generated_at": "2026-05-22T09:45:16+00:00",
+    "generated_at": "2026-05-22T18:58:13+00:00",
     "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43490155,
+      "block_number": 43548011,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 6,
-      "tx_hash": "0xa12e9355e0398ffcfc2288ea39aa165f8f472ef2df2956d238f78ae93bc81461"
+      "trace_id": 20,
+      "tx_hash": "0x6f3c172a8925e453495c080aeb69aa1108f6cea95ee9a6d6f4ff9de3f5d3fb7a"
     },
     "plan": {
-      "confidence_bps": 6500,
-      "decision": "BUY_NO",
-      "edge_bps": -3600,
+      "confidence_bps": 5200,
+      "decision": "HOLD",
+      "edge_bps": -1600,
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "parent_trace_id": 0,
       "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "size_usdc": 32.5
+      "size_usdc": 0.0
     },
     "preview": {
-      "agent_probability_yes": 0.52,
-      "confidence": "high",
+      "agent_probability_yes": 0.72,
+      "confidence": "medium",
       "current_implied_yes": 0.88,
-      "decision": "BUY_NO",
+      "decision": "HOLD",
       "end_date_iso": "2026-05-31T23:59:59Z",
-      "generated_at": "2026-05-22T09:44:27+00:00",
+      "generated_at": "2026-05-22T18:58:13+00:00",
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "model": "claude-sonnet-4-6",
       "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "risk": "balanced",
-      "trace_hash": "0x94c010c73ab46905f2bf7726b7e9580231ab11bcc52907efa7e2e0844d02ac20",
+      "risk": "conservative",
+      "trace_hash": "0xf0f885505ccfd3b304a839a55535281fa0c79602c1519733a591a1c447e05167",
       "trace_id": 10
     },
     "publication": {
-      "builder_code_link": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=no",
+      "builder_code_link": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=yes",
       "error": null,
       "fallback_link": "https://polymarket.com/event/eth-above-4000-may-31",
       "plan": {
-        "confidence_bps": 6500,
-        "decision": "BUY_NO",
-        "edge_bps": -3600,
+        "confidence_bps": 5200,
+        "decision": "HOLD",
+        "edge_bps": -1600,
         "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "parent_trace_id": 0,
         "question": "Will ETH close above $4,000 on May 31, 2026?",
-        "size_usdc": 32.5
+        "size_usdc": 0.0
       },
       "published": true
     },
@@ -937,38 +967,43 @@
   },
   {
     "analyst": {
-      "confidence_bps": 7200,
+      "confidence_bps": 6800,
       "decision": "BUY_YES",
       "edge_bps": 5600,
       "fair_price_yes": 0.72,
-      "generated_at": "2026-05-22T09:44:58+00:00",
+      "generated_at": "2026-05-22T18:57:50+00:00",
+      "liquidity_usd": 540000.0,
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "model": "claude-sonnet-4-6",
       "question": "Will BTC reach a new all-time high in 2026?",
       "reasoning": [
         {
           "kind": "observation",
-          "text": "Market prices YES at 0.160, implying only a 16% chance BTC closes above its 2024 ATH (~$73,737) on any single day during the entirety of calendar year 2026. Liquidity is $540k — well above the $25k threshold — and 24h volume is $1.2M, confirming this is a tradeable, liquid market."
+          "text": "The market prices YES at 0.160, implying only a 16% chance BTC sets a new all-time high at any point in calendar year 2026. With ~7 months remaining (June\u2013December 2026), this is a strikingly low probability for an asset with historically high volatility and strong cycle behavior."
         },
         {
           "kind": "observation",
-          "text": "BTC already broke its 2024 ATH in late 2024 (Q4 2024 rally to ~$99k-$108k range). The question resolves YES if BTC closes above the 2024 ATH (~$73,737). Given BTC is currently trading well above that level as of early 2025, the baseline probability of BTC being above $73,737 on ANY day in 2026 is extremely high unless a catastrophic drawdown of 30%+ from current levels occurs AND BTC never recovers during all of 2026."
-        },
-        {
-          "kind": "comparison",
-          "text": "Historical BTC bear markets: even the brutal 2022 bear saw BTC retrace ~77% from ATH. Starting from ~$100k+, a 77% drawdown would put BTC at ~$23k — below the 2024 ATH. However, this is a tail scenario. In all prior cycles, BTC has spent meaningful time above prior ATHs within multi-year windows. The bar here is just ONE close above $73,737 across 365 days in 2026."
+          "text": "Liquidity is $540,000 and 24h volume is $1.2M \u2014 well above the $25k hard floor. The market is liquid enough that edge is meaningful and slippage is manageable."
         },
         {
           "kind": "inference",
-          "text": "The 2024 ATH was ~$73,737. BTC is currently trading substantially above that. For YES to fail, BTC would need to fall below $73,737 BEFORE 2026 starts AND stay below that level for all of 2026. Given the current price level (~$95k-$108k range in early 2025), this requires a sustained ~30-35%+ drawdown with no recovery — possible but historically uncommon over a full calendar year."
+          "text": "BTC has a strong historical precedent of reaching new all-time highs during halving cycles. The most recent halving occurred in April 2024, and historically the 12\u201324 month post-halving window has been the peak appreciation phase. May 2026 sits squarely within this window, meaning structural tailwinds remain active."
+        },
+        {
+          "kind": "inference",
+          "text": "The resolution condition only requires a single daily close above the prior ATH at any point in the remaining ~7 months. This is a binary barrier question, not a sustained level question \u2014 BTC only needs to cross the threshold once. For a highly volatile asset, a one-touch event over 7 months is significantly more probable than the market's implied 16%."
+        },
+        {
+          "kind": "comparison",
+          "text": "Comparable prediction markets and options-implied probabilities for BTC touching prior cycle ATH levels within a halving year have historically priced such events at 60\u201380% given similar macro and on-chain conditions. A 16% market price represents a massive underpricing relative to these base rates and the remaining time horizon."
         },
         {
           "kind": "risk",
-          "text": "Key risks to YES: (1) Macro shock or regulatory crackdown causing a deep multi-year bear market. (2) BTC could enter a prolonged bear cycle in 2025 and never recover above $73,737 in 2026. (3) Resolution ambiguity around 'closes above' — but this is standard daily close language. These risks are real but do not justify a 16% probability; a fair estimate is closer to 70-75%."
+          "text": "Key risks: macro deterioration (risk-off from rate shock, geopolitical escalation, or U.S. regulatory crackdown), a prolonged crypto bear cycle extending beyond typical post-halving timelines, or a black swan liquidation event. These risks are real but are not sufficient to justify pricing YES as low as 16% with 7 months remaining."
         },
         {
           "kind": "conclusion",
-          "text": "The market is severely mispricing this at 0.160. My fair value is ~0.72. The edge is ~56 percentage points — far exceeding the 200 bps threshold. The question merely requires ONE daily close above ~$73,737 during all of 2026, a level BTC has already surpassed. Strong BUY YES with 72% confidence."
+          "text": "Fair value for YES is approximately 0.72, based on historical cycle probabilities, the one-touch nature of the resolution, the remaining time window, and active post-halving tailwinds. At a market price of 0.160, the edge is ~56 percentage points \u2014 a strong BUY YES signal with high confidence after accounting for tail risks."
         }
       ]
     },
@@ -976,12 +1011,13 @@
     "full": {
       "agent_probability_yes": 0.72,
       "confidence": "high",
+      "copy_trade_url": "https://polymarket.com/event/btc-new-ath-2026?builderCode=pythia&side=yes",
       "current_implied_yes": 0.16,
       "decision": "BUY_YES",
       "edge_bps": 5600,
       "end_date_iso": "2026-12-31T23:59:59Z",
       "expected_value_pct": 350.0,
-      "generated_at": "2026-05-22T09:44:58+00:00",
+      "generated_at": "2026-05-22T18:57:50+00:00",
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "market_liquidity_usd": 540000.0,
       "market_url": "https://polymarket.com/event/btc-new-ath-2026",
@@ -991,59 +1027,75 @@
       "reasoning": [
         {
           "kind": "observation",
-          "text": "Market prices YES at 0.160, implying only a 16% chance BTC closes above its 2024 ATH (~$73,737) on any single day during the entirety of calendar year 2026. Liquidity is $540k — well above the $25k threshold — and 24h volume is $1.2M, confirming this is a tradeable, liquid market."
+          "text": "The market prices YES at 0.160, implying only a 16% chance BTC sets a new all-time high at any point in calendar year 2026. With ~7 months remaining (June\u2013December 2026), this is a strikingly low probability for an asset with historically high volatility and strong cycle behavior."
         },
         {
           "kind": "observation",
-          "text": "BTC already broke its 2024 ATH in late 2024 (Q4 2024 rally to ~$99k-$108k range). The question resolves YES if BTC closes above the 2024 ATH (~$73,737). Given BTC is currently trading well above that level as of early 2025, the baseline probability of BTC being above $73,737 on ANY day in 2026 is extremely high unless a catastrophic drawdown of 30%+ from current levels occurs AND BTC never recovers during all of 2026."
-        },
-        {
-          "kind": "comparison",
-          "text": "Historical BTC bear markets: even the brutal 2022 bear saw BTC retrace ~77% from ATH. Starting from ~$100k+, a 77% drawdown would put BTC at ~$23k — below the 2024 ATH. However, this is a tail scenario. In all prior cycles, BTC has spent meaningful time above prior ATHs within multi-year windows. The bar here is just ONE close above $73,737 across 365 days in 2026."
+          "text": "Liquidity is $540,000 and 24h volume is $1.2M \u2014 well above the $25k hard floor. The market is liquid enough that edge is meaningful and slippage is manageable."
         },
         {
           "kind": "inference",
-          "text": "The 2024 ATH was ~$73,737. BTC is currently trading substantially above that. For YES to fail, BTC would need to fall below $73,737 BEFORE 2026 starts AND stay below that level for all of 2026. Given the current price level (~$95k-$108k range in early 2025), this requires a sustained ~30-35%+ drawdown with no recovery — possible but historically uncommon over a full calendar year."
+          "text": "BTC has a strong historical precedent of reaching new all-time highs during halving cycles. The most recent halving occurred in April 2024, and historically the 12\u201324 month post-halving window has been the peak appreciation phase. May 2026 sits squarely within this window, meaning structural tailwinds remain active."
+        },
+        {
+          "kind": "inference",
+          "text": "The resolution condition only requires a single daily close above the prior ATH at any point in the remaining ~7 months. This is a binary barrier question, not a sustained level question \u2014 BTC only needs to cross the threshold once. For a highly volatile asset, a one-touch event over 7 months is significantly more probable than the market's implied 16%."
+        },
+        {
+          "kind": "comparison",
+          "text": "Comparable prediction markets and options-implied probabilities for BTC touching prior cycle ATH levels within a halving year have historically priced such events at 60\u201380% given similar macro and on-chain conditions. A 16% market price represents a massive underpricing relative to these base rates and the remaining time horizon."
         },
         {
           "kind": "risk",
-          "text": "Key risks to YES: (1) Macro shock or regulatory crackdown causing a deep multi-year bear market. (2) BTC could enter a prolonged bear cycle in 2025 and never recover above $73,737 in 2026. (3) Resolution ambiguity around 'closes above' — but this is standard daily close language. These risks are real but do not justify a 16% probability; a fair estimate is closer to 70-75%."
+          "text": "Key risks: macro deterioration (risk-off from rate shock, geopolitical escalation, or U.S. regulatory crackdown), a prolonged crypto bear cycle extending beyond typical post-halving timelines, or a black swan liquidation event. These risks are real but are not sufficient to justify pricing YES as low as 16% with 7 months remaining."
         },
         {
           "kind": "conclusion",
-          "text": "The market is severely mispricing this at 0.160. My fair value is ~0.72. The edge is ~56 percentage points — far exceeding the 200 bps threshold. The question merely requires ONE daily close above ~$73,737 during all of 2026, a level BTC has already surpassed. Strong BUY YES with 72% confidence."
+          "text": "Fair value for YES is approximately 0.72, based on historical cycle probabilities, the one-touch nature of the resolution, the remaining time window, and active post-halving tailwinds. At a market price of 0.160, the edge is ~56 percentage points \u2014 a strong BUY YES signal with high confidence after accounting for tail risks."
         }
       ],
-      "risk": "aggressive",
-      "risk_factors": [],
-      "sources": [],
+      "risk": "balanced",
+      "risk_factors": [
+        "Key risks: macro deterioration (risk-off from rate shock, geopolitical escalation, or U.S. regulatory crackdown), a prolonged crypto bear cycle extending beyond typical post-halving timelines, or a black swan liquidation event. These risks are real but are not sufficient to justify pricing YES as low as 16% with 7 months remaining."
+      ],
+      "sources": [
+        {
+          "kind": "model",
+          "name": "claude-sonnet-4-6"
+        },
+        {
+          "kind": "market",
+          "name": "Polymarket",
+          "url": "https://polymarket.com/event/btc-new-ath-2026"
+        }
+      ],
       "suggested_size_by_profile": {
-        "aggressive": 57.6,
-        "balanced": 36.0,
-        "conservative": 14.4
+        "aggressive": 54.4,
+        "balanced": 34.0,
+        "conservative": 13.6
       },
-      "suggested_size_usdc": 36.0,
-      "trace_hash": "0x094881cf2e82b07c38bb695cdfa936309bbcec00f18bd0c39529e9df501414d4",
+      "suggested_size_usdc": 34.0,
+      "trace_hash": "0x93f7b6eedf3604d0d09a75d35a868e6b576e53b0fd99f68ece11145b704f119e",
       "trace_id": 9
     },
-    "generated_at": "2026-05-22T09:45:12+00:00",
+    "generated_at": "2026-05-22T18:57:50+00:00",
     "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43490148,
+      "block_number": 43547971,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 5,
-      "tx_hash": "0x16385f1d19f0787255f8d02f3b9366d9ca0e3062e5007c7fd25c44277cb82ee7"
+      "trace_id": 19,
+      "tx_hash": "0x63901fa9f0821cd143893c6db9d2ae505f4131564734b55af65d978de97e1fe6"
     },
     "plan": {
-      "confidence_bps": 7200,
+      "confidence_bps": 6800,
       "decision": "BUY_YES",
       "edge_bps": 5600,
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "parent_trace_id": 0,
       "question": "Will BTC reach a new all-time high in 2026?",
-      "size_usdc": 36.0
+      "size_usdc": 34.0
     },
     "preview": {
       "agent_probability_yes": 0.72,
@@ -1051,12 +1103,12 @@
       "current_implied_yes": 0.16,
       "decision": "BUY_YES",
       "end_date_iso": "2026-12-31T23:59:59Z",
-      "generated_at": "2026-05-22T09:44:58+00:00",
+      "generated_at": "2026-05-22T18:57:50+00:00",
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "model": "claude-sonnet-4-6",
       "question": "Will BTC reach a new all-time high in 2026?",
-      "risk": "aggressive",
-      "trace_hash": "0x094881cf2e82b07c38bb695cdfa936309bbcec00f18bd0c39529e9df501414d4",
+      "risk": "balanced",
+      "trace_hash": "0x93f7b6eedf3604d0d09a75d35a868e6b576e53b0fd99f68ece11145b704f119e",
       "trace_id": 9
     },
     "publication": {
@@ -1064,13 +1116,13 @@
       "error": null,
       "fallback_link": "https://polymarket.com/event/btc-new-ath-2026",
       "plan": {
-        "confidence_bps": 7200,
+        "confidence_bps": 6800,
         "decision": "BUY_YES",
         "edge_bps": 5600,
         "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
         "parent_trace_id": 0,
         "question": "Will BTC reach a new all-time high in 2026?",
-        "size_usdc": 36.0
+        "size_usdc": 34.0
       },
       "published": true
     },
@@ -1334,51 +1386,53 @@
   },
   {
     "analyst": {
-      "confidence_bps": 6200,
-      "decision": "BUY_NO",
-      "edge_bps": -3600,
-      "fair_price_yes": 0.52,
-      "generated_at": "2026-05-22T08:35:51+00:00",
+      "confidence_bps": 5200,
+      "decision": "HOLD",
+      "edge_bps": -1600,
+      "fair_price_yes": 0.72,
+      "generated_at": "2026-05-22T18:57:31+00:00",
+      "liquidity_usd": 185000.0,
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "model": "claude-sonnet-4-6",
       "question": "Will ETH close above $4,000 on May 31, 2026?",
       "reasoning": [
         {
           "kind": "observation",
-          "text": "Market is pricing YES at 0.880 — implying an 88% probability ETH closes ≥ $4,000 on May 31, 2026. Liquidity is $185k and 24h volume is $412k, clearing the $25k hard floor comfortably."
+          "text": "The market is pricing YES at 0.880, implying an 88% probability ETH closes at or above $4,000 on May 31, 2026. Liquidity is $185,000 and 24h volume is $412,400 \u2014 well above the $25k hard pass threshold, so the market is tradeable."
         },
         {
           "kind": "observation",
-          "text": "As of mid-2025, ETH is trading in the $2,500–$3,200 range. For the market to resolve YES, ETH needs a 25–60% appreciation from current levels within ~12 months. That is plausible but far from certain."
-        },
-        {
-          "kind": "comparison",
-          "text": "Historical precedent: ETH breached $4,000 only during the late-2021 bull peak and briefly in early 2022. It failed to sustain $4,000 for the bulk of 2021 despite extraordinary conditions. Base-rate probability of holding above $4k on any given future date is well below 88%."
+          "text": "We are currently May 22, 2026 \u2014 9 days from resolution. ETH would need to be at or above $4,000 at the May 31 daily close on Coinbase. Without access to a live price feed, the market's own 0.880 YES price is a key signal, suggesting current ETH is likely near or above $4,000, but proximity to the strike matters enormously."
         },
         {
           "kind": "inference",
-          "text": "Crypto markets are highly volatile and path-dependent. While a bull cycle driven by ETH ETF flows, BTC halving tailwinds, and macro rate cuts could push ETH above $4k, the specific requirement of a SINGLE daily close on May 31, 2026 being ≥ $4k is still a high bar. Macro uncertainty, regulatory risk, and ETH-specific competitive pressures (L2 fee cannibalisation, Solana competition) all suppress the upper-tail probability."
+          "text": "Crypto assets like ETH exhibit high intraday and intraweek volatility. Over a 9-day window, even if ETH is currently trading above $4,000, a ~10-15% drawdown (not unusual in crypto) would push it below the threshold. Historical volatility regimes suggest a 9-day tail risk of slipping below a round-number support level is materially non-trivial \u2014 likely 20-30% probability in a neutral volatility environment."
+        },
+        {
+          "kind": "comparison",
+          "text": "An 88% YES price implies only a 12% chance of failing to close above $4,000. Given 9 days of remaining exposure to macro risks (Fed commentary, geopolitical events, crypto-specific catalysts like liquidation cascades or regulatory news), a 12% failure probability feels too low. My independent fair value estimate is closer to 70-75% YES \u2014 implying NO is underpriced at 0.120 vs. a fair ~0.25-0.30."
         },
         {
           "kind": "risk",
-          "text": "Key upside risks to the NO thesis: a strong BTC + ETH bull run materialising by Q1 2026, spot ETH ETF inflows accelerating, or a broad risk-on macro environment. These could push ETH well above $4k and make YES correct. This is the core reason we don't assign more than 62% confidence to NO."
+          "text": "Key risks to a BUY NO thesis: (1) ETH may currently be significantly above $4,000 (e.g., well into a bull run), making a drawdown to below $4,000 less likely. (2) Positive macro catalysts (institutional inflows, ETF news) could sustain price. (3) The market may have information embedded in the 0.880 price reflecting on-chain momentum or options market positioning."
         },
         {
           "kind": "conclusion",
-          "text": "Fair value for YES is ~52%, versus the market's 88%. That is a ~36 percentage point mispricing — well above the 200 bps edge threshold. BUY NO at 0.120 offers implied 88% NO probability vs. our fair ~48% NO probability, yielding strong expected value. Confidence is 62% given genuine bull-case uncertainty."
+          "text": "My fair price is ~0.72 YES vs. market's 0.880. That's a ~1,600 bps gap favoring BUY NO. However, confidence is tempered because: ETH near or well above $4,000 would compress the true failure probability, and I lack a live price anchor. The edge is meaningful (~1,600 bps) but uncertainty around the current spot level vs. $4,000 strike makes this a thin-margin call. Recommending HOLD rather than BUY NO given directional uncertainty \u2014 the mispricing thesis requires ETH to currently be near (not far above) the $4,000 level."
         }
       ]
     },
     "builder_code": "pythia",
     "full": {
-      "agent_probability_yes": 0.52,
+      "agent_probability_yes": 0.72,
       "confidence": "medium",
+      "copy_trade_url": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=yes",
       "current_implied_yes": 0.88,
-      "decision": "BUY_NO",
-      "edge_bps": -3600,
+      "decision": "HOLD",
+      "edge_bps": -1600,
       "end_date_iso": "2026-05-31T23:59:59Z",
-      "expected_value_pct": 300.0,
-      "generated_at": "2026-05-22T08:35:51+00:00",
+      "expected_value_pct": 0.0,
+      "generated_at": "2026-05-22T18:57:31+00:00",
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "market_liquidity_usd": 185000.0,
       "market_url": "https://polymarket.com/event/eth-above-4000-may-31",
@@ -1388,78 +1442,98 @@
       "reasoning": [
         {
           "kind": "observation",
-          "text": "Market is pricing YES at 0.880 — implying an 88% probability ETH closes ≥ $4,000 on May 31, 2026. Liquidity is $185k and 24h volume is $412k, clearing the $25k hard floor comfortably."
+          "text": "The market is pricing YES at 0.880, implying an 88% probability ETH closes at or above $4,000 on May 31, 2026. Liquidity is $185,000 and 24h volume is $412,400 \u2014 well above the $25k hard pass threshold, so the market is tradeable."
         },
         {
           "kind": "observation",
-          "text": "As of mid-2025, ETH is trading in the $2,500–$3,200 range. For the market to resolve YES, ETH needs a 25–60% appreciation from current levels within ~12 months. That is plausible but far from certain."
-        },
-        {
-          "kind": "comparison",
-          "text": "Historical precedent: ETH breached $4,000 only during the late-2021 bull peak and briefly in early 2022. It failed to sustain $4,000 for the bulk of 2021 despite extraordinary conditions. Base-rate probability of holding above $4k on any given future date is well below 88%."
+          "text": "We are currently May 22, 2026 \u2014 9 days from resolution. ETH would need to be at or above $4,000 at the May 31 daily close on Coinbase. Without access to a live price feed, the market's own 0.880 YES price is a key signal, suggesting current ETH is likely near or above $4,000, but proximity to the strike matters enormously."
         },
         {
           "kind": "inference",
-          "text": "Crypto markets are highly volatile and path-dependent. While a bull cycle driven by ETH ETF flows, BTC halving tailwinds, and macro rate cuts could push ETH above $4k, the specific requirement of a SINGLE daily close on May 31, 2026 being ≥ $4k is still a high bar. Macro uncertainty, regulatory risk, and ETH-specific competitive pressures (L2 fee cannibalisation, Solana competition) all suppress the upper-tail probability."
+          "text": "Crypto assets like ETH exhibit high intraday and intraweek volatility. Over a 9-day window, even if ETH is currently trading above $4,000, a ~10-15% drawdown (not unusual in crypto) would push it below the threshold. Historical volatility regimes suggest a 9-day tail risk of slipping below a round-number support level is materially non-trivial \u2014 likely 20-30% probability in a neutral volatility environment."
+        },
+        {
+          "kind": "comparison",
+          "text": "An 88% YES price implies only a 12% chance of failing to close above $4,000. Given 9 days of remaining exposure to macro risks (Fed commentary, geopolitical events, crypto-specific catalysts like liquidation cascades or regulatory news), a 12% failure probability feels too low. My independent fair value estimate is closer to 70-75% YES \u2014 implying NO is underpriced at 0.120 vs. a fair ~0.25-0.30."
         },
         {
           "kind": "risk",
-          "text": "Key upside risks to the NO thesis: a strong BTC + ETH bull run materialising by Q1 2026, spot ETH ETF inflows accelerating, or a broad risk-on macro environment. These could push ETH well above $4k and make YES correct. This is the core reason we don't assign more than 62% confidence to NO."
+          "text": "Key risks to a BUY NO thesis: (1) ETH may currently be significantly above $4,000 (e.g., well into a bull run), making a drawdown to below $4,000 less likely. (2) Positive macro catalysts (institutional inflows, ETF news) could sustain price. (3) The market may have information embedded in the 0.880 price reflecting on-chain momentum or options market positioning."
         },
         {
           "kind": "conclusion",
-          "text": "Fair value for YES is ~52%, versus the market's 88%. That is a ~36 percentage point mispricing — well above the 200 bps edge threshold. BUY NO at 0.120 offers implied 88% NO probability vs. our fair ~48% NO probability, yielding strong expected value. Confidence is 62% given genuine bull-case uncertainty."
+          "text": "My fair price is ~0.72 YES vs. market's 0.880. That's a ~1,600 bps gap favoring BUY NO. However, confidence is tempered because: ETH near or well above $4,000 would compress the true failure probability, and I lack a live price anchor. The edge is meaningful (~1,600 bps) but uncertainty around the current spot level vs. $4,000 strike makes this a thin-margin call. Recommending HOLD rather than BUY NO given directional uncertainty \u2014 the mispricing thesis requires ETH to currently be near (not far above) the $4,000 level."
         }
       ],
-      "risk": "balanced",
-      "risk_factors": [],
-      "sources": [],
+      "risk": "conservative",
+      "risk_factors": [
+        "Key risks to a BUY NO thesis: (1) ETH may currently be significantly above $4,000 (e.g., well into a bull run), making a drawdown to below $4,000 less likely. (2) Positive macro catalysts (institutional inflows, ETF news) could sustain price. (3) The market may have information embedded in the 0.880 price reflecting on-chain momentum or options market positioning."
+      ],
+      "sources": [
+        {
+          "kind": "model",
+          "name": "claude-sonnet-4-6"
+        },
+        {
+          "kind": "market",
+          "name": "Polymarket",
+          "url": "https://polymarket.com/event/eth-above-4000-may-31"
+        }
+      ],
       "suggested_size_by_profile": {
-        "aggressive": 49.6,
-        "balanced": 31.0,
-        "conservative": 12.4
+        "aggressive": 0.0,
+        "balanced": 0.0,
+        "conservative": 0.0
       },
-      "suggested_size_usdc": 31.0,
-      "trace_hash": "0xd41a7607560566ae62a4d46d7f928b2da56956121c2f5429366afb07036585c8",
+      "suggested_size_usdc": 0.0,
+      "trace_hash": "0x11dec692b6e3a62f2e201054df571acd8a2121bc4e0b852f6a55019ed25a0cdf",
       "trace_id": 6
     },
-    "generated_at": "2026-05-22T08:36:36+00:00",
+    "generated_at": "2026-05-22T18:57:31+00:00",
     "model": "claude-sonnet-4-6",
+    "onchain": {
+      "block_number": 43547935,
+      "chain_id": 5042002,
+      "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
+      "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
+      "trace_id": 18,
+      "tx_hash": "0xbf87030a6774bcf03a703f2b11aa511ad5a9d9afa5666191bd5ba307e660c80d"
+    },
     "plan": {
-      "confidence_bps": 6200,
-      "decision": "BUY_NO",
-      "edge_bps": -3600,
+      "confidence_bps": 5200,
+      "decision": "HOLD",
+      "edge_bps": -1600,
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "parent_trace_id": 0,
       "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "size_usdc": 31.0
+      "size_usdc": 0.0
     },
     "preview": {
-      "agent_probability_yes": 0.52,
+      "agent_probability_yes": 0.72,
       "confidence": "medium",
       "current_implied_yes": 0.88,
-      "decision": "BUY_NO",
+      "decision": "HOLD",
       "end_date_iso": "2026-05-31T23:59:59Z",
-      "generated_at": "2026-05-22T08:35:51+00:00",
+      "generated_at": "2026-05-22T18:57:31+00:00",
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "model": "claude-sonnet-4-6",
       "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "risk": "balanced",
-      "trace_hash": "0xd41a7607560566ae62a4d46d7f928b2da56956121c2f5429366afb07036585c8",
+      "risk": "conservative",
+      "trace_hash": "0x11dec692b6e3a62f2e201054df571acd8a2121bc4e0b852f6a55019ed25a0cdf",
       "trace_id": 6
     },
     "publication": {
-      "builder_code_link": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=no",
+      "builder_code_link": "https://polymarket.com/event/eth-above-4000-may-31?builderCode=pythia&side=yes",
       "error": null,
       "fallback_link": "https://polymarket.com/event/eth-above-4000-may-31",
       "plan": {
-        "confidence_bps": 6200,
-        "decision": "BUY_NO",
-        "edge_bps": -3600,
+        "confidence_bps": 5200,
+        "decision": "HOLD",
+        "edge_bps": -1600,
         "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "parent_trace_id": 0,
         "question": "Will ETH close above $4,000 on May 31, 2026?",
-        "size_usdc": 31.0
+        "size_usdc": 0.0
       },
       "published": true
     },
@@ -1469,42 +1543,43 @@
   },
   {
     "analyst": {
-      "confidence_bps": 7200,
+      "confidence_bps": 6800,
       "decision": "BUY_YES",
       "edge_bps": 5600,
       "fair_price_yes": 0.72,
-      "generated_at": "2026-05-22T08:36:23+00:00",
+      "generated_at": "2026-05-22T18:57:08+00:00",
+      "liquidity_usd": 540000.0,
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "model": "claude-sonnet-4-6",
       "question": "Will BTC reach a new all-time high in 2026?",
       "reasoning": [
         {
           "kind": "observation",
-          "text": "Market prices YES at 0.160 against a NO at 0.840. Liquidity is $540,000 and 24h volume is $1.2M — well above the $25k hard floor, so slippage risk is manageable for a reasonable position size."
+          "text": "The market prices YES at 0.160, implying only a 16% probability BTC sets a new all-time high at any point during calendar year 2026. With ~7 months remaining in the resolution window (June\u2013December 2026), this is an extreme discount for a historically cyclical asset in a post-halving year."
         },
         {
           "kind": "observation",
-          "text": "BTC's 2024 ATH was ~$108,300 (Dec 2024). As of mid-2025, BTC has already reclaimed the ~$100k range, meaning the 2024 ATH is only ~8-10% above current price. The question asks only for *one daily close* above that level during all of calendar year 2026."
-        },
-        {
-          "kind": "comparison",
-          "text": "Historically, BTC has set a new ATH in every 4-year halving cycle. The April 2024 halving typically front-loads a bull run into late 2024/early 2025, with continuation and new ATHs often appearing 12–24 months post-halving (i.e., Q1–Q4 2026). Past cycles: 2013, 2017, 2020/21 all produced ATHs in this window."
+          "text": "Liquidity is deep at $540,000 and 24h volume is over $1.2M \u2014 far above the $25k hard-pass threshold. Slippage is not a concern; edge can be captured meaningfully here."
         },
         {
           "kind": "inference",
-          "text": "A 0.16 implied probability means the market is pricing only a ~1-in-6 chance BTC exceeds ~$108k even once across all 365 days of 2026. Given BTC is already near ~$100k, a mere ~8-10% further move at any point over a full year is a severely underpriced outcome. Macro tailwinds (spot ETF inflows, institutional adoption, potential rate cuts) further support upside."
+          "text": "BTC historically enters strong bull phases in the 12\u201324 months following a halving event. May 2026 places us well within that typical window. The structural supply shock from the most recent halving compresses sell-side pressure, and institutional demand channels (ETF inflows, corporate treasury allocation) remain active catalysts throughout 2026."
+        },
+        {
+          "kind": "comparison",
+          "text": "A 16% probability for ANY single daily close above the prior ATH across ~7 remaining months is deeply inconsistent with BTC's realized volatility profile. Even in choppy regimes, BTC regularly produces multi-month rallies of 40\u201380%+. The threshold here is a single daily close above one prior peak \u2014 not a sustained breakout. This is a low bar across a long window."
         },
         {
           "kind": "risk",
-          "text": "Key risks: macro recession or crypto-specific regulatory shock could suppress price below ATH through all of 2026. A prolonged bear market (similar to 2018 or 2022) remains possible. However, even in 2022's bear market, BTC was only ~50% below its ATH at worst — starting from ~$100k, staying below ~$108k for an *entire* year requires sustained suppression, not just a dip."
+          "text": "Key risks that could suppress YES: macro deterioration (aggressive Fed re-tightening, credit shock, risk-off flight), crypto-specific regulatory crackdown (e.g., US stablecoin or spot ETF restrictions), or a prolonged consolidation phase where BTC grinds sideways through year-end. These are real but do not collectively justify an 84% NO probability."
         },
         {
-          "kind": "risk",
-          "text": "The resolution requires a *daily close* above the ATH, not just an intraday wick. This is a slight headwind vs. intraday highs, but given a full calendar year and proximity to the level, this is a minor constraint."
+          "kind": "inference",
+          "text": "Surveying base rates: in post-halving years historically, BTC has reached new ATHs in 3 of the 3 prior cycles within 18 months of the halving. While past cycles don't guarantee outcomes, the structural setup (ETF demand, macro liquidity easing bias, corporate adoption) broadly supports continuation. A fair probability of new ATH in 2026 is closer to 65\u201375%."
         },
         {
           "kind": "conclusion",
-          "text": "Fair value is ~0.72 YES. The market at 0.16 represents a ~56 percentage-point mispricing — an enormous edge of ~5600 bps, far exceeding the 200 bps threshold. This is a strong BUY_YES with 72% confidence. The combination of historical cycle patterns, proximity to ATH, full-year resolution window, and deep liquidity makes this a high-conviction trade."
+          "text": "Fair price YES = ~0.72. Market is pricing YES at 0.16 \u2014 a massive 56-percentage-point gap. Edge is approximately +5,600 bps before slippage, well above the 200 bps threshold. Liquidity supports the position. BUY YES with 68% confidence."
         }
       ]
     },
@@ -1512,12 +1587,13 @@
     "full": {
       "agent_probability_yes": 0.72,
       "confidence": "high",
+      "copy_trade_url": "https://polymarket.com/event/btc-new-ath-2026?builderCode=pythia&side=yes",
       "current_implied_yes": 0.16,
       "decision": "BUY_YES",
       "edge_bps": 5600,
       "end_date_iso": "2026-12-31T23:59:59Z",
       "expected_value_pct": 350.0,
-      "generated_at": "2026-05-22T08:36:23+00:00",
+      "generated_at": "2026-05-22T18:57:08+00:00",
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "market_liquidity_usd": 540000.0,
       "market_url": "https://polymarket.com/event/btc-new-ath-2026",
@@ -1527,55 +1603,75 @@
       "reasoning": [
         {
           "kind": "observation",
-          "text": "Market prices YES at 0.160 against a NO at 0.840. Liquidity is $540,000 and 24h volume is $1.2M — well above the $25k hard floor, so slippage risk is manageable for a reasonable position size."
+          "text": "The market prices YES at 0.160, implying only a 16% probability BTC sets a new all-time high at any point during calendar year 2026. With ~7 months remaining in the resolution window (June\u2013December 2026), this is an extreme discount for a historically cyclical asset in a post-halving year."
         },
         {
           "kind": "observation",
-          "text": "BTC's 2024 ATH was ~$108,300 (Dec 2024). As of mid-2025, BTC has already reclaimed the ~$100k range, meaning the 2024 ATH is only ~8-10% above current price. The question asks only for *one daily close* above that level during all of calendar year 2026."
-        },
-        {
-          "kind": "comparison",
-          "text": "Historically, BTC has set a new ATH in every 4-year halving cycle. The April 2024 halving typically front-loads a bull run into late 2024/early 2025, with continuation and new ATHs often appearing 12–24 months post-halving (i.e., Q1–Q4 2026). Past cycles: 2013, 2017, 2020/21 all produced ATHs in this window."
+          "text": "Liquidity is deep at $540,000 and 24h volume is over $1.2M \u2014 far above the $25k hard-pass threshold. Slippage is not a concern; edge can be captured meaningfully here."
         },
         {
           "kind": "inference",
-          "text": "A 0.16 implied probability means the market is pricing only a ~1-in-6 chance BTC exceeds ~$108k even once across all 365 days of 2026. Given BTC is already near ~$100k, a mere ~8-10% further move at any point over a full year is a severely underpriced outcome. Macro tailwinds (spot ETF inflows, institutional adoption, potential rate cuts) further support upside."
+          "text": "BTC historically enters strong bull phases in the 12\u201324 months following a halving event. May 2026 places us well within that typical window. The structural supply shock from the most recent halving compresses sell-side pressure, and institutional demand channels (ETF inflows, corporate treasury allocation) remain active catalysts throughout 2026."
+        },
+        {
+          "kind": "comparison",
+          "text": "A 16% probability for ANY single daily close above the prior ATH across ~7 remaining months is deeply inconsistent with BTC's realized volatility profile. Even in choppy regimes, BTC regularly produces multi-month rallies of 40\u201380%+. The threshold here is a single daily close above one prior peak \u2014 not a sustained breakout. This is a low bar across a long window."
         },
         {
           "kind": "risk",
-          "text": "Key risks: macro recession or crypto-specific regulatory shock could suppress price below ATH through all of 2026. A prolonged bear market (similar to 2018 or 2022) remains possible. However, even in 2022's bear market, BTC was only ~50% below its ATH at worst — starting from ~$100k, staying below ~$108k for an *entire* year requires sustained suppression, not just a dip."
+          "text": "Key risks that could suppress YES: macro deterioration (aggressive Fed re-tightening, credit shock, risk-off flight), crypto-specific regulatory crackdown (e.g., US stablecoin or spot ETF restrictions), or a prolonged consolidation phase where BTC grinds sideways through year-end. These are real but do not collectively justify an 84% NO probability."
         },
         {
-          "kind": "risk",
-          "text": "The resolution requires a *daily close* above the ATH, not just an intraday wick. This is a slight headwind vs. intraday highs, but given a full calendar year and proximity to the level, this is a minor constraint."
+          "kind": "inference",
+          "text": "Surveying base rates: in post-halving years historically, BTC has reached new ATHs in 3 of the 3 prior cycles within 18 months of the halving. While past cycles don't guarantee outcomes, the structural setup (ETF demand, macro liquidity easing bias, corporate adoption) broadly supports continuation. A fair probability of new ATH in 2026 is closer to 65\u201375%."
         },
         {
           "kind": "conclusion",
-          "text": "Fair value is ~0.72 YES. The market at 0.16 represents a ~56 percentage-point mispricing — an enormous edge of ~5600 bps, far exceeding the 200 bps threshold. This is a strong BUY_YES with 72% confidence. The combination of historical cycle patterns, proximity to ATH, full-year resolution window, and deep liquidity makes this a high-conviction trade."
+          "text": "Fair price YES = ~0.72. Market is pricing YES at 0.16 \u2014 a massive 56-percentage-point gap. Edge is approximately +5,600 bps before slippage, well above the 200 bps threshold. Liquidity supports the position. BUY YES with 68% confidence."
         }
       ],
-      "risk": "aggressive",
-      "risk_factors": [],
-      "sources": [],
+      "risk": "balanced",
+      "risk_factors": [
+        "Key risks that could suppress YES: macro deterioration (aggressive Fed re-tightening, credit shock, risk-off flight), crypto-specific regulatory crackdown (e.g., US stablecoin or spot ETF restrictions), or a prolonged consolidation phase where BTC grinds sideways through year-end. These are real but do not collectively justify an 84% NO probability."
+      ],
+      "sources": [
+        {
+          "kind": "model",
+          "name": "claude-sonnet-4-6"
+        },
+        {
+          "kind": "market",
+          "name": "Polymarket",
+          "url": "https://polymarket.com/event/btc-new-ath-2026"
+        }
+      ],
       "suggested_size_by_profile": {
-        "aggressive": 57.6,
-        "balanced": 36.0,
-        "conservative": 14.4
+        "aggressive": 54.4,
+        "balanced": 34.0,
+        "conservative": 13.6
       },
-      "suggested_size_usdc": 36.0,
-      "trace_hash": "0xbced116c1c25c511916d59a22b84f24d2a1ab17270448b7020d6aca472c4db63",
+      "suggested_size_usdc": 34.0,
+      "trace_hash": "0xc2c309a009e70f80e921c45d45cdc0e088fa7c759de8756a5bbee6c64691dd94",
       "trace_id": 5
     },
-    "generated_at": "2026-05-22T08:36:36+00:00",
+    "generated_at": "2026-05-22T18:57:08+00:00",
     "model": "claude-sonnet-4-6",
+    "onchain": {
+      "block_number": 43547894,
+      "chain_id": 5042002,
+      "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
+      "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
+      "trace_id": 17,
+      "tx_hash": "0x01ecc891629a30ded14776e9645b191b5f8be1fa6616a9c1ac8066b35f06b26a"
+    },
     "plan": {
-      "confidence_bps": 7200,
+      "confidence_bps": 6800,
       "decision": "BUY_YES",
       "edge_bps": 5600,
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "parent_trace_id": 0,
       "question": "Will BTC reach a new all-time high in 2026?",
-      "size_usdc": 36.0
+      "size_usdc": 34.0
     },
     "preview": {
       "agent_probability_yes": 0.72,
@@ -1583,12 +1679,12 @@
       "current_implied_yes": 0.16,
       "decision": "BUY_YES",
       "end_date_iso": "2026-12-31T23:59:59Z",
-      "generated_at": "2026-05-22T08:36:23+00:00",
+      "generated_at": "2026-05-22T18:57:08+00:00",
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "model": "claude-sonnet-4-6",
       "question": "Will BTC reach a new all-time high in 2026?",
-      "risk": "aggressive",
-      "trace_hash": "0xbced116c1c25c511916d59a22b84f24d2a1ab17270448b7020d6aca472c4db63",
+      "risk": "balanced",
+      "trace_hash": "0xc2c309a009e70f80e921c45d45cdc0e088fa7c759de8756a5bbee6c64691dd94",
       "trace_id": 5
     },
     "publication": {
@@ -1596,13 +1692,13 @@
       "error": null,
       "fallback_link": "https://polymarket.com/event/btc-new-ath-2026",
       "plan": {
-        "confidence_bps": 7200,
+        "confidence_bps": 6800,
         "decision": "BUY_YES",
         "edge_bps": 5600,
         "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
         "parent_trace_id": 0,
         "question": "Will BTC reach a new all-time high in 2026?",
-        "size_usdc": 36.0
+        "size_usdc": 34.0
       },
       "published": true
     },

@@ -1,221 +1,226 @@
 [
   {
-    "trace_id": 15,
-    "theme": "crypto",
-    "vault": null,
-    "model": "claude-sonnet-4-6",
-    "generated_at": "2026-05-22T17:25:48+00:00",
+    "generated_at": "2026-05-22T18:56:08+00:00",
     "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-    "preview": {
-      "agent_probability_yes": 0.72,
-      "confidence": "high",
-      "current_implied_yes": 0.88,
-      "decision": "BUY_NO",
-      "end_date_iso": "2026-05-31T23:59:59Z",
-      "generated_at": "2026-05-22T17:24:02+00:00",
-      "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "model": "claude-sonnet-4-6",
-      "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "risk": "balanced",
-      "trace_hash": "0xd793dd78c0e7d8afbfe7bea6bc6a79adbd51c645f4e22f65da5c9e556f0a1d83",
-      "trace_id": 15
-    },
+    "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43538026,
+      "block_number": 43547784,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 15,
-      "tx_hash": "0x75bbd5766eb17cfe745606d0138076019aff78d6b2bf58563a102ae774fe7f68"
-    }
+      "trace_id": 16,
+      "tx_hash": "0xd6d3d55a95ac0b0d728a42b470b0226add34a95bdde3ae38422098e8a3721765"
+    },
+    "preview": {
+      "agent_probability_yes": 0.72,
+      "confidence": "medium",
+      "current_implied_yes": 0.88,
+      "decision": "HOLD",
+      "end_date_iso": "2026-05-31T23:59:59Z",
+      "generated_at": "2026-05-22T18:56:08+00:00",
+      "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "model": "claude-sonnet-4-6",
+      "question": "Will ETH close above $4,000 on May 31, 2026?",
+      "risk": "conservative",
+      "trace_hash": "0x4420c555461d118b13dfafc46c519e8b66d201e776ddc8c2af9fc53776620503",
+      "trace_id": 15
+    },
+    "theme": "crypto",
+    "trace_id": 15,
+    "vault": null
   },
   {
-    "trace_id": 14,
-    "theme": "crypto",
-    "vault": null,
-    "model": "claude-sonnet-4-6",
-    "generated_at": "2026-05-22T17:25:46+00:00",
+    "generated_at": "2026-05-22T18:59:30+00:00",
     "market_id": "0x7c2d8e3f4a5b6c7d8e9f0a1b2c3d4e5f11111111111111111111111111111111",
+    "model": "claude-sonnet-4-6",
+    "onchain": {
+      "block_number": 43548157,
+      "chain_id": 5042002,
+      "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
+      "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
+      "trace_id": 24,
+      "tx_hash": "0xc818b6a1fabe3c46d780676d8cae4a770f8537a29ab2f1b2b6631d926ae28329"
+    },
     "preview": {
-      "agent_probability_yes": 0.52,
+      "agent_probability_yes": 0.42,
       "confidence": "medium",
       "current_implied_yes": 0.34,
       "decision": "BUY_YES",
       "end_date_iso": "2026-12-31T23:59:59Z",
-      "generated_at": "2026-05-22T17:25:28+00:00",
+      "generated_at": "2026-05-22T18:59:30+00:00",
       "market_id": "0x7c2d8e3f4a5b6c7d8e9f0a1b2c3d4e5f11111111111111111111111111111111",
       "model": "claude-sonnet-4-6",
       "question": "Will BTC trade above $120,000 on any day in Q4 2026?",
       "risk": "balanced",
-      "trace_hash": "0x859d4f9d2ffc6e3243b15027630364d6f55888e3d20e74c42df6f8b0dd7fd870",
+      "trace_hash": "0x1b4e509b726220efa118b4706e715f13b96aadf48da4ab4fd23150953f97970c",
       "trace_id": 14
     },
+    "theme": "crypto",
+    "trace_id": 14,
+    "vault": null
+  },
+  {
+    "generated_at": "2026-05-22T18:59:11+00:00",
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+    "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43538022,
+      "block_number": 43548122,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 14,
-      "tx_hash": "0x2808688cdcd7f8e8ff1acb8a1b5d71367d615a12d80c6abaa2ad13bb95744856"
-    }
-  },
-  {
-    "trace_id": 13,
-    "theme": "crypto",
-    "vault": null,
-    "model": "claude-sonnet-4-6",
-    "generated_at": "2026-05-22T17:25:43+00:00",
-    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+      "trace_id": 23,
+      "tx_hash": "0xace5bfba42ad0440f436d678de8ecc23274b1965cc3efb2db1be40c3da5693ab"
+    },
     "preview": {
       "agent_probability_yes": 0.72,
       "confidence": "high",
       "current_implied_yes": 0.16,
       "decision": "BUY_YES",
       "end_date_iso": "2026-12-31T23:59:59Z",
-      "generated_at": "2026-05-22T17:24:30+00:00",
+      "generated_at": "2026-05-22T18:59:11+00:00",
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "model": "claude-sonnet-4-6",
       "question": "Will BTC reach a new all-time high in 2026?",
-      "risk": "aggressive",
-      "trace_hash": "0xbd2624c3cc5fe0e71d9e56645c372bb159cb5b4d6b9411c8621babe74b626584",
+      "risk": "balanced",
+      "trace_hash": "0xc1495a37bb091943a8d8275b1f3e54b91dbb9a08462a09b6fd9d2a1c4ad388c4",
       "trace_id": 13
     },
+    "theme": "crypto",
+    "trace_id": 13,
+    "vault": null
+  },
+  {
+    "generated_at": "2026-05-22T18:58:51+00:00",
+    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43538017,
+      "block_number": 43548083,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 13,
-      "tx_hash": "0x3452595fd672209f52b89568346398091417d39e328dc8cf7473222639d10f9c"
-    }
-  },
-  {
-    "trace_id": 12,
-    "theme": "crypto",
-    "vault": null,
-    "model": "claude-sonnet-4-6",
-    "generated_at": "2026-05-22T13:02:16+00:00",
-    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "trace_id": 22,
+      "tx_hash": "0x05c596cc27da93692f4084f64af26ca33ab77c782bbccfb1ba9a09f289160b14"
+    },
     "preview": {
-      "agent_probability_yes": 0.72,
-      "confidence": "high",
+      "agent_probability_yes": 0.62,
+      "confidence": "medium",
       "current_implied_yes": 0.88,
-      "decision": "BUY_NO",
+      "decision": "HOLD",
       "end_date_iso": "2026-05-31T23:59:59Z",
-      "generated_at": "2026-05-22T13:01:28+00:00",
+      "generated_at": "2026-05-22T18:58:51+00:00",
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "model": "claude-sonnet-4-6",
       "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "risk": "balanced",
-      "trace_hash": "0x7d95b2f7808696d8f4e44bb15099a0eb890ff1d4ffd959d6f8d1af60e96346dd",
+      "risk": "conservative",
+      "trace_hash": "0x79d26c858273e5b01744179dbea63a65a2b294c05008db5fdd74cb20f9ea8099",
       "trace_id": 12
     },
+    "theme": "crypto",
+    "trace_id": 12,
+    "vault": null
+  },
+  {
+    "generated_at": "2026-05-22T18:58:33+00:00",
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+    "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43512467,
+      "block_number": 43548050,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 10,
-      "tx_hash": "0x481a7e582b85fc1c09a54ffb760cd9a4f63ca9faedc65f6a747b16e27651b282"
-    }
-  },
-  {
-    "trace_id": 11,
-    "theme": "crypto",
-    "vault": null,
-    "model": "claude-sonnet-4-6",
-    "generated_at": "2026-05-22T13:02:13+00:00",
-    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+      "trace_id": 21,
+      "tx_hash": "0x4ca7e6e75a47abe388ea328c6934d10fec622c2ae9e07845798bf332b4896b13"
+    },
     "preview": {
       "agent_probability_yes": 0.72,
       "confidence": "high",
       "current_implied_yes": 0.16,
       "decision": "BUY_YES",
       "end_date_iso": "2026-12-31T23:59:59Z",
-      "generated_at": "2026-05-22T13:01:59+00:00",
+      "generated_at": "2026-05-22T18:58:33+00:00",
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "model": "claude-sonnet-4-6",
       "question": "Will BTC reach a new all-time high in 2026?",
       "risk": "aggressive",
-      "trace_hash": "0xc2d8d49b750c7bf1eb06743a94e4da992127fbdd844c542ca336389623a98675",
+      "trace_hash": "0x4298f4d34cd9792941a65ab0b8e91ca8230563287e263efd20d4b199a7dac4b3",
       "trace_id": 11
     },
+    "theme": "crypto",
+    "trace_id": 11,
+    "vault": null
+  },
+  {
+    "generated_at": "2026-05-22T18:58:13+00:00",
+    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43512462,
+      "block_number": 43548011,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 9,
-      "tx_hash": "0xbb95cd38439b370ef727091aeef34373e157bce3625fd00f1811b35c23f7a936"
-    }
-  },
-  {
-    "trace_id": 10,
-    "theme": "crypto",
-    "vault": null,
-    "model": "claude-sonnet-4-6",
-    "generated_at": "2026-05-22T09:45:16+00:00",
-    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "trace_id": 20,
+      "tx_hash": "0x6f3c172a8925e453495c080aeb69aa1108f6cea95ee9a6d6f4ff9de3f5d3fb7a"
+    },
     "preview": {
-      "agent_probability_yes": 0.52,
-      "confidence": "high",
+      "agent_probability_yes": 0.72,
+      "confidence": "medium",
       "current_implied_yes": 0.88,
-      "decision": "BUY_NO",
+      "decision": "HOLD",
       "end_date_iso": "2026-05-31T23:59:59Z",
-      "generated_at": "2026-05-22T09:44:27+00:00",
+      "generated_at": "2026-05-22T18:58:13+00:00",
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "model": "claude-sonnet-4-6",
       "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "risk": "balanced",
-      "trace_hash": "0x94c010c73ab46905f2bf7726b7e9580231ab11bcc52907efa7e2e0844d02ac20",
+      "risk": "conservative",
+      "trace_hash": "0xf0f885505ccfd3b304a839a55535281fa0c79602c1519733a591a1c447e05167",
       "trace_id": 10
     },
+    "theme": "crypto",
+    "trace_id": 10,
+    "vault": null
+  },
+  {
+    "generated_at": "2026-05-22T18:57:50+00:00",
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+    "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43490155,
+      "block_number": 43547971,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 6,
-      "tx_hash": "0xa12e9355e0398ffcfc2288ea39aa165f8f472ef2df2956d238f78ae93bc81461"
-    }
-  },
-  {
-    "trace_id": 9,
-    "theme": "crypto",
-    "vault": null,
-    "model": "claude-sonnet-4-6",
-    "generated_at": "2026-05-22T09:45:12+00:00",
-    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+      "trace_id": 19,
+      "tx_hash": "0x63901fa9f0821cd143893c6db9d2ae505f4131564734b55af65d978de97e1fe6"
+    },
     "preview": {
       "agent_probability_yes": 0.72,
       "confidence": "high",
       "current_implied_yes": 0.16,
       "decision": "BUY_YES",
       "end_date_iso": "2026-12-31T23:59:59Z",
-      "generated_at": "2026-05-22T09:44:58+00:00",
+      "generated_at": "2026-05-22T18:57:50+00:00",
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "model": "claude-sonnet-4-6",
       "question": "Will BTC reach a new all-time high in 2026?",
-      "risk": "aggressive",
-      "trace_hash": "0x094881cf2e82b07c38bb695cdfa936309bbcec00f18bd0c39529e9df501414d4",
+      "risk": "balanced",
+      "trace_hash": "0x93f7b6eedf3604d0d09a75d35a868e6b576e53b0fd99f68ece11145b704f119e",
       "trace_id": 9
     },
+    "theme": "crypto",
+    "trace_id": 9,
+    "vault": null
+  },
+  {
+    "generated_at": "2026-05-22T09:41:31+00:00",
+    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+    "model": "heuristic-v1-placeholder",
     "onchain": {
-      "block_number": 43490148,
+      "block_number": 43489721,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 5,
-      "tx_hash": "0x16385f1d19f0787255f8d02f3b9366d9ca0e3062e5007c7fd25c44277cb82ee7"
-    }
-  },
-  {
-    "trace_id": 8,
-    "theme": "crypto",
-    "vault": null,
-    "model": "heuristic-v1-placeholder",
-    "generated_at": "2026-05-22T09:41:31+00:00",
-    "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+      "trace_id": 4,
+      "tx_hash": "0x3367969fb58a1519a3992678f263ac2175ac84754371869e18a3507432bfac42"
+    },
     "preview": {
       "agent_probability_yes": 0.1872,
       "confidence": "low",
@@ -230,22 +235,22 @@
       "trace_hash": "0xe7714d8dfe4ffef7296807e0dbb75f4a223fdee6923fa94b2ad49aca66dd7027",
       "trace_id": 8
     },
+    "theme": "crypto",
+    "trace_id": 8,
+    "vault": null
+  },
+  {
+    "generated_at": "2026-05-22T09:41:27+00:00",
+    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "model": "heuristic-v1-placeholder",
     "onchain": {
-      "block_number": 43489721,
+      "block_number": 43489715,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 4,
-      "tx_hash": "0x3367969fb58a1519a3992678f263ac2175ac84754371869e18a3507432bfac42"
-    }
-  },
-  {
-    "trace_id": 7,
-    "theme": "crypto",
-    "vault": null,
-    "model": "heuristic-v1-placeholder",
-    "generated_at": "2026-05-22T09:41:27+00:00",
-    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "trace_id": 3,
+      "tx_hash": "0x89b15b6721fbd123ae120caffe804a8df35cbafcfad096175e8a6a282abaa33d"
+    },
     "preview": {
       "agent_probability_yes": 0.8496,
       "confidence": "low",
@@ -260,68 +265,82 @@
       "trace_hash": "0xb3d01f690fb952a8f9ed3ba053fbfda47c698319abd219c737e2402677e7817d",
       "trace_id": 7
     },
+    "theme": "crypto",
+    "trace_id": 7,
+    "vault": null
+  },
+  {
+    "generated_at": "2026-05-22T18:57:31+00:00",
+    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43489715,
+      "block_number": 43547935,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 3,
-      "tx_hash": "0x89b15b6721fbd123ae120caffe804a8df35cbafcfad096175e8a6a282abaa33d"
-    }
-  },
-  {
-    "trace_id": 6,
-    "theme": "crypto",
-    "vault": null,
-    "model": "claude-sonnet-4-6",
-    "generated_at": "2026-05-22T08:36:36+00:00",
-    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "trace_id": 18,
+      "tx_hash": "0xbf87030a6774bcf03a703f2b11aa511ad5a9d9afa5666191bd5ba307e660c80d"
+    },
     "preview": {
-      "agent_probability_yes": 0.52,
+      "agent_probability_yes": 0.72,
       "confidence": "medium",
       "current_implied_yes": 0.88,
-      "decision": "BUY_NO",
+      "decision": "HOLD",
       "end_date_iso": "2026-05-31T23:59:59Z",
-      "generated_at": "2026-05-22T08:35:51+00:00",
+      "generated_at": "2026-05-22T18:57:31+00:00",
       "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "model": "claude-sonnet-4-6",
       "question": "Will ETH close above $4,000 on May 31, 2026?",
-      "risk": "balanced",
-      "trace_hash": "0xd41a7607560566ae62a4d46d7f928b2da56956121c2f5429366afb07036585c8",
+      "risk": "conservative",
+      "trace_hash": "0x11dec692b6e3a62f2e201054df571acd8a2121bc4e0b852f6a55019ed25a0cdf",
       "trace_id": 6
     },
-    "onchain": null
+    "theme": "crypto",
+    "trace_id": 6,
+    "vault": null
   },
   {
-    "trace_id": 5,
-    "theme": "crypto",
-    "vault": null,
-    "model": "claude-sonnet-4-6",
-    "generated_at": "2026-05-22T08:36:36+00:00",
+    "generated_at": "2026-05-22T18:57:08+00:00",
     "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+    "model": "claude-sonnet-4-6",
+    "onchain": {
+      "block_number": 43547894,
+      "chain_id": 5042002,
+      "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
+      "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
+      "trace_id": 17,
+      "tx_hash": "0x01ecc891629a30ded14776e9645b191b5f8be1fa6616a9c1ac8066b35f06b26a"
+    },
     "preview": {
       "agent_probability_yes": 0.72,
       "confidence": "high",
       "current_implied_yes": 0.16,
       "decision": "BUY_YES",
       "end_date_iso": "2026-12-31T23:59:59Z",
-      "generated_at": "2026-05-22T08:36:23+00:00",
+      "generated_at": "2026-05-22T18:57:08+00:00",
       "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
       "model": "claude-sonnet-4-6",
       "question": "Will BTC reach a new all-time high in 2026?",
-      "risk": "aggressive",
-      "trace_hash": "0xbced116c1c25c511916d59a22b84f24d2a1ab17270448b7020d6aca472c4db63",
+      "risk": "balanced",
+      "trace_hash": "0xc2c309a009e70f80e921c45d45cdc0e088fa7c759de8756a5bbee6c64691dd94",
       "trace_id": 5
     },
-    "onchain": null
+    "theme": "crypto",
+    "trace_id": 5,
+    "vault": null
   },
   {
-    "trace_id": 4,
-    "theme": "crypto",
-    "vault": null,
-    "model": "heuristic-v1-placeholder",
     "generated_at": "2026-05-22T08:26:16+00:00",
     "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+    "model": "heuristic-v1-placeholder",
+    "onchain": {
+      "block_number": 43481334,
+      "chain_id": 5042002,
+      "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
+      "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
+      "trace_id": 2,
+      "tx_hash": "0x756c20dd8b3f121efc28ebe09d8756167ec27e96eaf8db61f151e7ed25b27add"
+    },
     "preview": {
       "agent_probability_yes": 0.1872,
       "confidence": "low",
@@ -336,22 +355,22 @@
       "trace_hash": "0x71fe685878e2801e3357edf1d844b508981b6cb383baf3f30b6accbe4288777a",
       "trace_id": 4
     },
+    "theme": "crypto",
+    "trace_id": 4,
+    "vault": null
+  },
+  {
+    "generated_at": "2026-05-22T08:26:12+00:00",
+    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "model": "heuristic-v1-placeholder",
     "onchain": {
-      "block_number": 43481334,
+      "block_number": 43481327,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 2,
-      "tx_hash": "0x756c20dd8b3f121efc28ebe09d8756167ec27e96eaf8db61f151e7ed25b27add"
-    }
-  },
-  {
-    "trace_id": 3,
-    "theme": "crypto",
-    "vault": null,
-    "model": "heuristic-v1-placeholder",
-    "generated_at": "2026-05-22T08:26:12+00:00",
-    "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "trace_id": 1,
+      "tx_hash": "0x8446bbd241d63fc96e6f7a1710dfc51df0f15bac122aa881048d5ce1b0bad250"
+    },
     "preview": {
       "agent_probability_yes": 0.8496,
       "confidence": "low",
@@ -366,22 +385,14 @@
       "trace_hash": "0xdd185b0a2337156c16a45341923e4a6cc50d1bd63aef7ea9e52f1bbc0f52aa14",
       "trace_id": 3
     },
-    "onchain": {
-      "block_number": 43481327,
-      "chain_id": 5042002,
-      "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
-      "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 1,
-      "tx_hash": "0x8446bbd241d63fc96e6f7a1710dfc51df0f15bac122aa881048d5ce1b0bad250"
-    }
+    "theme": "crypto",
+    "trace_id": 3,
+    "vault": null
   },
   {
-    "trace_id": 2,
-    "theme": "crypto",
-    "vault": null,
-    "model": "heuristic-v1-placeholder",
     "generated_at": "2026-05-14T14:34:00+00:00",
     "market_id": "0xf9c8a7b6d3e2f1a0b9c8d7e6f5a4b3c2cccccccccccccccccccccccccccccccc",
+    "model": "heuristic-v1-placeholder",
     "preview": {
       "agent_probability_yes": 0.1872,
       "confidence": "low",
@@ -396,15 +407,14 @@
       "trace_hash": "0x2ebcef3c68584a0079009270b7cbfe31a411a60f48053614a8f7167373c761be",
       "trace_id": 2
     },
-    "onchain": null
+    "theme": "crypto",
+    "trace_id": 2,
+    "vault": null
   },
   {
-    "trace_id": 1,
-    "theme": "crypto",
-    "vault": null,
-    "model": "heuristic-v1-placeholder",
     "generated_at": "2026-05-14T14:34:00+00:00",
     "market_id": "0x84b7c95ee5c0c81b9b35d1f9c0e1b0c0aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "model": "heuristic-v1-placeholder",
     "preview": {
       "agent_probability_yes": 0.8496,
       "confidence": "low",
@@ -419,6 +429,8 @@
       "trace_hash": "0x934101e7be75a875838673fc3b1985b17802cecd0b2417fbf072244b45d6e5e0",
       "trace_id": 1
     },
-    "onchain": null
+    "theme": "crypto",
+    "trace_id": 1,
+    "vault": null
   }
 ]
