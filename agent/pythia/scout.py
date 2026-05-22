@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import asyncio
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Any
 
 import httpx
@@ -60,7 +61,7 @@ class Scout:
             "limit": limit,
             "active": "true",
             "closed": "false",
-            "order": "volume24hr",
+            "order": "volume_24hr",
             "ascending": "false",
         }
         # Polymarket Gamma's `tag_slug` only accepts canonical tags (e.g. `politics`,
@@ -104,24 +105,50 @@ class Scout:
                 no = price
         return yes, no
 
+    @staticmethod
+    def _parse_end_date(value: Any) -> datetime | None:
+        if not value:
+            return None
+        try:
+            text = str(value).replace("Z", "+00:00")
+            parsed = datetime.fromisoformat(text)
+            if parsed.tzinfo is None:
+                parsed = parsed.replace(tzinfo=timezone.utc)
+            return parsed
+        except ValueError:
+            return None
+
     async def discover(self, *, limit: int = 50) -> list[MarketCandidate]:
         """Return up to ``limit`` candidate markets for the configured theme."""
         raw_markets = await self._fetch_markets(limit=limit)
         out: list[MarketCandidate] = []
+        observed_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
         for raw in raw_markets:
             try:
+                if raw.get("active") is False or raw.get("closed") or raw.get("archived"):
+                    continue
+                end_date = self._parse_end_date(raw.get("endDate") or raw.get("end_date_iso"))
+                if end_date and end_date <= datetime.now(timezone.utc):
+                    continue
                 yes, no = self._midpoint(raw)
+                slug = str(raw.get("slug") or (raw.get("event") or {}).get("slug") or raw.get("id") or "")
+                enriched_raw = {
+                    **raw,
+                    "data_mode": "live",
+                    "observed_at": observed_at,
+                    "source_url": f"https://polymarket.com/event/{slug}" if slug else "https://polymarket.com",
+                }
                 candidate = MarketCandidate(
                     market_id=str(raw.get("conditionId") or raw.get("id") or raw.get("slug")),
                     question=str(raw.get("question") or raw.get("title") or ""),
                     description=str(raw.get("description") or "")[:2000],
                     yes_price=yes,
                     no_price=no,
-                    volume_24h_usd=float(raw.get("volume24hr", 0.0) or 0.0),
-                    liquidity_usd=float(raw.get("liquidity", 0.0) or 0.0),
+                    volume_24h_usd=float(raw.get("volume24hr") or raw.get("volume_24hr") or raw.get("volumeNum") or 0.0),
+                    liquidity_usd=float(raw.get("liquidity") or raw.get("liquidityNum") or 0.0),
                     end_date_iso=str(raw.get("endDate") or raw.get("end_date_iso") or ""),
                     tags=[str(t) for t in (raw.get("tags") or [])],
-                    raw=raw,
+                    raw=enriched_raw,
                 )
                 out.append(candidate)
             except (KeyError, ValueError, TypeError) as exc:

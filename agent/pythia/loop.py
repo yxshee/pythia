@@ -121,7 +121,7 @@ def _render_cycle(c: CycleReport) -> None:
             f"{plan.confidence_bps / 100:.1f}%",
             f"{plan.edge_bps:+d}",
             trace.ipfs_cid[:14] if trace else "-",
-            publication.builder_code_link if publication else "-",
+            publication.builder_code_link if publication and publication.builder_code_link else "-",
         )
 
     console.print(table)

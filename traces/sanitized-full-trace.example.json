@@ -1,0 +1,84 @@
+{
+  "trace_id": 0,
+  "generated_at": "2026-05-23T00:00:00+00:00",
+  "model": "claude-sonnet-4-6",
+  "theme": "example",
+  "vault": null,
+  "onchain": {
+    "tx_hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "block_number": 0,
+    "trace_id": 0,
+    "publisher": "0x0000000000000000000000000000000000000000",
+    "contract": "0x0000000000000000000000000000000000000000",
+    "chain_id": 5042002
+  },
+  "preview": {
+    "trace_id": 0,
+    "trace_hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "market_id": "example-market",
+    "question": "Sanitized example question",
+    "current_implied_yes": 0.5,
+    "agent_probability_yes": 0.52,
+    "decision": "HOLD",
+    "confidence": "low",
+    "risk": "conservative",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-05-23T00:00:00+00:00",
+    "end_date_iso": "2026-12-31T23:59:59Z"
+  },
+  "full": {
+    "trace_id": 0,
+    "trace_hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "market_id": "example-market",
+    "question": "Sanitized example question",
+    "current_implied_yes": 0.5,
+    "agent_probability_yes": 0.52,
+    "decision": "HOLD",
+    "confidence": "low",
+    "risk": "conservative",
+    "model": "claude-sonnet-4-6",
+    "generated_at": "2026-05-23T00:00:00+00:00",
+    "end_date_iso": "2026-12-31T23:59:59Z",
+    "edge_bps": 0,
+    "expected_value_pct": 0,
+    "suggested_size_usdc": 0,
+    "suggested_size_by_profile": {
+      "conservative": 0,
+      "balanced": 0,
+      "aggressive": 0
+    },
+    "reasoning": [
+      {
+        "kind": "risk",
+        "text": "Sanitized example only; production paid reasoning is stored privately."
+      }
+    ],
+    "sources": [
+      {
+        "kind": "model",
+        "name": "claude-sonnet-4-6",
+        "observed_at": "2026-05-23T00:00:00+00:00"
+      },
+      {
+        "kind": "market_data",
+        "name": "Polymarket Gamma",
+        "url": "https://polymarket.com",
+        "observed_at": "2026-05-23T00:00:00+00:00"
+      },
+      {
+        "kind": "resolution_criteria",
+        "name": "Market resolution text",
+        "url": "https://polymarket.com",
+        "observed_at": "2026-05-23T00:00:00+00:00",
+        "description": "Sanitized example resolution text."
+      }
+    ],
+    "risk_factors": [
+      "Sanitized example only; production paid reasoning is stored privately."
+    ],
+    "market_url": "https://polymarket.com",
+    "copy_trade_url": null,
+    "market_volume_24h_usd": 0,
+    "market_liquidity_usd": 0
+  }
+}

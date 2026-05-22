@@ -1,8 +1,8 @@
 """Analyst: score each candidate market for +EV using LLM reasoning.
 
 The analyst produces both a decision and a *reasoning trace*. The trace is the product:
-a structured record of why the agent thinks the position is +EV. It is later pinned to
-IPFS and logged on Arc via ``trace.py``.
+a structured record of why the agent thinks the position is +EV. It is stored privately
+and logged on Arc via ``trace.py``; IPFS/Irys pinning is planned.
 """
 
 from __future__ import annotations
@@ -31,7 +31,7 @@ class ReasoningStep:
 
 @dataclass(slots=True)
 class AnalystReport:
-    """Full analyst output for one market. Becomes the IPFS-pinned reasoning trace."""
+    """Full analyst output for one market. Becomes the private paid reasoning trace."""
 
     market_id: str
     question: str
