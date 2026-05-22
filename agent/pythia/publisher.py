@@ -1,10 +1,10 @@
 """Publisher: broadcast a TradePlan as a recommendation, never trade own capital.
 
-Pythia is a *recommendation* agent. The publisher emits each pick to Telegram +
-the web feed with a deep-link that pre-attaches the agent's Polymarket builder
-code (``?builderCode=pythia``). When a follower trades through that link, the
-fill is attributed to ``pythia`` and Polymarket pays the builder fee in USDC on
-Polygon to the configured receiving address.
+Pythia is a *recommendation* agent. The publisher emits each actionable BUY pick
+to Telegram + the web feed with a Polymarket deep-link that carries the current
+placeholder builder-code query parameter (``?builderCode=pythia``). Production
+fee attribution still requires a registered Polymarket V2 bytes32 builder code
+attached in the order flow.
 
 The agent's own track-record (the on-Arc PythiaVault NAV) is updated later by
 ``resolver.py`` once the underlying Polymarket question resolves - paper PnL
@@ -31,7 +31,7 @@ class PublishResult:
 
     plan: TradePlan
     published: bool
-    builder_code_link: str
+    builder_code_link: str | None
     fallback_link: str
     error: str | None = None
 
@@ -73,14 +73,12 @@ class Publisher:
     #  Link construction
     # ------------------------------------------------------------------
     def _builder_code_link(self, market: MarketCandidate, plan: TradePlan) -> str:
-        """Build the copy-trade URL with Pythia's builder code attached.
+        """Build the copy-trade URL for actionable BUY decisions.
 
-        Polymarket exposes the market at ``polymarket.com/event/<slug>``. We attach
-        ``?builderCode=...`` so the order created by a follower carries the code.
-        The query-param key follows ``docs.polymarket.com/trading/clients/builder``
-        (defaulting to ``builderCode``); we add the ``side`` hint so the Polymarket
-        UI pre-selects YES/NO. The builder code is a placeholder until the bytes32
-        registration lands (see STATUS.md).
+        Polymarket exposes the market at ``polymarket.com/event/<slug>``. The
+        current link includes a placeholder ``builderCode`` query parameter and a
+        YES/NO side hint for the UI. HOLD recommendations deliberately return
+        ``None`` so no downstream surface asks a user to copy a non-trade.
         """
         return copy_trade_url(market, plan.decision, self._settings.polymarket_builder_code)
 
@@ -108,14 +106,14 @@ class Publisher:
             return "yes"
         if plan.decision == "BUY_NO":
             return "no"
-        return "yes"  # default; HOLD should not reach this code path
+        raise ValueError(f"no Polymarket side for decision {plan.decision!r}")
 
 
 def copy_trade_url(
     market: MarketCandidate,
     decision: str,
     builder_code: str | None,
-) -> str:
+) -> str | None:
     """Build the Polymarket copy-trade URL for a market + decision.
 
     Shared between :class:`Publisher` (the broadcast path) and the paid trace
@@ -124,13 +122,16 @@ def copy_trade_url(
     truth here avoids the failure mode where the broadcast link is attributed
     but the unlocked content sends users to an unattributed event URL.
     """
+    if decision == "HOLD":
+        return None
+
     slug = Publisher._extract_slug(market)
     if decision == "BUY_YES":
         side = "yes"
     elif decision == "BUY_NO":
         side = "no"
     else:
-        side = "yes"  # default; HOLD should not reach this code path
+        raise ValueError(f"unsupported copy-trade decision {decision!r}")
     code = builder_code or "pythia"
     return (
         f"https://polymarket.com/event/{quote(slug, safe='')}"

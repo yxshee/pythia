@@ -99,6 +99,19 @@ def to_full(
         ev = 0.0
 
     market_url = f"https://polymarket.com/event/{market.raw.get('slug', market.market_id)}"
+    observed_at = str(market.raw.get("observed_at") or report.generated_at)
+    source_name = (
+        "Synthetic fixture market data"
+        if market.raw.get("data_mode") == "fixture"
+        else "Polymarket Gamma"
+    )
+    source_url = str(market.raw.get("source_url") or market_url)
+    risk_factors = [step.text for step in report.reasoning if step.kind == "risk"]
+    if not risk_factors:
+        risk_factors = [
+            "Market resolution, liquidity, timing, and source quality can still move against the published thesis."
+        ]
+
     return {
         **to_preview(report, plan, market, trace_id=trace_id, trace_hash=trace_hash),
         "edge_bps": report.edge_bps,
@@ -111,12 +124,23 @@ def to_full(
         },
         "reasoning": [asdict(step) for step in report.reasoning],
         "sources": [
-            {"kind": "model", "name": report.model},
-            {"kind": "market", "name": "Polymarket", "url": market_url},
+            {"kind": "model", "name": report.model, "observed_at": report.generated_at},
+            {
+                "kind": "market_data",
+                "name": source_name,
+                "url": source_url,
+                "observed_at": observed_at,
+                "credibility": 0.7 if market.raw.get("data_mode") == "fixture" else 0.9,
+            },
+            {
+                "kind": "resolution_criteria",
+                "name": "Market resolution text",
+                "url": market_url,
+                "observed_at": observed_at,
+                "description": market.description[:240],
+            },
         ],
-        "risk_factors": [
-            step.text for step in report.reasoning if step.kind == "risk"
-        ],
+        "risk_factors": risk_factors,
         "market_url": market_url,
         "copy_trade_url": copy_trade_url(market, report.decision, builder_code),
         "market_volume_24h_usd": market.volume_24h_usd,

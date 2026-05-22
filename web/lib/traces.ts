@@ -8,10 +8,12 @@
  *   - `canonical`: raw analyst/plan/publication for replay
  *
  * Two snapshot files under `web/data/`:
- *   - `picks-preview.json`: public bundle without `full`. Used by SSR pages.
- *   - `picks-full.json`:    private bundle with `full`. Only read by the
- *                           server-side route handler at /api/traces/[id]/full
- *                           after verifying the caller's on-chain unlock.
+ *   - `picks-preview.json`: public latest-per-market bundle without `full`.
+ *                           Used by SSR pages.
+ *   - `picks-full.private.json`:
+ *                           server-side latest-per-market bundle with `full`.
+ *                           Kept out of the public repo/submission zip and only
+ *                           read after verifying the caller's on-chain unlock.
  *
  * `loadPicks()` / `loadPick()` never expose `full`. `loadPickFull()` returns
  * the full payload and must only be called from server-side code that has
@@ -98,7 +100,7 @@ function previewSnapshotPath(): string {
 }
 
 function fullSnapshotPath(): string {
-  return path.resolve(process.cwd(), "data", "picks-full.json");
+  return path.resolve(process.cwd(), "data", "picks-full.private.json");
 }
 
 async function loadFromDir(dir: string): Promise<Trace[]> {
@@ -133,19 +135,23 @@ const TTL_MS = 30_000;
 export async function loadPicks(): Promise<Trace[]> {
   if (cached && Date.now() - cached.at < TTL_MS) return cached.traces;
 
-  const dir = tracesDir();
   let traces: Trace[] = [];
-  if (existsSync(dir)) {
+
+  // Prefer the generated public snapshot. It intentionally contains only the
+  // judge-visible latest anchored LLM trace per market; raw traces on disk are
+  // archival and may include stale duplicates or heuristic development runs.
+  if (existsSync(previewSnapshotPath())) {
+    traces = await loadFromSnapshot(previewSnapshotPath());
+  }
+
+  const dir = tracesDir();
+  if (traces.length === 0 && existsSync(dir)) {
     try {
       const s = await stat(dir);
       if (s.isDirectory()) traces = await loadFromDir(dir);
     } catch {
       // Fall through to snapshot.
     }
-  }
-
-  if (traces.length === 0 && existsSync(previewSnapshotPath())) {
-    traces = await loadFromSnapshot(previewSnapshotPath());
   }
 
   // Defense in depth: even if a future snapshot accidentally ships with
@@ -182,9 +188,16 @@ export async function loadPickFull(
   const id = Number(traceId);
   if (!Number.isFinite(id)) return null;
 
-  // Prefer the per-trace JSON on disk (dev). Fall back to the full snapshot
-  // (Vercel: only this bundle is included in the API route's function
-  // bundle thanks to the explicit path.resolve call below).
+  // Prefer the generated server-only full snapshot. It mirrors the public
+  // preview snapshot, so stale local archive traces do not remain unlockable
+  // by direct URL after the public feed has moved on.
+  if (existsSync(fullSnapshotPath())) {
+    const all = await loadFromSnapshot(fullSnapshotPath());
+    return all.find((t) => t.trace_id === id) ?? null;
+  }
+
+  // Development fallback for a checkout that has raw traces but has not yet
+  // generated snapshots.
   const dir = tracesDir();
   if (existsSync(dir)) {
     try {
@@ -202,22 +215,15 @@ export async function loadPickFull(
     }
   }
 
-  if (existsSync(fullSnapshotPath())) {
-    const all = await loadFromSnapshot(fullSnapshotPath());
-    return all.find((t) => t.trace_id === id) ?? null;
-  }
-
   return null;
 }
 
 /**
  * Filter a raw `loadPicks()` result down to the home-feed view.
  *
- * The agent has run multiple times against the same Polymarket markets,
- * so `traces/*.json` contains duplicate `market_id` entries (15 traces,
- * 3 unique markets at the time of writing). The home page is the
- * agent's traction surface — showing the same market 7 times misleads
- * a visitor about coverage breadth.
+ * Historical trace archives can contain duplicate `market_id` entries. The
+ * home page is the agent's traction surface — showing the same market several
+ * times misleads a visitor about coverage breadth.
  *
  * Rules, in order:
  *  1. Drop heuristic-fallback picks. The home page leads with "AI
