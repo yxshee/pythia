@@ -153,9 +153,18 @@ class TracePublisher:
         plan: TradePlan,
         market: MarketCandidate,
         publication: PublishResult | None = None,
+        *,
+        trace_id: int | None = None,
     ) -> PublishedTrace:
-        trace_id = self._counter
-        self._counter += 1
+        # Default: monotonically increment the local counter. Regen scripts
+        # pass an explicit `trace_id` to overwrite an existing file (e.g.
+        # `agent/pythia/scripts/regen_specific.py`) without bumping the
+        # counter — the canonical body changes, the file is rewritten, and
+        # a new on-chain anchor is emitted. The old on-chain trace remains
+        # in TraceLog (append-only) but is no longer referenced off-chain.
+        if trace_id is None:
+            trace_id = self._counter
+            self._counter += 1
         # Build the canonical payload first to compute the deterministic CID.
         canonical = {
             "trace_id": trace_id,
