@@ -8,8 +8,17 @@
  * Paid-unlock counts are deliberately omitted in this version — they require
  * a live `UnlockMarket.unlockCount(traceId)` read and are honestly surfaced
  * via the arcscan link in the footnote instead of being faked here.
+ *
+ * The footnote separates the two on-chain surfaces:
+ * - `TraceLog` (the `contract` field in metrics.json) is where trace
+ *   hashes are anchored. Counts on the strip above are derived from
+ *   `TraceLog.Published` events.
+ * - `UnlockMarket` is where 0.10 USDC paid-unlock txs land. Counts of
+ *   live paid unlocks are not surfaced on the strip; the arcscan link
+ *   to the UnlockMarket address is the verifiable surface.
  */
 import metrics from "@/data/metrics.json";
+import { UNLOCK_MARKET } from "@/lib/contracts";
 import { shortHash } from "@/lib/traces";
 
 export function TractionStrip() {
@@ -17,7 +26,8 @@ export function TractionStrip() {
   const txUrl = metrics.latest_tx_hash
     ? `${explorer}/tx/${metrics.latest_tx_hash}`
     : null;
-  const contractUrl = `${explorer}/address/${metrics.contract}`;
+  const traceLogUrl = `${explorer}/address/${metrics.contract}`;
+  const unlockMarketUrl = `${explorer}/address/${UNLOCK_MARKET}`;
 
   return (
     <section className="mt-20">
@@ -83,15 +93,25 @@ export function TractionStrip() {
       </dl>
 
       <p className="mt-5 mono text-[10px] uppercase tracking-[0.22em] text-ink-faint">
-        Live attribution + paid-unlock counts:{" "}
+        Trace anchors:{" "}
         <a
-          href={contractUrl}
+          href={traceLogUrl}
           target="_blank"
           rel="noopener noreferrer"
           title={metrics.contract}
           className="text-ink underline decoration-ink/30 underline-offset-[3px] hover:decoration-ink"
         >
           TraceLog on Arcscan
+        </a>
+        {" · "}Paid unlocks:{" "}
+        <a
+          href={unlockMarketUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          title={UNLOCK_MARKET}
+          className="text-ink underline decoration-ink/30 underline-offset-[3px] hover:decoration-ink"
+        >
+          UnlockMarket on Arcscan
         </a>
         .
       </p>

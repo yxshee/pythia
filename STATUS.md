@@ -98,3 +98,18 @@ behaviour but a meaningful capability is conceded (visual gate, URL
 param vs. bytes32, sha256 vs. pinned CID). Items in *Does not yet
 work* are tracked as post-submission deliverables and explicitly *not*
 claimed as shipping in the pitch video or README scoring table.
+
+## Repo conventions
+
+**Public-repo trace files are demo fixtures, not the production
+paywall surface.** `traces/trace-*.json` and `web/data/picks-full.json`
+are committed to the public repo so judges can reproduce the agent
+loop and the preview/full data-model split end-to-end. They are also
+what `pythia-loop --once --mock` reads when running offline.
+
+Production paid-content access goes through `/api/traces/[id]/full`,
+which enforces SIWE + on-chain `UnlockMarket.isUnlocked(traceId, wallet)`
+before returning the full payload (see *Works today* → "Server-side
+SIWE paywall"). The deployed paywall route is the production gate;
+the git-tracked fixture files exist for reproducibility and narrative
+inspection, not for live access control.

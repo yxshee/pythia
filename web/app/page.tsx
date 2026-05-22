@@ -1,12 +1,13 @@
 import { Header } from "@/components/header";
 import { PickCard } from "@/components/pick-card";
 import { TractionStrip } from "@/components/traction-strip";
-import { loadPicks } from "@/lib/traces";
+import { filterHomeFeed, loadPicks } from "@/lib/traces";
 
 export const revalidate = 30;
 
 export default async function HomePage() {
-  const picks = await loadPicks();
+  const allPicks = await loadPicks();
+  const picks = filterHomeFeed(allPicks);
 
   return (
     <>

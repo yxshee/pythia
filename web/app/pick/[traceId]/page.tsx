@@ -80,7 +80,7 @@ export default async function PickPage({ params }: Props) {
               <FreeRow term="Confidence" desc={p.confidence} />
               <FreeRow term="Risk band" desc={p.risk} />
               <FreeRow term="Resolves" desc={new Date(p.end_date_iso).toLocaleDateString()} />
-              <FreeRow term="Builder code" desc={trace.builder_code} mono />
+              <FreeRow term="Builder code (URL param)" desc={trace.builder_code} mono />
               <FreeRow
                 term="Arc trace hash"
                 desc={shortHash(p.trace_hash, 10, 6)}
