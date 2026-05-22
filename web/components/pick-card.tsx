@@ -74,7 +74,7 @@ export function PickCard({ trace, index = 0 }: Props) {
           resolves {new Date(p.end_date_iso).toLocaleDateString(undefined, { dateStyle: "medium" })}
         </span>
         <span className="mono text-[11px] uppercase tracking-[0.22em] text-oxblood transition group-hover:text-oxblood-bright">
-          Unlock 0.10 USDC →
+          Unlock 0.10 DevUSDC →
         </span>
       </footer>
     </Link>

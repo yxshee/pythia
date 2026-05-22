@@ -6,6 +6,50 @@ import {UnlockMarket} from "../src/UnlockMarket.sol";
 import {IERC20} from "../src/PythiaVault.sol";
 import {MockUSDC} from "./MockUSDC.sol";
 
+contract ReentrantUSDC {
+    UnlockMarket public target;
+    uint256 public traceId;
+    bool public attempted;
+    bool public reentered;
+    bool public reenterReverted;
+
+    mapping(address => uint256) public balanceOf;
+    mapping(address => mapping(address => uint256)) public allowance;
+
+    function setTarget(UnlockMarket _target, uint256 _traceId) external {
+        target = _target;
+        traceId = _traceId;
+    }
+
+    function mint(address to, uint256 amount) external {
+        balanceOf[to] += amount;
+    }
+
+    function approve(address spender, uint256 amount) external returns (bool) {
+        allowance[msg.sender][spender] = amount;
+        return true;
+    }
+
+    function transferFrom(address from, address to, uint256 amount) external returns (bool) {
+        require(allowance[from][msg.sender] >= amount, "rUSDC: insufficient allowance");
+        require(balanceOf[from] >= amount, "rUSDC: insufficient balance");
+
+        if (!attempted) {
+            attempted = true;
+            try target.unlock(traceId) returns (uint256) {
+                reentered = true;
+            } catch {
+                reenterReverted = true;
+            }
+        }
+
+        allowance[from][msg.sender] -= amount;
+        balanceOf[from] -= amount;
+        balanceOf[to] += amount;
+        return true;
+    }
+}
+
 contract UnlockMarketTest is Test {
     UnlockMarket market;
     MockUSDC usdc;
@@ -22,9 +66,30 @@ contract UnlockMarketTest is Test {
     function setUp() public {
         usdc = new MockUSDC();
         market = new UnlockMarket(IERC20(address(usdc)), owner, treasury, DEFAULT_PRICE);
+        vm.prank(owner);
+        market.registerTraces(_traceIds(1, 5, 7, 8, 11, 42, 99_999_999));
 
         usdc.mint(alice, 10 * ONE_USDC);
         usdc.mint(bob, 10 * ONE_USDC);
+    }
+
+    function _traceIds(
+        uint256 a,
+        uint256 b,
+        uint256 c,
+        uint256 d,
+        uint256 e,
+        uint256 f,
+        uint256 g
+    ) internal pure returns (uint256[] memory ids) {
+        ids = new uint256[](7);
+        ids[0] = a;
+        ids[1] = b;
+        ids[2] = c;
+        ids[3] = d;
+        ids[4] = e;
+        ids[5] = f;
+        ids[6] = g;
     }
 
     function _approveAndUnlock(address buyer, uint256 traceId) internal returns (uint256 priced) {
@@ -96,6 +161,8 @@ contract UnlockMarketTest is Test {
         // override of 0 which `setPriceOverride` rejects. The remaining edge case is
         // a freshly-deployed market with defaultPrice=0, which we test directly.
         UnlockMarket freeMarket = new UnlockMarket(IERC20(address(usdc)), owner, treasury, 0);
+        vm.prank(owner);
+        freeMarket.registerTrace(1);
         vm.startPrank(alice);
         usdc.approve(address(freeMarket), 1);
         vm.expectRevert(bytes("UM: price zero"));
@@ -103,10 +170,44 @@ contract UnlockMarketTest is Test {
         vm.stopPrank();
     }
 
+    function test_unlock_nonexistentTraceReverts() public {
+        vm.startPrank(alice);
+        usdc.approve(address(market), DEFAULT_PRICE);
+        vm.expectRevert(bytes("UM: unknown trace"));
+        market.unlock(999);
+        vm.stopPrank();
+    }
+
+    function test_unlock_reentrantTokenCannotUnlockTwice() public {
+        ReentrantUSDC reentrantUsdc = new ReentrantUSDC();
+        UnlockMarket reentrantMarket = new UnlockMarket(
+            IERC20(address(reentrantUsdc)),
+            owner,
+            treasury,
+            DEFAULT_PRICE
+        );
+        vm.prank(owner);
+        reentrantMarket.registerTrace(1);
+        reentrantUsdc.setTarget(reentrantMarket, 1);
+        reentrantUsdc.mint(alice, ONE_USDC);
+
+        vm.startPrank(alice);
+        reentrantUsdc.approve(address(reentrantMarket), DEFAULT_PRICE);
+        reentrantMarket.unlock(1);
+        vm.stopPrank();
+
+        assertTrue(reentrantUsdc.attempted(), "token attempted reentry");
+        assertTrue(reentrantUsdc.reenterReverted(), "reentry reverted");
+        assertFalse(reentrantUsdc.reentered(), "reentry did not unlock");
+        assertTrue(reentrantMarket.isUnlocked(1, alice));
+        assertEq(reentrantMarket.unlockCount(1), 1);
+        assertEq(reentrantUsdc.balanceOf(treasury), DEFAULT_PRICE);
+    }
+
     function test_unlock_revertsOnInsufficientAllowance() public {
         vm.startPrank(alice);
         // No approve.
-        vm.expectRevert(bytes("mUSDC: insufficient allowance"));
+        vm.expectRevert(bytes("UM: USDC transfer failed"));
         market.unlock(1);
         vm.stopPrank();
     }
@@ -130,6 +231,20 @@ contract UnlockMarketTest is Test {
         vm.expectRevert(bytes("UM: use clearPriceOverride"));
         market.setPriceOverride(1, 0);
         vm.stopPrank();
+    }
+
+    function test_registerTrace_onlyOwnerAndRejectsZero() public {
+        vm.prank(stranger);
+        vm.expectRevert(bytes("UM: not owner"));
+        market.registerTrace(123);
+
+        vm.prank(owner);
+        vm.expectRevert(bytes("UM: trace zero"));
+        market.registerTrace(0);
+
+        vm.prank(owner);
+        market.registerTrace(123);
+        assertTrue(market.traceExists(123));
     }
 
     function test_clearPriceOverride_revertsToDefault() public {

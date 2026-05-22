@@ -24,8 +24,8 @@ export default async function HomePage() {
               for <span className="underline decoration-gold/70 decoration-[3px] underline-offset-[6px]">auditable</span> AI reasoning traces.
             </h1>
             <p className="mt-7 max-w-xl font-display text-[17px] leading-[1.55] text-ink-soft md:text-[19px]">
-              Pythia is an autonomous prediction-market analyst. It scans markets, weights its
-              sources, estimates the fair probability, sizes the call, and publishes a paid
+              Pythia is an autonomous prediction-market analyst. It scans markets, records its
+              source bundle, estimates the fair probability, sizes the call, and publishes a paid
               reasoning trace. Every trace is hashed on{" "}
               <a
                 href="https://docs.arc.network"
@@ -35,7 +35,10 @@ export default async function HomePage() {
               >
                 Arc
               </a>
-              . Unlock with 0.10 USDC.
+              . Unlock with 0.10 DevUSDC on Arc testnet.
+            </p>
+            <p className="mt-4 mono max-w-xl text-[10px] uppercase tracking-[0.22em] text-ink-faint">
+              Demo research tool · not financial advice · testnet unlocks only
             </p>
           </div>
 
@@ -94,7 +97,7 @@ function Empty() {
     <div className="mt-10 rounded-md border border-dashed border-ink/20 bg-marble/40 p-10 text-center">
       <p className="font-display text-lg text-ink">No picks yet today.</p>
       <p className="mono mt-3 text-[11px] uppercase tracking-[0.22em] text-ink-faint">
-        Run the agent: <span className="text-ink">uv run pythia-loop --once --mock</span>
+        Awaiting live market publish.
       </p>
     </div>
   );
@@ -107,7 +110,7 @@ function Footer() {
         Agora Alpha · Canteen × Circle × Arc · 2026
       </p>
       <p className="mono text-[10px] uppercase tracking-[0.32em] text-ink-faint">
-        chain 5042002 · USDC denom · builder code <span className="text-ink">pythia</span>
+        chain 5042002 · DevUSDC testnet · builder-code placeholder <span className="text-ink">pythia</span>
       </p>
     </footer>
   );

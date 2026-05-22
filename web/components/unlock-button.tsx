@@ -16,9 +16,10 @@
  * After each tx receipt confirms, we invalidate the affected tanstack
  * queries — the next render reads fresh on-chain state and advances
  * the state machine. Once isUnlocked flips true, the visitor signs a
- * domain-bound message and the client POSTs to /api/traces/[id]/full;
- * the server verifies the signature + on-chain unlock before returning
- * the gated payload. UnlockedContent renders that fetched payload.
+ * host/chain/contract-bound message and the client POSTs to
+ * /api/traces/[id]/full; the server verifies the signature + on-chain
+ * unlock before returning the gated payload. UnlockedContent renders
+ * that fetched payload.
  *
  * Honest scope: the public SSR HTML carries preview + on-chain anchor
  * only; the full reasoning/sizing payload only ever reaches the wire
@@ -181,7 +182,7 @@ export function UnlockButton({ traceId }: Props) {
     allowanceQuery.queryKey,
   ]);
 
-  // Sign a domain-bound message and exchange it for the gated payload.
+  // Sign a host/chain/contract-bound message and exchange it for the gated payload.
   // The route handler at /api/traces/[id]/full verifies (a) signature
   // via viem, (b) UnlockMarket.isUnlocked(traceId, address) on Arc. We
   // never reach this code path without the on-chain unlock landing
@@ -191,22 +192,37 @@ export function UnlockButton({ traceId }: Props) {
     setIsFetching(true);
     setFetchError(null);
     try {
-      const issued = new Date().toISOString();
-      // Keep the literal `address:` lowercase to match the server's
-      // lowercased haystack in messageMatchesContext (see route.ts).
-      // The server lowercases the whole message before comparing, so
-      // either case works at runtime — but lock-stepping the source
-      // makes the contract obvious to a future reader.
-      const message =
-        "agoraalpha.vercel.app — unlock trace\n" +
-        `Trace ID: ${traceId}\n` +
-        `address: ${address.toLowerCase()}\n` +
-        `Issued: ${issued}`;
+      const nonceRes = await fetch(
+        `/api/traces/${traceId}/full?address=${encodeURIComponent(address)}`,
+        { method: "GET", headers: { accept: "application/json" } },
+      );
+      if (!nonceRes.ok) {
+        let detail = `HTTP ${nonceRes.status}`;
+        try {
+          const body = (await nonceRes.json()) as { error?: string };
+          if (body?.error) detail = body.error;
+        } catch {
+          // ignore parse failures; default to status code
+        }
+        throw new Error(detail);
+      }
+      const noncePayload = (await nonceRes.json()) as {
+        nonce: string;
+        issuedAt: string;
+        expiresAt: string;
+        message: string;
+      };
+      const message = noncePayload.message;
       const signature = await signMessageAsync({ message });
       const res = await fetch(`/api/traces/${traceId}/full`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ address, signature, message }),
+        body: JSON.stringify({
+          address,
+          nonce: noncePayload.nonce,
+          signature,
+          message,
+        }),
       });
       if (!res.ok) {
         let detail = `HTTP ${res.status}`;
@@ -332,7 +348,7 @@ export function UnlockButton({ traceId }: Props) {
               isUnlocked ? "text-laurel" : "text-oxblood"
             }`}
           >
-            {isUnlocked ? "Paid · on Arc" : `${fmtUsdc(price)} USDC · Arc`}
+            {isUnlocked ? "Paid · on Arc" : `${fmtUsdc(price)} test USDC · Arc`}
           </span>
         </div>
 
@@ -371,9 +387,9 @@ export function UnlockButton({ traceId }: Props) {
             <ul className="relative space-y-3 font-display text-[15px] leading-[1.45] text-ink-soft">
               {[
                 "Multi-step reasoning chain",
-                "Suggested USDC size for conservative / balanced / aggressive profiles",
+                "Suggested paper size for conservative / balanced / aggressive profiles",
                 "Expected value + edge in basis points",
-                "Builder-code link to copy the trade on Polymarket",
+                "Polymarket link for BUY recommendations",
                 "Market liquidity + 24h volume context",
               ].map((row) => (
                 <li key={row} className="flex items-baseline gap-3">
@@ -481,7 +497,7 @@ function ActionRow({
       disabled = true;
       break;
     case "needs-approve":
-      label = `Approve ${fmtUsdc(price)} USDC`;
+      label = `Approve ${fmtUsdc(price)} test USDC`;
       onClick = onApprove;
       break;
     case "approving":
@@ -489,7 +505,7 @@ function ActionRow({
       disabled = true;
       break;
     case "ready":
-      label = `Pay ${fmtUsdc(price)} USDC to unlock`;
+      label = `Pay ${fmtUsdc(price)} test USDC to unlock`;
       onClick = onUnlock;
       break;
     case "unlocking":
@@ -522,7 +538,7 @@ function ActionRow({
       </button>
       {state === "needs-funds" && balance > 0n && (
         <span className="mono text-[10px] uppercase tracking-[0.22em] text-ink-faint">
-          Balance: {fmtUsdc(balance)} USDC
+          Balance: {fmtUsdc(balance)} test USDC
         </span>
       )}
     </div>

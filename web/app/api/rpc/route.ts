@@ -31,6 +31,7 @@
  * - 502 if the upstream fetch errors (network, timeout).
  */
 import { NextRequest, NextResponse } from "next/server";
+import { clientIp, rateLimit } from "@/lib/server/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -51,13 +52,27 @@ const ALLOWED_METHODS = new Set([
   "net_version",
 ]);
 
+const MAX_BODY_CHARS = 25_000;
+const MAX_BATCH_CALLS = 10;
+
 export async function POST(req: NextRequest) {
+  const limit = rateLimit(`rpc:${clientIp(req.headers)}`, 120, 60_000);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } },
+    );
+  }
+
   const upstream = process.env.ARC_RPC_URL;
   if (!upstream) {
     return NextResponse.json({ error: "server-not-configured" }, { status: 503 });
   }
 
   const body = await req.text();
+  if (body.length > MAX_BODY_CHARS) {
+    return NextResponse.json({ error: "body-too-large" }, { status: 413 });
+  }
 
   // Parse + validate method(s) before forwarding. A JSON-RPC body is
   // either a single call object or an array of call objects (batch).
@@ -66,6 +81,13 @@ export async function POST(req: NextRequest) {
     parsed = JSON.parse(body);
   } catch {
     return NextResponse.json({ error: "invalid-json" }, { status: 400 });
+  }
+
+  if (Array.isArray(parsed) && (parsed.length === 0 || parsed.length > MAX_BATCH_CALLS)) {
+    return NextResponse.json(
+      { error: "batch-size-not-allowed", max: MAX_BATCH_CALLS },
+      { status: 400 },
+    );
   }
 
   const calls = Array.isArray(parsed) ? parsed : [parsed];

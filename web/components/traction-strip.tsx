@@ -1,7 +1,7 @@
 /**
  * Traction strip. Server-rendered honest snapshot of what the agent has
  * actually published on Arc, derived deterministically at build time from
- * `web/data/metrics.json` (which is itself derived from `picks-full.json`,
+ * `web/data/metrics.json` (which is itself derived from the private full snapshot,
  * which is itself derived from the trace JSONs on disk).
  *
  * No live RPC reads, no client JS, no secret env vars in the build context.
@@ -13,7 +13,7 @@
  * - `TraceLog` (the `contract` field in metrics.json) is where trace
  *   hashes are anchored. Counts on the strip above are derived from
  *   `TraceLog.Published` events.
- * - `UnlockMarket` is where 0.10 USDC paid-unlock txs land. Counts of
+ * - `UnlockMarket` is where 0.10 DevUSDC/testnet unlock txs land. Counts of
  *   live paid unlocks are not surfaced on the strip; the arcscan link
  *   to the UnlockMarket address is the verifiable surface.
  */
@@ -55,7 +55,7 @@ export function TractionStrip() {
             ${metrics.paper_volume_usdc.toFixed(2)}
           </span>
           <span className="mono text-[10px] uppercase tracking-[0.22em] text-ink-faint">
-            USDC · cumulative
+            paper USDC · cumulative
           </span>
         </Card>
 
@@ -87,7 +87,7 @@ export function TractionStrip() {
             Arc · {metrics.chain_id}
           </span>
           <span className="mono text-[10px] uppercase tracking-[0.22em] text-laurel">
-            USDC denom · sub-second finality
+            USDC-native gas · sub-second finality
           </span>
         </Card>
       </dl>

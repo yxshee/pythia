@@ -12,7 +12,7 @@
  */
 
 export const UNLOCK_MARKET = (process.env.NEXT_PUBLIC_UNLOCK_MARKET_ADDRESS ??
-  "0x6478370B34Dc31498C68734EB2647C99A333b6D4") as `0x${string}`;
+  "0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA") as `0x${string}`;
 
 export const USDC = (process.env.NEXT_PUBLIC_USDC_ADDRESS_ARC ??
   "0x6d3bda6e93dd02a1c237642C5af837796bF47511") as `0x${string}`;
