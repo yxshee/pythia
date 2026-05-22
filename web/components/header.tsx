@@ -19,9 +19,6 @@ export function Header() {
           <Link href="/" className="hover:text-ink">
             Picks
           </Link>
-          <Link href="/leaderboard" className="hover:text-ink">
-            Leaderboard
-          </Link>
           <a
             href="https://agora.thecanteenapp.com/"
             target="_blank"
