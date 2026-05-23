@@ -80,6 +80,25 @@ non-empty trace array. Any other case prints a `FAIL:` line naming the URL
 and the reason (HTTP status, content-type mismatch, parse error, empty
 list).
 
+## Wallet smoke (operator)
+
+`scripts/cli-unlock.mjs` is a viem-based one-command flow that mirrors the
+in-browser `UnlockButton`: mint DevUSDC → approve → unlock → GET nonce →
+sign EIP-191 → POST → replay (expect `nonce-used`). Use it to capture a
+clean transcript for VERIFY.md §5 without screenshots.
+
+```bash
+cd ..
+npm install                                # one-time install (repo-root deps)
+PRIVATE_KEY=0x<fresh-testnet-key> ARC_RPC_URL=https://<arc-rpc> \
+  node scripts/cli-unlock.mjs --base=https://agoraalpha.vercel.app --trace-id=16
+```
+
+Pre-flight `--dry-run` flag stops after reading the on-chain unlock price
+— useful for confirming RPC + private-key wiring without spending gas.
+The script logs the wallet address (public) but **never** the private key
+or any signature secret.
+
 ## Notes for AI coding tools
 
 This is Next.js 16. APIs, conventions, and file structure differ from

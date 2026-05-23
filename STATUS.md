@@ -55,7 +55,9 @@ Last updated: 2026-05-23 (Asia/Kolkata).
   `/api/rpc` rejects writes/oversized bodies/oversized batches, and a CLI
   wallet-equivalent flow successfully minted DevUSDC, approved exact unlock
   price, unlocked trace `16`, signed the nonce-bound message, fetched the full
-  payload, and then received `nonce-used` on replay.
+  payload, and then received `nonce-used` on replay. The CLI flow is now
+  reproducible end-to-end via `scripts/cli-unlock.mjs` (viem, see "Wallet
+  smoke" below).
 
 ## Partially Works
 
@@ -112,3 +114,21 @@ python3 scripts/package_submission.py
 # creates submission.zip only after package-mode validation passes
 # (validate_submission --mode package is invoked inside the script)
 ```
+
+### Wallet smoke (operator)
+
+One-command end-to-end paid-unlock flow against any deploy
+(replaces the manual click-through in the browser):
+
+```bash
+npm install
+PRIVATE_KEY=0x<fresh-testnet-key> ARC_RPC_URL=https://<arc-rpc> \
+  node scripts/cli-unlock.mjs --base=https://agoraalpha.vercel.app --trace-id=16
+```
+
+The script mints DevUSDC (if needed), approves exact unlock price, calls
+`UnlockMarket.unlock(traceId)`, GETs the nonce, signs the EIP-191 message,
+POSTs the unlock body, then POSTs the same body again and asserts the
+replay is rejected with `nonce-used`. Use `--dry-run` to stop after the
+price read (no tx sent) for a no-cost setup check. The wallet address is
+printed; **the PRIVATE_KEY value is never logged**.
