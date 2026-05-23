@@ -18,13 +18,13 @@
 
 | Field             | Value                                                              |
 |-------------------|--------------------------------------------------------------------|
-| Commit            | `5d1ab397222ad22967cd2ec5f77fa72a6e2e0cdd` (audit branch HEAD as of generation; final submission commit will sit on top of this) |
-| Short SHA         | `5d1ab39`                                                          |
-| Branch            | `audit/executive-verdict-fixes` (PR'd to `main` before submission) |
-| Worktree clean    | dirty — the changes from this audit are staged but un-committed at generation; full diff in §0.1 below |
-| Generated at      | `2026-05-23T15:45:12Z` (local-evidence sections 1, 2, 7); §3–§6 timestamps captured against the live preview at handoff |
+| Pre-merge commit  | `5d1ab397222ad22967cd2ec5f77fa72a6e2e0cdd` (audit branch HEAD when §1, §2, §7 were generated) |
+| Post-merge commit | `bcc1d5531fca9300bbd5e8ac12ae8047d150a050` (squash of PR #26 into `main` on `2026-05-23T18:24:31Z`; §3-post-merge, §4-post-merge, §8 capture this commit's live behavior) |
+| Branch            | `main` (post-merge); `audit/executive-verdict-fixes` deleted on merge |
+| Worktree clean    | clean post-merge (run `git status` on `main` at `bcc1d55`)         |
+| Generated at      | `2026-05-23T15:45:12Z` (§1, §2, §7); `2026-05-23T17:15:50Z` (§3, §4 pre-merge baseline); `2026-05-23T18:33:00Z` (§3-post-merge); `2026-05-23T18:35:00Z` (§4-post-merge); §5 + §8 captured at handoff |
 | Production URL    | https://agoraalpha.vercel.app                                      |
-| Preview URL       | `https://pythia-git-audit-executive-verdi-46ac16-yashs-projects-a859a420.vercel.app` (gated by Vercel SSO; see §3 note) |
+| Preview URL       | `https://pythia-git-audit-executive-verdi-46ac16-yashs-projects-a859a420.vercel.app` (gated by Vercel SSO; pre-merge baseline ran against prod instead — see §3 note) |
 | UnlockMarket addr | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` (registered trace IDs `9,10,11,12,13,14,15,16`) |
 | Chain             | Arc testnet, chain id `5042002`                                    |
 
@@ -401,6 +401,75 @@ HTTP/2 404
 
 ---
 
+## 3 (post-merge). Live deploy — surface checks (re-run after PR #26 merge)
+
+Re-running the §3 battery against `https://agoraalpha.vercel.app` after PR
+#26 merged as commit `bcc1d55` and Vercel auto-deployed. This block exists
+to prove the audit branch's hardening landed on prod; the pre-merge baseline
+above stays intact for diffing.
+
+Captured at `2026-05-23T18:33:00Z` against merge commit `bcc1d55`.
+
+### 3.7 Security headers (post-merge)
+
+Command:
+
+```bash
+curl -sI https://agoraalpha.vercel.app/ | sort | \
+  grep -iE 'content-security-policy|strict-transport|x-content|x-frame|referrer'
+```
+
+```text
+content-security-policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self';
+referrer-policy: strict-origin-when-cross-origin
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+x-content-type-options: nosniff
+x-frame-options: DENY
+```
+
+All five hardening headers from §3.1 still present post-merge. No regression.
+
+### 3.8 Home page renders ≥8 picks (post-merge)
+
+Command:
+
+```bash
+curl -s https://agoraalpha.vercel.app/ | grep -oE 'href="/pick/[0-9]+"' | sort -u | wc -l
+```
+
+```text
+       8
+```
+
+Eight unique pick links, matching the pre-merge baseline and the home-feed
+invariant enforced by `validate_submission`.
+
+### 3.9 `/pick/16` returns 200 (post-merge)
+
+Command:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" https://agoraalpha.vercel.app/pick/16
+```
+
+```text
+200
+```
+
+### 3.10 `/pick/999999` returns 404 (post-merge)
+
+Command:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" https://agoraalpha.vercel.app/pick/999999
+```
+
+```text
+404
+```
+
+---
+
 ## 4. Paywall route — rejection paths (pre-merge baseline)
 
 ### 4.1 `/api/rpc` rejects write methods
@@ -517,7 +586,121 @@ This evidences that the **4 KB body cap added by PR #26 (C1)** is not yet
 on production: the 5 KB body is accepted and the request proceeds to the
 context-mismatch guard. After PR #26 promotes, this case is expected to
 return `{"error":"payload-too-large"}` with `HTTP 413`. The
-post-merge re-run in §4-post-merge confirms this.
+post-merge re-run in §4.12 confirms this.
+
+---
+
+## 4 (post-merge). Paywall route — rejection paths (re-run after PR #26 merge)
+
+Re-running the §4 battery against `https://agoraalpha.vercel.app` after PR
+#26 merged as commit `bcc1d55` and Vercel auto-deployed. §4.12 is the proof
+that C1 (the 4 KB body cap) is now live.
+
+Captured at `2026-05-23T18:35:00Z` against merge commit `bcc1d55`.
+
+### 4.7 `/api/rpc` rejects write methods (post-merge)
+
+Command:
+
+```bash
+curl -s -X POST https://agoraalpha.vercel.app/api/rpc \
+  -H 'content-type: application/json' \
+  -d '{"jsonrpc":"2.0","method":"eth_sendRawTransaction","params":["0x"],"id":1}'
+```
+
+```text
+{"error":"method-not-allowed","detail":"This proxy only forwards a read-only allowlist. Writes go through the wallet, not this endpoint."}
+HTTP 403
+```
+
+### 4.8 `/api/rpc` rejects oversized body (post-merge)
+
+Command:
+
+```bash
+python3 -c "import json,sys; sys.stdout.write(json.dumps({'jsonrpc':'2.0','method':'eth_blockNumber','params':[],'id':'x'*200000}))" | \
+  curl -s -X POST https://agoraalpha.vercel.app/api/rpc \
+  -H 'content-type: application/json' --data-binary @-
+```
+
+(200 071 byte body)
+
+```text
+{"error":"body-too-large"}
+HTTP 413
+```
+
+### 4.9 `/api/rpc` rejects batch > 10 (post-merge)
+
+Command:
+
+```bash
+python3 -c "import json,sys; sys.stdout.write(json.dumps([{'jsonrpc':'2.0','method':'eth_blockNumber','params':[],'id':i} for i in range(11)]))" | \
+  curl -s -X POST https://agoraalpha.vercel.app/api/rpc \
+  -H 'content-type: application/json' --data-binary @-
+```
+
+```text
+{"error":"batch-size-not-allowed","max":10}
+HTTP 400
+```
+
+### 4.10 `/api/traces/16/full` rejects missing fields (post-merge)
+
+Command:
+
+```bash
+curl -s -X POST 'https://agoraalpha.vercel.app/api/traces/16/full' \
+  -H 'content-type: application/json' \
+  -d '{}'
+```
+
+```text
+{"error":"missing-fields"}
+HTTP 400
+```
+
+### 4.11 `/api/traces/16/full` rejects stale nonce (post-merge)
+
+Command:
+
+```bash
+curl -s -X POST 'https://agoraalpha.vercel.app/api/traces/16/full' \
+  -H 'content-type: application/json' \
+  -d '{"address":"0x0000000000000000000000000000000000000001","nonce":"0xdeadbeef","signature":"0x0123…1c","message":"agoraalpha.vercel.app — unlock trace\nTrace ID: 16\naddress: 0x0000000000000000000000000000000000000001\nChain ID: 5042002\nUnlockMarket: 0xd8af5ebe36ac9ea736f40d749674ff1b0f4bd3ca\nNonce: 0xdeadbeef\nIssued: 2020-01-01T00:00:00.000Z\nExpires: 2020-01-01T00:05:00.000Z"}'
+```
+
+```text
+{"error":"nonce-not-found"}
+HTTP 401
+```
+
+This is a tighter rejection than §4.5: the message context (host/trace/
+address/chain/contract) matches the canonical form, so the route advances
+past `messageMatchesContext` and falls at the nonce-store lookup. The fake
+`0xdeadbeef` was never issued, so it's not in the active set.
+
+### 4.12 `/api/traces/16/full` rejects oversized body — C1 confirmed live (post-merge)
+
+Command:
+
+```bash
+python3 -c "import json,sys; sys.stdout.write(json.dumps({'address':'0x'+'1'*40,'nonce':'0x'+'a'*8,'signature':'0x'+'b'*130,'message':'x'*5000}))" | \
+  curl -s -X POST 'https://agoraalpha.vercel.app/api/traces/16/full' \
+  -H 'content-type: application/json' --data-binary @-
+```
+
+(5 244 byte body — above the 4 KB cap)
+
+```text
+{"error":"payload-too-large"}
+HTTP 413
+```
+
+**Confirmed:** the 4 KB body cap from C1 ([web/app/api/traces/[traceId]/full/route.ts](web/app/api/traces/%5BtraceId%5D/full/route.ts))
+is now live on prod. Pre-merge this same payload returned `HTTP 401
+message-context-mismatch` (see §4.6 baseline); post-merge it short-circuits
+at the size gate before any parsing or context work.
 
 ---
 
@@ -622,6 +805,58 @@ Only `web/data/picks-preview.json` appears. No `web/data/picks-full*.json` and
 no `traces/trace-*.json` entries — confirms the package builder excludes both
 the public and private full bundles and the raw trace JSONs. This is also
 asserted at runtime by §2.4's `--mode package` validator.
+
+### 7.3 Post-merge zip rebuild
+
+Rebuilt on the post-merge `main` commit `bcc1d55` at `2026-05-23T18:38:00Z`.
+This is the **final submission artifact** that the operator attaches to the
+hackathon entry.
+
+Commands:
+
+```bash
+git checkout main && git pull --ff-only         # at bcc1d55
+python3 scripts/package_submission.py
+shasum -a 256 submission.zip
+wc -c submission.zip
+```
+
+```text
+wrote submission.zip (349,913 bytes)
+
+d60fcb44d23ed644df43c890675e150fa14bb14d0b0643891a241484236c816c  submission.zip
+  349913 submission.zip
+```
+
+| Field            | Value                                                              |
+|------------------|--------------------------------------------------------------------|
+| Commit           | `bcc1d5531fca9300bbd5e8ac12ae8047d150a050`                         |
+| Size             | 349 913 bytes                                                      |
+| SHA256           | `d60fcb44d23ed644df43c890675e150fa14bb14d0b0643891a241484236c816c` |
+| File count       | 94                                                                 |
+| Built by         | `scripts/package_submission.py`                                    |
+| Validator        | `validate_submission --mode package` (invoked internally; passed)  |
+
+The +12 210 byte delta vs §7.1 (337 703 → 349 913) reflects the audit
+branch's additions: `scripts/cli-unlock.mjs` (+324 lines), `package.json`,
+`agent/pythia/scripts/validate_submission.py` (--check-blob), CI workflow,
+expanded VERIFY.md, and the other E2/E3 deliverables.
+
+### 7.4 Post-merge zip surface
+
+Command:
+
+```bash
+unzip -l submission.zip | grep -E 'picks-full|\.env(\.|$)|trace-[0-9]' || echo '(no private payload — good)'
+```
+
+```text
+(no private payload — good)
+```
+
+`picks-full.private.json` is excluded, no real `.env`, no `traces/trace-*.json`
+production files. Only `.env.example` and `web/.env.local.example` (template
+files with no secrets) ship. Same invariants as §7.2; reasserted post-merge.
 
 ---
 
