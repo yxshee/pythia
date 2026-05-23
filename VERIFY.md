@@ -24,7 +24,7 @@
 | Worktree clean    | dirty — the changes from this audit are staged but un-committed at generation; full diff in §0.1 below |
 | Generated at      | `2026-05-23T15:45:12Z` (local-evidence sections 1, 2, 7); §3–§6 timestamps captured against the live preview at handoff |
 | Production URL    | https://agoraalpha.vercel.app                                      |
-| Preview URL       | `TODO: paste preview URL produced by Vercel after the audit branch is pushed` |
+| Preview URL       | `https://pythia-git-audit-executive-verdi-46ac16-yashs-projects-a859a420.vercel.app` (gated by Vercel SSO; see §3 note) |
 | UnlockMarket addr | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` (registered trace IDs `9,10,11,12,13,14,15,16`) |
 | Chain             | Arc testnet, chain id `5042002`                                    |
 
@@ -306,15 +306,22 @@ submission data ok (package): 8 home markets, no paid bundle present
 
 ---
 
-> **Sections 3–6 are operator-run against the live deploy.** They cannot be
-> filled by an offline sandbox: §3 needs the production URL responding live,
-> §4 needs the rate-limiter and paywall route hot, §5 needs a real wallet on
-> Arc with DevUSDC, and §6 needs browser screenshots. The plan is to run
-> these against the **preview deploy** produced by the audit branch first
-> (catch regressions), then re-run §3 and §5 against `agoraalpha.vercel.app`
-> after promotion. Capture verbatim output into the blocks below.
+> **Sections 3–6 evidence is captured against the live deploy.** §3 + §4 below
+> are filled in against `agoraalpha.vercel.app` (production) at
+> **2026-05-23T17:15:50Z**, which at the time of capture is the **pre-merge
+> baseline** (PR #26 has not yet been promoted). The Vercel deployment-preview
+> URL for the audit branch is protected by Vercel SSO (HTTP 401 to unauth
+> requests — see the auth-required HTML body), so the preview cannot be
+> reached from a sandbox curl; the practical equivalent is to run the same
+> battery against prod pre-merge (this section) and again against prod
+> post-merge (§3-prod / §4-prod, added in E4). §5 needs a real wallet on Arc
+> with DevUSDC; §6 needs browser screenshots. Both are operator-run.
+>
+> Captured outputs below are verbatim from the production endpoint at the
+> timestamp above. After PR #26 merges and the new build promotes, this
+> section is re-run and any deltas are appended as §3-post-merge / §4-post-merge.
 
-## 3. Live deploy — surface checks
+## 3. Live deploy — surface checks (pre-merge baseline)
 
 ### 3.1 Security headers
 
@@ -325,25 +332,48 @@ curl -sI https://agoraalpha.vercel.app | sort
 ```
 
 ```text
-TODO: full sorted header dump. Required entries:
-  - content-security-policy
-  - strict-transport-security: max-age=63072000; includeSubDomains; preload
-  - x-content-type-options: nosniff
-  - x-frame-options: DENY  (or CSP frame-ancestors 'none')
-  - referrer-policy: strict-origin-when-cross-origin (or stricter)
+HTTP/2 200
+age: 19
+cache-control: public, max-age=0, must-revalidate
+content-length: 68497
+content-security-policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self';
+content-type: text/html; charset=utf-8
+date: Fri, 22 May 2026 22:59:33 GMT
+etag: "ru4vtyn7pr1gqn"
+referrer-policy: strict-origin-when-cross-origin
+server: Vercel
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-matched-path: /
+x-nextjs-prerender: 1
+x-nextjs-stale-time: 300
+x-powered-by: Next.js
+x-vercel-cache: HIT
+x-vercel-id: bom1::iad1::7hbxg-1779556503155-c62e830dd784
 ```
+
+All five required headers present: `content-security-policy: frame-ancestors 'none'`,
+`strict-transport-security: max-age=63072000; includeSubDomains; preload`,
+`x-content-type-options: nosniff`, `x-frame-options: DENY`,
+`referrer-policy: strict-origin-when-cross-origin`. CSP also asserts
+`object-src 'none'` and `base-uri 'self'`.
 
 ### 3.2 Home page renders
 
 Command:
 
 ```bash
-curl -s https://agoraalpha.vercel.app | grep -c 'href="/pick/'
+curl -s https://agoraalpha.vercel.app | grep -oc 'href="/pick/[0-9]\+"'
 ```
 
 ```text
-TODO: expected count = number of cards rendered on home (>= 8)
+8
 ```
+
+Home renders exactly 8 pick-page links — matches the 8 live Polymarket
+traces validated by `validate_submission --mode deploy` in §2.3.
 
 ### 3.3 Pick page renders
 
@@ -354,7 +384,7 @@ curl -sI https://agoraalpha.vercel.app/pick/16
 ```
 
 ```text
-TODO: expected `HTTP/2 200`
+HTTP/2 200 
 ```
 
 ### 3.4 Unknown pick returns 404
@@ -366,12 +396,12 @@ curl -sI https://agoraalpha.vercel.app/pick/999999
 ```
 
 ```text
-TODO: expected `HTTP/2 404`
+HTTP/2 404
 ```
 
 ---
 
-## 4. Paywall route — rejection paths
+## 4. Paywall route — rejection paths (pre-merge baseline)
 
 ### 4.1 `/api/rpc` rejects write methods
 
@@ -384,8 +414,13 @@ curl -s -X POST https://agoraalpha.vercel.app/api/rpc \
 ```
 
 ```text
-TODO: expected JSON-RPC error with code -32601 (method not allowed) and HTTP 403
+{"error":"method-not-allowed","detail":"This proxy only forwards a read-only allowlist. Writes go through the wallet, not this endpoint."}
+HTTP 403
 ```
+
+`eth_sendRawTransaction` is rejected at the allowlist gate before any
+upstream forwarding — Canteen-issued RPC quota is never spent on
+arbitrary external transactions.
 
 ### 4.2 `/api/rpc` rejects oversized body
 
@@ -397,8 +432,12 @@ yes 'a' | head -c 65000 | curl -s -X POST https://agoraalpha.vercel.app/api/rpc 
 ```
 
 ```text
-TODO: expected HTTP 413
+{"error":"body-too-large"}
+HTTP 413
 ```
+
+`MAX_BODY_CHARS = 25_000` in [web/app/api/rpc/route.ts](web/app/api/rpc/route.ts);
+65 KB exceeds the cap and short-circuits before JSON parsing.
 
 ### 4.3 `/api/rpc` rejects batch > 10
 
@@ -411,8 +450,12 @@ curl -s -X POST https://agoraalpha.vercel.app/api/rpc \
 ```
 
 ```text
-TODO: expected HTTP 400 with explicit "batch too large" error
+{"error":"batch-size-not-allowed","max":10}
+HTTP 400
 ```
+
+`MAX_BATCH_CALLS = 10`; an 11-call batch is rejected with the explicit
+cap value in the body for client UI surfacing.
 
 ### 4.4 `/api/traces/16/full` rejects missing fields
 
@@ -425,9 +468,13 @@ curl -s -X POST 'https://agoraalpha.vercel.app/api/traces/16/full' \
 ```
 
 ```text
-TODO: expected HTTP 400 with explicit reason listing required fields
-       (address, nonce, signature, message)
+{"error":"missing-fields"}
+HTTP 400
 ```
+
+The route requires `address`, `nonce`, `signature`, and `message`; an
+empty body short-circuits at the first guard before any chain or
+signature work happens.
 
 ### 4.5 `/api/traces/16/full` rejects unsigned address
 
@@ -440,8 +487,37 @@ curl -s -X POST 'https://agoraalpha.vercel.app/api/traces/16/full' \
 ```
 
 ```text
-TODO: expected HTTP 401 or 403 with "signature-invalid" or equivalent
+{"error":"message-context-mismatch"}
+HTTP 401
 ```
+
+The message ("x") fails the host/trace/address/chain/contract context
+check at [web/app/api/traces/[traceId]/full/route.ts:176](web/app/api/traces/%5BtraceId%5D/full/route.ts#L176)
+before reaching signature verification — fail-fast on the cheapest
+check.
+
+### 4.6 `/api/traces/16/full` rejects oversized body (post-merge expectation)
+
+Command:
+
+```bash
+python3 -c 'import json; print(json.dumps({"address":"0x0000000000000000000000000000000000000000","nonce":"x"*5000,"signature":"0x00","message":"x"}))' | \
+  curl -s -X POST 'https://agoraalpha.vercel.app/api/traces/16/full' \
+  -H 'content-type: application/json' --data-binary @-
+```
+
+Pre-merge prod (current behavior — 4 KB cap not yet deployed):
+
+```text
+{"error":"message-context-mismatch"}
+HTTP 401
+```
+
+This evidences that the **4 KB body cap added by PR #26 (C1)** is not yet
+on production: the 5 KB body is accepted and the request proceeds to the
+context-mismatch guard. After PR #26 promotes, this case is expected to
+return `{"error":"payload-too-large"}` with `HTTP 413`. The
+post-merge re-run in §4-post-merge confirms this.
 
 ---
 
