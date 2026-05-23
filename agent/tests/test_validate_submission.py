@@ -1,9 +1,16 @@
 from __future__ import annotations
 
+import contextlib
+import http.server
 import json
+import os
+import socketserver
 import tempfile
+import threading
 import unittest
 from pathlib import Path
+from typing import Iterator
+from unittest import mock
 
 from pythia.scripts.validate_submission import validate_repo
 
@@ -65,6 +72,15 @@ def _full_entry(trace_id: int, *, decision: str = "BUY_YES", fixture_source: boo
                 "url": "https://polymarket.com/event/live-market",
                 "observed_at": "2026-05-23T00:00:00+00:00",
             },
+            {
+                "kind": "event_data",
+                "name": "Official resolution source",
+                "url": "https://example.com/event-source",
+                "observed_at": "2026-05-23T00:00:00+00:00",
+                "credibility": 0.9,
+                "relevance": 0.95,
+                "recency": 0.9,
+            },
         ],
         "risk_factors": ["Resolution timing can still surprise the market."],
         "market_url": "https://polymarket.com/event/live-market",
@@ -75,48 +91,247 @@ def _full_entry(trace_id: int, *, decision: str = "BUY_YES", fixture_source: boo
     return entry
 
 
-class ValidateSubmissionTests(unittest.TestCase):
+def _scaffold(root: Path) -> None:
+    (root / "web" / "data").mkdir(parents=True)
+    (root / "web" / "components").mkdir(parents=True)
+    (root / "agent").mkdir()
+    (root / "README.md").write_text("Public README")
+    (root / "STATUS.md").write_text("Production paid traces are private.")
+    (root / "docs").mkdir()
+    (root / "web" / "components" / "pick-card.tsx").write_text("Unlock 0.10 DevUSDC")
+
+
+class ValidateSubmissionDeployModeTests(unittest.TestCase):
     def test_accepts_private_full_snapshot_and_public_preview_only(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            (root / "web" / "data").mkdir(parents=True)
-            (root / "web" / "components").mkdir(parents=True)
-            (root / "agent").mkdir()
-            (root / "README.md").write_text("Public README")
-            (root / "STATUS.md").write_text("Production paid traces are private.")
-            (root / "docs").mkdir()
-
+            _scaffold(root)
             preview = [_entry(i) for i in range(1, 9)]
             full = [_full_entry(i) for i in range(1, 9)]
             (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
             (root / "web" / "data" / "picks-full.private.json").write_text(json.dumps(full))
-            (root / "web" / "components" / "pick-card.tsx").write_text("Unlock 0.10 DevUSDC")
 
-            self.assertEqual(validate_repo(root), [])
+            self.assertEqual(validate_repo(root, mode="deploy"), [])
+
+    def test_accepts_blob_url_when_local_file_absent(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _scaffold(root)
+            preview = [_entry(i) for i in range(1, 9)]
+            (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
+
+            with mock.patch.dict(os.environ, {"PRIVATE_TRACES_BLOB_URL": "https://blob.example/abc"}):
+                self.assertEqual(validate_repo(root, mode="deploy"), [])
+
+    def test_rejects_when_both_private_file_and_blob_url_missing(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _scaffold(root)
+            preview = [_entry(i) for i in range(1, 9)]
+            (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
+
+            env = {k: v for k, v in os.environ.items() if k != "PRIVATE_TRACES_BLOB_URL"}
+            with mock.patch.dict(os.environ, env, clear=True):
+                failures = validate_repo(root, mode="deploy")
+            self.assertTrue(
+                any("picks-full.private.json is missing" in f for f in failures),
+                failures,
+            )
+
+    def test_rejects_full_payload_without_non_market_source(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _scaffold(root)
+            preview = [_entry(i) for i in range(1, 9)]
+            full = [_full_entry(i) for i in range(1, 9)]
+            # Drop the non-market source from entry #1 to trigger the check.
+            full[0]["full"]["sources"] = [
+                source for source in full[0]["full"]["sources"]
+                if source.get("kind") != "event_data"
+            ]
+            (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
+            (root / "web" / "data" / "picks-full.private.json").write_text(json.dumps(full))
+
+            failures = validate_repo(root, mode="deploy")
+            self.assertTrue(
+                any("lack a non-market kind" in f for f in failures),
+                failures,
+            )
 
     def test_rejects_public_full_snapshot_fixture_source_wrong_dates_and_stale_copy(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            (root / "web" / "data").mkdir(parents=True)
-            (root / "web" / "components").mkdir(parents=True)
-            (root / "agent").mkdir()
+            _scaffold(root)
             (root / "agent" / "fixtures.py").write_text("June " + "17-18 2026-06-" + "18")
-            (root / "README.md").write_text("Public README")
-            (root / "STATUS.md").write_text("Production paid traces are private.")
-            (root / "docs").mkdir()
+            (root / "web" / "components" / "pick-card.tsx").write_text("Unlock 0.10 " + "USDC")
 
             preview = [_entry(i) for i in range(1, 9)]
             full = [_full_entry(i, fixture_source=i == 1) for i in range(1, 9)]
             (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
             (root / "web" / "data" / "picks-full.json").write_text(json.dumps(full))
-            (root / "web" / "components" / "pick-card.tsx").write_text("Unlock 0.10 " + "USDC")
 
-            failures = validate_repo(root)
+            failures = validate_repo(root, mode="deploy")
 
             self.assertTrue(any("public paid snapshot" in failure for failure in failures))
             self.assertTrue(any("fixture source" in failure for failure in failures))
             self.assertTrue(any("wrong FOMC" in failure for failure in failures))
             self.assertTrue(any("stale unlock-price copy" in failure for failure in failures))
+
+
+@contextlib.contextmanager
+def _serve_blob(routes: dict[str, tuple[int, str, bytes]]) -> Iterator[str]:
+    """Run a stdlib HTTP server on a random local port that maps paths to
+    (status, content-type, body). Paths not in `routes` return 404."""
+
+    class _Handler(http.server.BaseHTTPRequestHandler):
+        def do_GET(self) -> None:  # noqa: N802 (stdlib API)
+            entry = routes.get(self.path)
+            if entry is None:
+                self.send_response(404)
+                self.send_header("Content-Type", "text/plain")
+                self.end_headers()
+                self.wfile.write(b"not found")
+                return
+            status, ctype, body = entry
+            self.send_response(status)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def log_message(self, *_args, **_kwargs) -> None:  # silence
+            return
+
+    server = socketserver.TCPServer(("127.0.0.1", 0), _Handler)
+    port = server.server_address[1]
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        yield f"http://127.0.0.1:{port}"
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=2)
+
+
+class ValidateSubmissionCheckBlobTests(unittest.TestCase):
+    """`--check-blob` flag: live HEAD/GET against PRIVATE_TRACES_BLOB_URL."""
+
+    def _scaffold_deploy_tree(self, root: Path) -> None:
+        _scaffold(root)
+        preview = [_entry(i) for i in range(1, 9)]
+        (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
+
+    def test_check_blob_flag_fails_when_url_is_404(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._scaffold_deploy_tree(root)
+            with _serve_blob({}) as base:
+                url = f"{base}/picks-full.private.json"
+                with mock.patch.dict(os.environ, {"PRIVATE_TRACES_BLOB_URL": url}):
+                    failures = validate_repo(root, mode="deploy", check_blob=True)
+            self.assertTrue(
+                any(url in failure and "404" in failure for failure in failures),
+                failures,
+            )
+
+    def test_check_blob_flag_fails_when_url_is_not_json(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._scaffold_deploy_tree(root)
+            with _serve_blob(
+                {"/picks-full.private.json": (200, "text/html", b"<html>oops</html>")}
+            ) as base:
+                url = f"{base}/picks-full.private.json"
+                with mock.patch.dict(os.environ, {"PRIVATE_TRACES_BLOB_URL": url}):
+                    failures = validate_repo(root, mode="deploy", check_blob=True)
+            self.assertTrue(
+                any(url in failure and "content-type" in failure for failure in failures),
+                failures,
+            )
+
+    def test_check_blob_flag_fails_when_url_is_empty_list(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._scaffold_deploy_tree(root)
+            with _serve_blob(
+                {"/picks-full.private.json": (200, "application/json", b"[]")}
+            ) as base:
+                url = f"{base}/picks-full.private.json"
+                with mock.patch.dict(os.environ, {"PRIVATE_TRACES_BLOB_URL": url}):
+                    failures = validate_repo(root, mode="deploy", check_blob=True)
+            self.assertTrue(
+                any(url in failure and "empty" in failure for failure in failures),
+                failures,
+            )
+
+    def test_check_blob_flag_passes_when_url_serves_json(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._scaffold_deploy_tree(root)
+            body = json.dumps([_full_entry(i) for i in range(1, 9)]).encode()
+            with _serve_blob(
+                {"/picks-full.private.json": (200, "application/json", body)}
+            ) as base:
+                url = f"{base}/picks-full.private.json"
+                with mock.patch.dict(os.environ, {"PRIVATE_TRACES_BLOB_URL": url}):
+                    failures = validate_repo(root, mode="deploy", check_blob=True)
+            self.assertEqual(failures, [])
+
+    def test_check_blob_flag_fails_when_env_var_unset(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._scaffold_deploy_tree(root)
+            env = {k: v for k, v in os.environ.items() if k != "PRIVATE_TRACES_BLOB_URL"}
+            with mock.patch.dict(os.environ, env, clear=True):
+                failures = validate_repo(root, mode="deploy", check_blob=True)
+            self.assertTrue(
+                any("PRIVATE_TRACES_BLOB_URL" in failure and "--check-blob" in failure for failure in failures),
+                failures,
+            )
+
+
+class ValidateSubmissionPackageModeTests(unittest.TestCase):
+    def test_accepts_preview_only_zip(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _scaffold(root)
+            preview = [_entry(i) for i in range(1, 9)]
+            (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
+
+            self.assertEqual(validate_repo(root, mode="package"), [])
+
+    def test_ignores_private_full_in_working_tree(self) -> None:
+        # The operator's working directory always contains the private bundle
+        # after `publish_live_feed`. Package mode must not flag it as a
+        # failure — the exclusion guarantee lives in `scripts/package_submission.py`
+        # (see `should_exclude` rule for `web/data/picks-full*`), so the
+        # shipped zip never includes the private file even when the working
+        # tree does.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _scaffold(root)
+            preview = [_entry(i) for i in range(1, 9)]
+            full = [_full_entry(i) for i in range(1, 9)]
+            (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
+            (root / "web" / "data" / "picks-full.private.json").write_text(json.dumps(full))
+
+            self.assertEqual(validate_repo(root, mode="package"), [])
+
+    def test_rejects_public_full_present_in_package(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _scaffold(root)
+            preview = [_entry(i) for i in range(1, 9)]
+            full = [_full_entry(i) for i in range(1, 9)]
+            (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
+            (root / "web" / "data" / "picks-full.json").write_text(json.dumps(full))
+
+            failures = validate_repo(root, mode="package")
+            self.assertTrue(
+                any("public paid snapshot" in f for f in failures),
+                failures,
+            )
 
 
 if __name__ == "__main__":

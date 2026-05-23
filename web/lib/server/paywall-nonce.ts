@@ -1,8 +1,10 @@
 import { randomUUID } from "node:crypto";
 import { arc } from "@/lib/arc-chain";
 import { UNLOCK_MARKET } from "@/lib/contracts";
+import { getKv } from "@/lib/server/kv";
 
 const NONCE_TTL_MS = 5 * 60 * 1000;
+const NONCE_TTL_SECONDS = NONCE_TTL_MS / 1000;
 
 type NonceRecord = {
   nonce: string;
@@ -26,6 +28,14 @@ function cleanup(now = Date.now()): void {
   }
 }
 
+function activeKey(nonce: string): string {
+  return `nonce:active:${nonce}`;
+}
+
+function usedKey(nonce: string): string {
+  return `nonce:used:${nonce}`;
+}
+
 export function buildUnlockMessage(input: {
   host: string;
   traceId: number;
@@ -46,11 +56,11 @@ export function buildUnlockMessage(input: {
   );
 }
 
-export function issueUnlockNonce(input: {
+export async function issueUnlockNonce(input: {
   host: string;
   traceId: number;
   address: string;
-}): { nonce: string; issuedAt: string; expiresAt: string; message: string } {
+}): Promise<{ nonce: string; issuedAt: string; expiresAt: string; message: string }> {
   cleanup();
   const now = Date.now();
   const nonce = randomUUID();
@@ -73,30 +83,68 @@ export function issueUnlockNonce(input: {
       expiresAtIso: expiresAt,
     }),
   };
-  active.set(nonce, record);
+
+  const kv = getKv();
+  if (kv) {
+    await kv.set(activeKey(nonce), record, { ex: NONCE_TTL_SECONDS });
+  } else {
+    active.set(nonce, record);
+  }
   return { nonce, issuedAt, expiresAt, message: record.message };
 }
 
-export function validateUnlockNonce(input: {
+async function loadActive(nonce: string): Promise<NonceRecord | null> {
+  const kv = getKv();
+  if (kv) {
+    return (await kv.get<NonceRecord>(activeKey(nonce))) ?? null;
+  }
+  return active.get(nonce) ?? null;
+}
+
+async function isUsed(nonce: string): Promise<boolean> {
+  const kv = getKv();
+  if (kv) {
+    return (await kv.get(usedKey(nonce))) !== null;
+  }
+  return used.has(nonce);
+}
+
+async function markUsed(nonce: string): Promise<void> {
+  const kv = getKv();
+  if (kv) {
+    await kv.set(usedKey(nonce), 1, { ex: NONCE_TTL_SECONDS });
+    await kv.del(activeKey(nonce));
+  } else {
+    active.delete(nonce);
+    used.set(nonce, Date.now() + NONCE_TTL_MS);
+  }
+}
+
+export async function validateUnlockNonce(input: {
   nonce: string;
   host: string;
   traceId: number;
   address: string;
   message: string;
-}): { ok: true } | { ok: false; reason: string } {
+}): Promise<{ ok: true } | { ok: false; reason: string }> {
   const now = Date.now();
   cleanup(now);
 
-  if (used.has(input.nonce)) {
+  if (await isUsed(input.nonce)) {
     return { ok: false, reason: "nonce-used" };
   }
 
-  const record = active.get(input.nonce);
+  const record = await loadActive(input.nonce);
   if (!record) {
     return { ok: false, reason: "nonce-not-found" };
   }
   if (record.expiresAt <= now) {
-    active.delete(input.nonce);
+    const kv = getKv();
+    if (kv) {
+      await kv.del(activeKey(input.nonce));
+    } else {
+      active.delete(input.nonce);
+    }
     return { ok: false, reason: "nonce-expired" };
   }
   if (record.host !== input.host.toLowerCase()) {
@@ -115,18 +163,15 @@ export function validateUnlockNonce(input: {
   return { ok: true };
 }
 
-export function consumeUnlockNonce(input: {
+export async function consumeUnlockNonce(input: {
   nonce: string;
   host: string;
   traceId: number;
   address: string;
   message: string;
-}): { ok: true } | { ok: false; reason: string } {
-  const valid = validateUnlockNonce(input);
+}): Promise<{ ok: true } | { ok: false; reason: string }> {
+  const valid = await validateUnlockNonce(input);
   if (!valid.ok) return valid;
-
-  const now = Date.now();
-  active.delete(input.nonce);
-  used.set(input.nonce, now + NONCE_TTL_MS);
+  await markUsed(input.nonce);
   return { ok: true };
 }

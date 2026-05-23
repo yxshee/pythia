@@ -4,7 +4,7 @@ import unittest
 
 from pythia.analyst import AnalystReport, ReasoningStep
 from pythia.pm import TradePlan
-from pythia.preview import to_full
+from pythia.preview import to_full, to_preview
 from pythia.publisher import copy_trade_url
 from pythia.scout import MarketCandidate
 
@@ -72,6 +72,33 @@ class PublisherPayloadTests(unittest.TestCase):
         self.assertGreaterEqual(len(full["sources"]), 3)
         self.assertTrue(any(source.get("observed_at") for source in full["sources"] if isinstance(source, dict)))
         self.assertGreaterEqual(len(full["risk_factors"]), 1)
+
+    def test_preview_payload_never_includes_builder_code(self) -> None:
+        market = _market()
+        report = AnalystReport(
+            market_id=market.market_id,
+            question=market.question,
+            decision="BUY_YES",
+            confidence_bps=5000,
+            fair_price_yes=0.5,
+            edge_bps=800,
+            reasoning=[ReasoningStep("observation", "ok")],
+            model="test-model",
+            generated_at="2026-05-22T00:01:00Z",
+            liquidity_usd=market.liquidity_usd,
+        )
+        plan = TradePlan(
+            market_id=market.market_id,
+            question=market.question,
+            decision="BUY_YES",
+            size_usdc=10.0,
+            confidence_bps=5000,
+            edge_bps=800,
+        )
+
+        preview = to_preview(report, plan, market, trace_id=1, trace_hash="0x123")
+
+        self.assertNotIn("builder_code", preview)
 
     def test_full_payload_adds_default_risk_factor_when_reasoning_has_no_risk_step(self) -> None:
         market = _market()

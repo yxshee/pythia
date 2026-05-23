@@ -29,6 +29,10 @@ out/
 *.pem
 *.key
 
+# Vercel Blob URL cache written by scripts/upload-private-blob.mjs.
+# Effectively a secret — the random-suffixed URL IS the access token.
+web/data/.blob-url
+
 # Pythia runtime artifacts
 agent/.venv/
 bot/.venv/

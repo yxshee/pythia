@@ -1,3 +1,5 @@
+import { getKv } from "@/lib/server/kv";
+
 type Bucket = {
   count: number;
   resetAt: number;
@@ -11,11 +13,26 @@ export function clientIp(headers: Headers): string {
   return headers.get("x-real-ip") ?? "unknown";
 }
 
-export function rateLimit(
+export async function rateLimit(
   key: string,
   limit: number,
   windowMs: number,
-): { ok: true } | { ok: false; retryAfterSeconds: number } {
+): Promise<{ ok: true } | { ok: false; retryAfterSeconds: number }> {
+  const kv = getKv();
+  if (kv) {
+    const ttlSeconds = Math.max(1, Math.ceil(windowMs / 1000));
+    const kvKey = `rl:${key}`;
+    const count = await kv.incr(kvKey);
+    if (count === 1) {
+      // First hit in the window: arm the TTL so the bucket resets.
+      await kv.expire(kvKey, ttlSeconds);
+    }
+    if (count <= limit) return { ok: true };
+    const remainingTtl = await kv.ttl(kvKey);
+    const retryAfterSeconds = remainingTtl > 0 ? remainingTtl : ttlSeconds;
+    return { ok: false, retryAfterSeconds };
+  }
+
   const now = Date.now();
   const current = buckets.get(key);
   if (!current || current.resetAt <= now) {

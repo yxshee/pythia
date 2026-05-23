@@ -56,7 +56,7 @@ const MAX_BODY_CHARS = 25_000;
 const MAX_BATCH_CALLS = 10;
 
 export async function POST(req: NextRequest) {
-  const limit = rateLimit(`rpc:${clientIp(req.headers)}`, 120, 60_000);
+  const limit = await rateLimit(`rpc:${clientIp(req.headers)}`, 120, 60_000);
   if (!limit.ok) {
     return NextResponse.json(
       { error: "rate-limited" },
@@ -108,11 +108,19 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // Bound how long we wait on the Canteen-issued RPC. The 10s budget is
+  // larger than any allowed read (eth_call, eth_getLogs) under normal load,
+  // and small enough that a hung upstream cannot tie up our Vercel function
+  // budget. We return 504 on timeout so the caller can distinguish "upstream
+  // is slow" from "upstream returned an error" (502).
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10_000);
   try {
     const resp = await fetch(upstream, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body,
+      signal: controller.signal,
     });
     const respBody = await resp.text();
     return new NextResponse(respBody, {
@@ -120,6 +128,9 @@ export async function POST(req: NextRequest) {
       headers: { "content-type": "application/json" },
     });
   } catch (err) {
+    if (err instanceof Error && err.name === "AbortError") {
+      return NextResponse.json({ error: "upstream-timeout" }, { status: 504 });
+    }
     return NextResponse.json(
       {
         error: "upstream-failed",
@@ -127,5 +138,7 @@ export async function POST(req: NextRequest) {
       },
       { status: 502 },
     );
+  } finally {
+    clearTimeout(timeout);
   }
 }

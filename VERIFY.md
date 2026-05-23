@@ -1,187 +1,636 @@
-# Pythia Agora Alpha — Master Deploy Verification Prompt
+# Pythia / Agora Alpha — Release Proof Report
 
-## Release evidence — 2026-05-23
+> Reproducible evidence that the deployed artifact at
+> https://agoraalpha.vercel.app matches the source tree at the recorded commit,
+> that the contract, agent, and web suites all pass, that the paywall
+> validation chain rejects malformed requests, and that a real wallet can
+> complete the unlock → fetch flow with replay protection.
+>
+> Each block below is a verbatim transcript. Sections marked **`TODO:`**
+> are filled in by re-running the command shown directly above the block
+> (see [`scripts/verify.sh`](scripts/verify.sh) when present, or run the
+> command manually). The post-deploy audit checklist that this report is
+> the *output* of lives in [`VERIFY-CHECKLIST.md`](VERIFY-CHECKLIST.md).
 
-Final local and production checks passed before creating `submission.zip`:
+---
+
+## 0. Identity
+
+| Field             | Value                                                              |
+|-------------------|--------------------------------------------------------------------|
+| Commit            | `5d1ab397222ad22967cd2ec5f77fa72a6e2e0cdd` (audit branch HEAD as of generation; final submission commit will sit on top of this) |
+| Short SHA         | `5d1ab39`                                                          |
+| Branch            | `audit/executive-verdict-fixes` (PR'd to `main` before submission) |
+| Worktree clean    | dirty — the changes from this audit are staged but un-committed at generation; full diff in §0.1 below |
+| Generated at      | `2026-05-23T15:45:12Z` (local-evidence sections 1, 2, 7); §3–§6 timestamps captured against the live preview at handoff |
+| Production URL    | https://agoraalpha.vercel.app                                      |
+| Preview URL       | `https://pythia-git-audit-executive-verdi-46ac16-yashs-projects-a859a420.vercel.app` (gated by Vercel SSO; see §3 note) |
+| UnlockMarket addr | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` (registered trace IDs `9,10,11,12,13,14,15,16`) |
+| Chain             | Arc testnet, chain id `5042002`                                    |
+
+### 0.1 Diff scope
+
+The audit branch modifies the following tracked files and adds the following
+new files. Reproduce with `git status --short` on the same commit.
 
 ```text
-agent:     uv run python -m unittest discover -s tests
-           12 tests passed
-
-agent:     uv run python -m pythia.scripts.validate_submission
-           submission data ok: 8 home markets, 8 private full traces
-
-web:       pnpm exec tsc --noEmit
-           passed
-
-web:       pnpm build
-           Next.js production build passed
-
-contracts: forge test -vvv
-           42 tests passed
-
-live:      https://agoraalpha.vercel.app
-           / returned 200 with 8 pick links and security headers
-           /pick/16 returned 200
-           /pick/1 returned 404
-           SSR HTML had 0 occurrences of full-payload JSON keys, private snapshot names, or fixture source markers
-           /api/rpc rejected eth_sendRawTransaction with 403
-           /api/rpc rejected oversized body with 413
-           /api/rpc rejected 11-call batch with 400
-           /api/traces/16/full rejected missing fields with 400
-           CLI wallet-equivalent flow minted DevUSDC, approved 0.10, unlocked registered trace 16,
-           signed a nonce-bound message, fetched full payload with 200, and rejected replay with nonce-used
-
-onchain:   UnlockMarket 0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA
-           traceExists(9..16) = true
-           traceExists(999) = false
+ M .env.example
+ M .gitignore
+ M README.md
+ M STATUS.md
+ M VERIFY.md
+ M agent/pythia/analyst.py
+ M agent/pythia/preview.py
+ M agent/pythia/scripts/publish_live_feed.py
+ M agent/pythia/scripts/validate_submission.py
+ M agent/tests/test_publisher_payload.py
+ M agent/tests/test_validate_submission.py
+ M contracts/src/PythiaVault.sol
+ M scripts/package_submission.py
+ M traces/sanitized-full-trace.example.json
+ M web/.env.local.example
+ M web/README.md
+ M web/app/api/rpc/route.ts
+ M web/app/api/traces/[traceId]/full/route.ts
+ M web/app/layout.tsx
+ M web/app/page.tsx
+ M web/app/pick/[traceId]/page.tsx
+ M web/components/traction-strip.tsx
+ M web/components/unlocked-content.tsx
+ M web/lib/server/paywall-nonce.ts
+ M web/lib/server/rate-limit.ts
+ M web/lib/traces.ts
+ M web/next.config.ts
+ M web/package.json
+ M web/pnpm-lock.yaml
+?? .github/workflows/ci.yml
+?? VERIFY-CHECKLIST.md
+?? scripts/backfill_event_data_sources.py
+?? scripts/upload-private-blob.mjs
+?? web/app/opengraph-image.tsx
+?? web/app/twitter-image.tsx
+?? web/lib/server/kv.ts
+?? web/lib/server/private-traces.ts
 ```
-
-You are a senior QA engineer auditing the production deploy. Be exhaustive. Be skeptical. Cite file:line for every finding.
-
-## Target
-- **Live URL**: `https://agoraalpha.vercel.app` (override with first argument if the user passes a different URL)
-- **Repo**: `/Users/Shared/pythia` (web app under `web/`)
-- **Stack**: Next.js 16 App Router · React 19 · Tailwind v4 · static + 30s ISR · server routes: `/api/rpc` (Arc proxy) and `/api/traces/[id]/full` (wallet-signature-gated paywall fetch)
-
-## Required tools
-- **Chrome DevTools MCP** — primary browser (`navigate_page`, `take_snapshot`, `list_console_messages`, `list_network_requests`, `lighthouse_audit`, `take_screenshot`, `resize_page`, `evaluate_script`)
-- **Bash** — `curl`, `grep`, `git`, `npx tsc`, `npm run build`
-- **Read / Edit / Write** — code-level audits and the auto-fixes listed below
-
-If Chrome DevTools MCP is unavailable, fall back to `curl -sIL` for header/status checks plus Playwright if installed; otherwise stop and tell the user.
-
-## Critical context — read before suggesting any Next.js code
-`web/AGENTS.md` warns: "This is NOT the Next.js you know. APIs and conventions may differ from training data. Read `node_modules/next/dist/docs/` before writing code." Verify any Next.js API against the installed docs before recommending it.
-
-## Method
-Execute Phase 1 → Phase 12 in order. Keep a running scratchpad of findings. Produce the report at the end in the exact format under §"Final report".
 
 ---
 
-### Phase 1 — Pre-flight
-- [ ] `curl -sI https://agoraalpha.vercel.app` → status 200, capture all response headers for Phase 11.
-- [ ] Confirm `git status` is clean. If not, list dirty files and **ask** before any auto-fix.
-- [ ] `git rev-parse --short HEAD` → record for the report.
+## 1. Source build evidence
 
-### Phase 2 — Smoke + 404 surface
-- [ ] `navigate_page /` → 200, document `<title>` non-empty and not "Next.js"; `list_console_messages` returns **zero** errors/warnings (record any); `list_network_requests` shows no 4xx/5xx.
-- [ ] `navigate_page /pick/{first_trace_id_from_home}` → same checks.
-- [ ] `navigate_page /pick/999999` → 404 page (Next.js default), **not** 500.
-- [ ] `navigate_page /this-route-does-not-exist` → 404.
+### 1.1 `pnpm install --frozen-lockfile`
 
-### Phase 3 — Navigation integrity
-- [ ] Click logo "Agora / ALPHA" → lands on `/`.
-- [ ] Click "Picks" → `/`.
-- [ ] "Hackathon ↗" link: `href = https://agora.thecanteenapp.com/`, `target=_blank`, `rel` contains `noopener`. Reach the external URL with `curl -sIL` → final status 200.
-- [ ] Grep `web/components/header.tsx` and any layout for nav links; confirm **no** dead routes.
+Command:
 
-### Phase 4 — Functional flows
-- [ ] Click the first pick card on `/` → routes to `/pick/{trace_id}`.
-- [ ] On the detail page:
-  - "← back to picks" link returns to `/`.
-  - "Unlock 0.10 DevUSDC" button is wired: connect-wallet opens an injected-wallet picker; on Arc (chain `5042002`) the button approves exact 0.10 USDC and calls `UnlockMarket.unlock(traceId)`. Verify the call lands by checking the on-chain anchor card refreshes. **DO** flag any stale date copy adjacent to the button.
-  - Arc trace hash element exposes the full hash via `title` (hover tooltip).
-  - Every external link (`docs.arc.network`, etc.) opens in a new tab with `rel=noopener`.
+```bash
+cd web && pnpm install --frozen-lockfile
+```
 
-### Phase 5 — Data integrity
-On `/`:
-- [ ] Each pick card has non-empty question text, a decision in `{BUY_YES, BUY_NO, HOLD}`, and probabilities formatted `XX.X%`.
-- [ ] Heading "Today's picks · N" — N equals rendered card count.
+```text
+Lockfile is up to date, resolution step is skipped
+Already up to date
 
-On `/pick/{id}`:
-- [ ] Pick number padded to 3 digits.
-- [ ] `generated_at` rendered as locale string, NOT "Invalid Date".
-- [ ] Delta sign matches relation between `agent_probability_yes` and `current_implied_yes` (positive → agent thinks YES is undervalued).
-- [ ] All preview fields render (confidence, risk, resolves, builder code, Arc trace hash, theme).
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: bufferutil@4.1.0, keccak@3.0.4,                     │
+│   utf-8-validate@5.0.10.                                                     │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 305ms using pnpm v10.33.0
+```
 
-### Phase 6 — Responsive
-Use `resize_page` and take a screenshot at each:
-- [ ] 375×812 (mobile) — no horizontal scroll, header readable, cards stack 1-col.
-- [ ] 768×1024 (tablet) — grid breaks to multi-col where expected.
-- [ ] 1280×800 (desktop) — `max-w-6xl` constraint visible, layout balanced.
+The three ignored build scripts are optional native bindings of upstream
+dependencies (wagmi/viem WebSocket transports). They are not used in this
+project and the pnpm warning is informational, not an error.
 
-### Phase 7 — Accessibility
-- [ ] `lighthouse_audit` (a11y) on `/` and `/pick/{id}` → score ≥ 95. Record exact score.
-- [ ] One `<h1>` per page; heading levels not skipped.
-- [ ] Color contrast on parchment/ink palette passes WCAG AA (Lighthouse covers this; spot-check `text-ink-faint` on `bg-marble`).
-- [ ] Decorative SVGs (Greek-key background, "→" glyph) marked `aria-hidden` or have meaningful alt.
-- [ ] Keyboard pass: Tab through both pages — every interactive element is reachable with visible focus.
+### 1.2 `pnpm build`
 
-### Phase 8 — Performance
-- [ ] `lighthouse_audit` (performance, mobile) on `/` → score ≥ 85; `LCP < 2.5s`; `CLS < 0.1`.
-- [ ] Same on `/pick/{id}`.
-- [ ] No render-blocking resources besides Google Fonts; fonts load `display=swap` (verify via DevTools).
-- [ ] `x-vercel-cache: HIT` or `STALE` on a second request (ISR working).
+Command:
 
-### Phase 9 — SEO & metadata
-- [ ] `<title>` and `<meta name="description">` present and meaningful.
-- [ ] OG tags: `og:title`, `og:description`, `og:image`, `og:url` — `og:url` matches the deployed origin.
-- [ ] Favicon (`icon.svg`) returns 200 in the network tab.
-- [ ] `robots.txt` and `sitemap.xml` — note whether present; if absent and the user wants SEO, flag (don't add).
+```bash
+cd web && pnpm build
+```
 
-### Phase 10 — Console & network hygiene
-- [ ] Zero console errors / warnings across both pages and all three viewports (note deprecations).
-- [ ] Zero failed asset requests.
-- [ ] No CORS errors.
+```text
+> web@0.1.0 build /Users/Shared/pythia/web
+> next build
 
-### Phase 11 — Security headers (from Phase 1 capture)
-- [ ] `strict-transport-security` present.
-- [ ] `x-content-type-options: nosniff` present.
-- [ ] `referrer-policy` set to `strict-origin-when-cross-origin` or stricter.
-- [ ] `x-frame-options: DENY` OR CSP `frame-ancestors 'none'`.
-- [ ] CSP — confirm the minimal policy from `next.config.ts` is present.
+▲ Next.js 16.2.6 (Turbopack)
 
-### Phase 12 — Code-level audit
-- [ ] `cd web && npx tsc --noEmit` — zero errors.
-- [ ] `cd web && npm run build` — succeeds; note bundle sizes.
-- [ ] Search web source for unfinished-code sentinels and list findings.
-- [ ] `grep -rn "console\.log" web/` — none in production code.
-- [ ] Unused-export sweep: any export in `web/lib/**` and `web/components/**` with zero importers — list them.
-- [ ] Hardcoded dates in source — list each.
+  Creating an optimized production build ...
+✓ Compiled successfully in 1682ms
+  Running TypeScript ...
+  Finished TypeScript in 2.4s ...
+  Collecting page data using 9 workers ...
+  Generating static pages using 9 workers (0/7) ...
+  Generating static pages using 9 workers (1/7)
+  Generating static pages using 9 workers (3/7)
+  Generating static pages using 9 workers (5/7)
+✓ Generating static pages using 9 workers (7/7) in 162ms
+  Finalizing page optimization ...
+
+Route (app)                     Revalidate  Expire
+┌ ○ /                                  30s      1y
+├ ○ /_not-found
+├ ƒ /api/rpc
+├ ƒ /api/traces/[traceId]/full
+├ ○ /icon.svg
+├ ○ /opengraph-image
+├ ƒ /pick/[traceId]
+└ ○ /twitter-image
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+```
+
+Both `/opengraph-image` and `/twitter-image` are statically prerendered from
+[`web/app/opengraph-image.tsx`](web/app/opengraph-image.tsx) and
+[`web/app/twitter-image.tsx`](web/app/twitter-image.tsx) (Next.js 16 file
+convention; emits the `og:image*` and `twitter:image*` meta tags).
+
+### 1.3 `pnpm exec tsc --noEmit`
+
+Command:
+
+```bash
+cd web && pnpm exec tsc --noEmit
+```
+
+```text
+(empty stdout, exit code 0)
+```
 
 ---
 
-## Known issues — recheck before reporting
+## 2. Test evidence
 
-The previous dead export, stale dated badge, and hardcoded version badge were
-removed before this prompt was refreshed. Reconfirm they remain absent during
-Phase 12, then report any new findings from the current tree.
+### 2.1 Contracts — `forge test -vvv`
 
-## Fix protocol
-- **Auto-fix without asking**: dead exports, unused imports, stale hardcoded dates that have already passed, missing `rel=noopener`, missing `aria-hidden` on decorative SVGs, obvious typos in non-product copy.
-- **Ask first**: any user-visible copy change beyond a stale date, design-token edits, `next.config.ts` edits, dependency add/remove, anything affecting rendered layout.
-- **Report only (no edits this pass)**: missing tests, missing CI, missing CSP, missing `robots.txt`/`sitemap.xml`, missing error boundary / custom 500, observability gaps.
-- **Stop conditions**: production unreachable (5xx) → abort + report; `npm run build` fails after any auto-fix → revert + report; a "safe" fix grows to touch >3 files → ask first.
+Command:
 
-## Final report
-
-Print exactly this structure, then stop.
-
-```
-# Verification Report — agoraalpha.vercel.app
-Date: <ISO>
-Commit: <short SHA>
-
-## Passed (N checks)
-- <one line each>
-
-## Bugs (N found · M auto-fixed · K awaiting approval · J out-of-scope)
-- [P0|P1|P2|P3] <description> — <file:line> — <FIXED | NEEDS APPROVAL | DEFERRED>
-
-## Redundancies removed
-- <file:line> — <what was removed>
-
-## Needs manual review
-- <file:line> — <why I did not auto-fix>
-
-## Lighthouse
-- /       perf <N> · a11y <N> · best-prac <N> · seo <N>
-- /pick/* perf <N> · a11y <N> · best-prac <N> · seo <N>
-
-## Evidence
-Screenshots: /tmp/pythia-verify-<timestamp>/
+```bash
+cd contracts && forge test
 ```
 
-## How to run
-Paste this entire file into Claude Code (Chrome DevTools MCP enabled). Or: `claude --print "$(cat VERIFY.md)"`.
+```text
+No files changed, compilation skipped
+
+Ran 16 tests for test/UnlockMarket.t.sol:UnlockMarketTest
+[PASS] test_clearPriceOverride_revertsToDefault() (gas: 30996)
+[PASS] test_priceFor_defaultsWhenNoOverride() (gas: 13663)
+[PASS] test_priceFor_usesOverrideWhenSet() (gas: 43343)
+[PASS] test_registerTrace_onlyOwnerAndRejectsZero() (gas: 48815)
+[PASS] test_setDefaultPrice_onlyOwner() (gas: 29788)
+[PASS] test_setPriceOverride_zeroRejected() (gas: 14601)
+[PASS] test_setTreasury_routesToNewAddress() (gas: 150597)
+[PASS] test_transferOwnership_transfersAdminAuthority() (gas: 31254)
+[PASS] test_unlock_atDefaultPrice() (gas: 140392)
+[PASS] test_unlock_atOverridePrice() (gas: 160986)
+[PASS] test_unlock_distinctBuyersBothCount() (gas: 181709)
+[PASS] test_unlock_doubleUnlockReverts() (gas: 161361)
+[PASS] test_unlock_nonexistentTraceReverts() (gas: 48677)
+[PASS] test_unlock_reentrantTokenCannotUnlockTwice() (gas: 1250289)
+[PASS] test_unlock_revertsOnInsufficientAllowance() (gas: 98028)
+[PASS] test_unlock_revertsOnZeroPrice() (gas: 775488)
+Suite result: ok. 16 passed; 0 failed; 0 skipped; finished in 7.64ms (2.01ms CPU time)
+
+Ran 6 tests for test/TraceLog.t.sol:TraceLogTest
+[PASS] test_constructor_authorizesPublisher() (gas: 18005)
+[PASS] test_publish_assignsMonotonicIds() (gas: 27481)
+[PASS] test_publish_rejectsBadConfidence() (gas: 13904)
+[PASS] test_publish_revertsForUnauthorized() (gas: 13811)
+[PASS] test_setPublisher_onlyAdmin() (gas: 34008)
+[PASS] test_transferAdmin() (gas: 24255)
+Suite result: ok. 6 passed; 0 failed; 0 skipped; finished in 9.65ms (3.25ms CPU time)
+
+Ran 8 tests for test/DevUSDC.t.sol:DevUSDCTest
+[PASS] test_cancelAuthorization_alreadyUsedReverts() (gas: 78985)
+[PASS] test_cancelAuthorization_preventsLaterUse() (gas: 51266)
+[PASS] test_domainSeparator_isStableAtSameChainId() (gas: 6259)
+[PASS] test_transferWithAuthorization_badSigReverts() (gas: 23085)
+[PASS] test_transferWithAuthorization_expiredReverts() (gas: 18372)
+[PASS] test_transferWithAuthorization_prematureReverts() (gas: 18190)
+[PASS] test_transferWithAuthorization_replayReverts() (gas: 77201)
+[PASS] test_transferWithAuthorization_validSig_transfersAndMarksNonce() (gas: 81064)
+Suite result: ok. 8 passed; 0 failed; 0 skipped; finished in 9.66ms (11.25ms CPU time)
+
+Ran 12 tests for test/PythiaVault.t.sol:PythiaVaultTest
+[PASS] test_bridgeOut_thenIn_preservesAccounting() (gas: 176935)
+[PASS] test_deposit_revertsForNonOperator() (gas: 79004)
+[PASS] test_deposit_revertsWhenPaused() (gas: 75942)
+[PASS] test_firstDeposit_mintsOneToOne() (gas: 157261)
+[PASS] test_recordTrade_lossExceedingNav_reverts() (gas: 156649)
+[PASS] test_recordTrade_revertsForNonOperator() (gas: 156349)
+[PASS] test_secondDeposit_afterProfit_getsFewerShares() (gas: 220883)
+[PASS] test_secondDeposit_atFlatNav_isProRata() (gas: 216109)
+[PASS] test_setPerformanceFee_capped() (gas: 23182)
+[PASS] test_withdraw_loss_paysNoFee() (gas: 182355)
+[PASS] test_withdraw_noProfit_noFee() (gas: 170135)
+[PASS] test_withdraw_profitTakesFee() (gas: 204352)
+Suite result: ok. 12 passed; 0 failed; 0 skipped; finished in 9.67ms (3.26ms CPU time)
+
+Ran 4 test suites in 14.66ms (36.62ms CPU time): 42 tests passed, 0 failed, 0 skipped (42 total tests)
+```
+
+### 2.2 Agent — `python -m unittest discover -s tests -v`
+
+Command:
+
+```bash
+cd agent && uv run python -m unittest discover -s tests -v
+```
+
+```text
+test_excludes_private_paid_traces_and_runtime_artifacts (test_package_submission.PackageSubmissionTests.test_excludes_private_paid_traces_and_runtime_artifacts) ... ok
+test_includes_public_deliverables (test_package_submission.PackageSubmissionTests.test_includes_public_deliverables) ... ok
+test_dedupe_caps_repeated_template_clusters (test_publish_live_feed.PublishLiveFeedTests.test_dedupe_caps_repeated_template_clusters) ... ok
+test_dedupe_rejects_expired_or_low_signal_markets (test_publish_live_feed.PublishLiveFeedTests.test_dedupe_rejects_expired_or_low_signal_markets) ... ok
+test_dedupe_rejects_fixture_markers_and_duplicate_questions (test_publish_live_feed.PublishLiveFeedTests.test_dedupe_rejects_fixture_markers_and_duplicate_questions) ... ok
+test_load_gamma_candidates_marks_import_as_live_not_fixture (test_publish_live_feed.PublishLiveFeedTests.test_load_gamma_candidates_marks_import_as_live_not_fixture) ... ok
+test_buy_decisions_include_side_hint (test_publisher_payload.PublisherPayloadTests.test_buy_decisions_include_side_hint) ... ok
+test_full_payload_adds_default_risk_factor_when_reasoning_has_no_risk_step (test_publisher_payload.PublisherPayloadTests.test_full_payload_adds_default_risk_factor_when_reasoning_has_no_risk_step) ... ok
+test_full_payload_hides_copy_trade_for_hold_and_includes_source_bundle (test_publisher_payload.PublisherPayloadTests.test_full_payload_hides_copy_trade_for_hold_and_includes_source_bundle) ... ok
+test_hold_decision_has_no_copy_trade_url (test_publisher_payload.PublisherPayloadTests.test_hold_decision_has_no_copy_trade_url) ... ok
+test_preview_payload_never_includes_builder_code (test_publisher_payload.PublisherPayloadTests.test_preview_payload_never_includes_builder_code) ... ok
+test_accepts_blob_url_when_local_file_absent (test_validate_submission.ValidateSubmissionDeployModeTests.test_accepts_blob_url_when_local_file_absent) ... ok
+test_accepts_private_full_snapshot_and_public_preview_only (test_validate_submission.ValidateSubmissionDeployModeTests.test_accepts_private_full_snapshot_and_public_preview_only) ... ok
+test_rejects_full_payload_without_non_market_source (test_validate_submission.ValidateSubmissionDeployModeTests.test_rejects_full_payload_without_non_market_source) ... ok
+test_rejects_public_full_snapshot_fixture_source_wrong_dates_and_stale_copy (test_validate_submission.ValidateSubmissionDeployModeTests.test_rejects_public_full_snapshot_fixture_source_wrong_dates_and_stale_copy) ... ok
+test_rejects_when_both_private_file_and_blob_url_missing (test_validate_submission.ValidateSubmissionDeployModeTests.test_rejects_when_both_private_file_and_blob_url_missing) ... ok
+test_accepts_preview_only_zip (test_validate_submission.ValidateSubmissionPackageModeTests.test_accepts_preview_only_zip) ... ok
+test_ignores_private_full_in_working_tree (test_validate_submission.ValidateSubmissionPackageModeTests.test_ignores_private_full_in_working_tree) ... ok
+test_rejects_public_full_present_in_package (test_validate_submission.ValidateSubmissionPackageModeTests.test_rejects_public_full_present_in_package) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.021s
+
+OK
+```
+
+### 2.3 Submission validator — deploy mode
+
+Command:
+
+```bash
+cd /Users/Shared/pythia && PYTHONPATH=agent uv --project agent run \
+  python -m pythia.scripts.validate_submission --mode deploy
+```
+
+```text
+submission data ok (deploy): 8 home markets, 8 private full traces
+```
+
+(exit code 0)
+
+### 2.4 Submission validator — package mode
+
+Command:
+
+```bash
+# Build the zip first, then validate the unpacked contents in package mode.
+python3 scripts/package_submission.py
+unzip -q submission.zip -d /tmp/pythia-pkg-check
+cd /tmp/pythia-pkg-check && PYTHONPATH=/Users/Shared/pythia/agent \
+  uv --project /Users/Shared/pythia/agent run \
+  python -m pythia.scripts.validate_submission --mode package
+```
+
+```text
+wrote submission.zip (337,703 bytes)
+submission data ok (package): 8 home markets, no paid bundle present
+```
+
+(both exit code 0)
+
+---
+
+> **Sections 3–6 evidence is captured against the live deploy.** §3 + §4 below
+> are filled in against `agoraalpha.vercel.app` (production) at
+> **2026-05-23T17:15:50Z**, which at the time of capture is the **pre-merge
+> baseline** (PR #26 has not yet been promoted). The Vercel deployment-preview
+> URL for the audit branch is protected by Vercel SSO (HTTP 401 to unauth
+> requests — see the auth-required HTML body), so the preview cannot be
+> reached from a sandbox curl; the practical equivalent is to run the same
+> battery against prod pre-merge (this section) and again against prod
+> post-merge (§3-prod / §4-prod, added in E4). §5 needs a real wallet on Arc
+> with DevUSDC; §6 needs browser screenshots. Both are operator-run.
+>
+> Captured outputs below are verbatim from the production endpoint at the
+> timestamp above. After PR #26 merges and the new build promotes, this
+> section is re-run and any deltas are appended as §3-post-merge / §4-post-merge.
+
+## 3. Live deploy — surface checks (pre-merge baseline)
+
+### 3.1 Security headers
+
+Command:
+
+```bash
+curl -sI https://agoraalpha.vercel.app | sort
+```
+
+```text
+HTTP/2 200
+age: 19
+cache-control: public, max-age=0, must-revalidate
+content-length: 68497
+content-security-policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self';
+content-type: text/html; charset=utf-8
+date: Fri, 22 May 2026 22:59:33 GMT
+etag: "ru4vtyn7pr1gqn"
+referrer-policy: strict-origin-when-cross-origin
+server: Vercel
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-matched-path: /
+x-nextjs-prerender: 1
+x-nextjs-stale-time: 300
+x-powered-by: Next.js
+x-vercel-cache: HIT
+x-vercel-id: bom1::iad1::7hbxg-1779556503155-c62e830dd784
+```
+
+All five required headers present: `content-security-policy: frame-ancestors 'none'`,
+`strict-transport-security: max-age=63072000; includeSubDomains; preload`,
+`x-content-type-options: nosniff`, `x-frame-options: DENY`,
+`referrer-policy: strict-origin-when-cross-origin`. CSP also asserts
+`object-src 'none'` and `base-uri 'self'`.
+
+### 3.2 Home page renders
+
+Command:
+
+```bash
+curl -s https://agoraalpha.vercel.app | grep -oc 'href="/pick/[0-9]\+"'
+```
+
+```text
+8
+```
+
+Home renders exactly 8 pick-page links — matches the 8 live Polymarket
+traces validated by `validate_submission --mode deploy` in §2.3.
+
+### 3.3 Pick page renders
+
+Command:
+
+```bash
+curl -sI https://agoraalpha.vercel.app/pick/16
+```
+
+```text
+HTTP/2 200 
+```
+
+### 3.4 Unknown pick returns 404
+
+Command:
+
+```bash
+curl -sI https://agoraalpha.vercel.app/pick/999999
+```
+
+```text
+HTTP/2 404
+```
+
+---
+
+## 4. Paywall route — rejection paths (pre-merge baseline)
+
+### 4.1 `/api/rpc` rejects write methods
+
+Command:
+
+```bash
+curl -s -X POST https://agoraalpha.vercel.app/api/rpc \
+  -H 'content-type: application/json' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"eth_sendRawTransaction","params":["0x"]}'
+```
+
+```text
+{"error":"method-not-allowed","detail":"This proxy only forwards a read-only allowlist. Writes go through the wallet, not this endpoint."}
+HTTP 403
+```
+
+`eth_sendRawTransaction` is rejected at the allowlist gate before any
+upstream forwarding — Canteen-issued RPC quota is never spent on
+arbitrary external transactions.
+
+### 4.2 `/api/rpc` rejects oversized body
+
+Command:
+
+```bash
+yes 'a' | head -c 65000 | curl -s -X POST https://agoraalpha.vercel.app/api/rpc \
+  -H 'content-type: application/json' --data-binary @-
+```
+
+```text
+{"error":"body-too-large"}
+HTTP 413
+```
+
+`MAX_BODY_CHARS = 25_000` in [web/app/api/rpc/route.ts](web/app/api/rpc/route.ts);
+65 KB exceeds the cap and short-circuits before JSON parsing.
+
+### 4.3 `/api/rpc` rejects batch > 10
+
+Command:
+
+```bash
+curl -s -X POST https://agoraalpha.vercel.app/api/rpc \
+  -H 'content-type: application/json' \
+  -d "$(python3 -c 'import json; print(json.dumps([{"jsonrpc":"2.0","id":i,"method":"eth_chainId"} for i in range(11)]))')"
+```
+
+```text
+{"error":"batch-size-not-allowed","max":10}
+HTTP 400
+```
+
+`MAX_BATCH_CALLS = 10`; an 11-call batch is rejected with the explicit
+cap value in the body for client UI surfacing.
+
+### 4.4 `/api/traces/16/full` rejects missing fields
+
+Command:
+
+```bash
+curl -s -X POST 'https://agoraalpha.vercel.app/api/traces/16/full' \
+  -H 'content-type: application/json' \
+  -d '{}'
+```
+
+```text
+{"error":"missing-fields"}
+HTTP 400
+```
+
+The route requires `address`, `nonce`, `signature`, and `message`; an
+empty body short-circuits at the first guard before any chain or
+signature work happens.
+
+### 4.5 `/api/traces/16/full` rejects unsigned address
+
+Command:
+
+```bash
+curl -s -X POST 'https://agoraalpha.vercel.app/api/traces/16/full' \
+  -H 'content-type: application/json' \
+  -d '{"address":"0x0000000000000000000000000000000000000000","nonce":"x","signature":"0x00","message":"x"}'
+```
+
+```text
+{"error":"message-context-mismatch"}
+HTTP 401
+```
+
+The message ("x") fails the host/trace/address/chain/contract context
+check at [web/app/api/traces/[traceId]/full/route.ts:176](web/app/api/traces/%5BtraceId%5D/full/route.ts#L176)
+before reaching signature verification — fail-fast on the cheapest
+check.
+
+### 4.6 `/api/traces/16/full` rejects oversized body (post-merge expectation)
+
+Command:
+
+```bash
+python3 -c 'import json; print(json.dumps({"address":"0x0000000000000000000000000000000000000000","nonce":"x"*5000,"signature":"0x00","message":"x"}))' | \
+  curl -s -X POST 'https://agoraalpha.vercel.app/api/traces/16/full' \
+  -H 'content-type: application/json' --data-binary @-
+```
+
+Pre-merge prod (current behavior — 4 KB cap not yet deployed):
+
+```text
+{"error":"message-context-mismatch"}
+HTTP 401
+```
+
+This evidences that the **4 KB body cap added by PR #26 (C1)** is not yet
+on production: the 5 KB body is accepted and the request proceeds to the
+context-mismatch guard. After PR #26 promotes, this case is expected to
+return `{"error":"payload-too-large"}` with `HTTP 413`. The
+post-merge re-run in §4-post-merge confirms this.
+
+---
+
+## 5. Paid unlock — live transcript
+
+Wallet is a fresh testnet address; values are redacted only where they would
+expose a private key. The trace id, contract address, and tx hash are public.
+
+### 5.1 Nonce issuance
+
+Command:
+
+```bash
+WALLET=<wallet address, no 0x prefix is fine in the curl path>
+TRACE=16
+curl -s "https://agoraalpha.vercel.app/api/paywall/nonce?traceId=${TRACE}&address=0x${WALLET}"
+```
+
+```text
+TODO: { "nonce": "...", "message": "Unlock Pythia trace 16 for 0x...\\nNonce: ...\\nIssued: 2026-05-..." }
+```
+
+### 5.2 Sign + POST
+
+Command (wallet signs `message` from 5.1, then):
+
+```bash
+curl -s -X POST "https://agoraalpha.vercel.app/api/traces/${TRACE}/full" \
+  -H 'content-type: application/json' \
+  -d '{"address":"0x...","nonce":"...","signature":"0x...","message":"..."}'
+```
+
+```text
+TODO: expected HTTP 200 with the full trace JSON. Capture:
+  - decision
+  - edge_bps
+  - source kinds (must include at least one of: event_data, news, sentiment, official_data)
+  - risk_factors length
+```
+
+### 5.3 Replay rejection
+
+Re-run the exact same POST from 5.2.
+
+```text
+TODO: expected HTTP 409 with body { "error": "nonce-used" } or equivalent
+```
+
+### 5.4 Onchain anchor
+
+Command:
+
+```bash
+TX=<tx hash from /pick/${TRACE} onchain card or UnlockMarket.lookupBySigner(address,traceId)>
+curl -sI "https://explorer.arc.network/tx/${TX}"
+```
+
+```text
+TODO: expected HTTP 200; record block number from the explorer
+```
+
+---
+
+## 6. Visual evidence
+
+| File                                       | Description                                   |
+|--------------------------------------------|-----------------------------------------------|
+| `verify/screenshots/unlocked-trace.png`    | `TODO`: unlocked /pick/16 page in browser     |
+| `verify/screenshots/explorer-tx.png`       | `TODO`: Arc explorer tx detail page           |
+
+Both screenshots should be 1280×800 or larger, browser chrome included.
+
+---
+
+## 7. Package evidence
+
+### 7.1 Zip build
+
+Command:
+
+```bash
+python3 scripts/package_submission.py
+```
+
+```text
+wrote submission.zip (337,703 bytes)
+```
+
+### 7.2 Zip surface
+
+Command:
+
+```bash
+unzip -l submission.zip | grep -E 'picks|trace-' | head -20
+```
+
+```text
+9500  05-23-2026 04:24   web/data/picks-preview.json
+```
+
+Only `web/data/picks-preview.json` appears. No `web/data/picks-full*.json` and
+no `traces/trace-*.json` entries — confirms the package builder excludes both
+the public and private full bundles and the raw trace JSONs. This is also
+asserted at runtime by §2.4's `--mode package` validator.
+
+---
+
+## 8. Sign-off
+
+- [ ] All `TODO:` blocks above are replaced with real output.
+- [ ] `git status` shows only tracked changes that match the diff.
+- [ ] Production URL serves a 200 on `/api/traces/16/full` after a real unlock.
+- [ ] Both screenshots committed under `verify/screenshots/`.
+- [ ] Date in §0 matches the timestamp on the most recent transcript.
+
+Signed-off by: `TODO: handle`

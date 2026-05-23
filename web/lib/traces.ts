@@ -78,7 +78,7 @@ export type Trace = {
   trace_id: number;
   generated_at: string;
   model: string;
-  builder_code: string;
+  builder_code?: string | null;
   theme: string;
   vault: string | null;
   onchain?: TraceOnchain;
@@ -97,10 +97,6 @@ function tracesDir(): string {
 
 function previewSnapshotPath(): string {
   return path.resolve(process.cwd(), "data", "picks-preview.json");
-}
-
-function fullSnapshotPath(): string {
-  return path.resolve(process.cwd(), "data", "picks-full.private.json");
 }
 
 async function loadFromDir(dir: string): Promise<Trace[]> {
@@ -181,6 +177,12 @@ export async function loadPick(traceId: number | string): Promise<Trace | null> 
  * MUST NOT be called from client components or rendered into SSR HTML.
  * The /api/traces/[id]/full route handler calls this AFTER verifying the
  * caller's on-chain unlock via UnlockMarket.isUnlocked.
+ *
+ * Bundle source is chosen by `loadPrivateTraces()` — Vercel Blob in
+ * production (when `PRIVATE_TRACES_BLOB_URL` is set), the local
+ * `picks-full.private.json` snapshot in dev. Final fallback is the
+ * per-trace files under `traces/` for a checkout with raw traces but no
+ * generated snapshot.
  */
 export async function loadPickFull(
   traceId: number | string,
@@ -188,11 +190,11 @@ export async function loadPickFull(
   const id = Number(traceId);
   if (!Number.isFinite(id)) return null;
 
-  // Prefer the generated server-only full snapshot. It mirrors the public
-  // preview snapshot, so stale local archive traces do not remain unlockable
-  // by direct URL after the public feed has moved on.
-  if (existsSync(fullSnapshotPath())) {
-    const all = await loadFromSnapshot(fullSnapshotPath());
+  // Lazy import keeps the server-only loader off any client component
+  // accidentally importing this file.
+  const { loadPrivateTraces } = await import("@/lib/server/private-traces");
+  const all = await loadPrivateTraces();
+  if (all && all.length > 0) {
     return all.find((t) => t.trace_id === id) ?? null;
   }
 
