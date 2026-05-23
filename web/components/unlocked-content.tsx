@@ -2,7 +2,7 @@
 
 /**
  * Gated content card. Renders the full reasoning + sizing payload only
- * after the visitor has paid 0.10 USDC, the on-chain `isUnlocked` read
+ * after the visitor has paid 0.10 DevUSDC (testnet), the on-chain `isUnlocked` read
  * returns true, AND the server has returned the full payload over the
  * authenticated `/api/traces/[id]/full` route.
  *

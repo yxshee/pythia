@@ -38,6 +38,96 @@ def _confidence_label(confidence_bps: int) -> ConfidenceLabel:
     return "low"
 
 
+_EVENT_DATA_CATEGORIES: tuple[tuple[tuple[str, ...], dict[str, Any]], ...] = (
+    (
+        ("nba", "nfl", "nhl", "mlb", "ufc", "boxing", "tennis", "basketball", "hockey", "baseball"),
+        {
+            "kind": "official_data",
+            "name": "Official league scoreboard / event feed",
+            "url": "https://www.espn.com/",
+            "credibility": 0.9,
+        },
+    ),
+    (
+        ("fifa", "world cup", "soccer", "football", "champions league", "premier league", "uefa"),
+        {
+            "kind": "official_data",
+            "name": "FIFA / UEFA official results",
+            "url": "https://www.fifa.com/tournaments",
+            "credibility": 0.92,
+        },
+    ),
+    (
+        ("bitcoin", "btc", "ethereum", "eth", "solana", "crypto", "stablecoin", "altcoin"),
+        {
+            "kind": "event_data",
+            "name": "Centralized exchange price oracle (Binance / Coinbase reference)",
+            "url": "https://www.binance.com/en/markets",
+            "credibility": 0.88,
+        },
+    ),
+    (
+        ("fomc", "fed", "federal reserve", "interest rate", "cpi", "inflation"),
+        {
+            "kind": "official_data",
+            "name": "Federal Reserve calendar + FOMC statements",
+            "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+            "credibility": 0.96,
+        },
+    ),
+    (
+        ("election", "primary", "senate", "house", "president", "congress", "governor"),
+        {
+            "kind": "official_data",
+            "name": "Associated Press election results + state election boards",
+            "url": "https://apnews.com/hub/election-2024",
+            "credibility": 0.93,
+        },
+    ),
+    (
+        ("treaty", "peace", "ceasefire", "diplomatic", "summit", "g7", "g20", "un security"),
+        {
+            "kind": "news",
+            "name": "Reuters / AP wire on diplomatic events",
+            "url": "https://www.reuters.com/world/",
+            "credibility": 0.85,
+        },
+    ),
+)
+
+_EVENT_DATA_FALLBACK: dict[str, Any] = {
+    "kind": "event_data",
+    "name": "Polymarket resolution policy + UMA optimistic oracle",
+    "url": "https://docs.polymarket.com/polymarket-learn/resolutions",
+    "credibility": 0.85,
+}
+
+
+def _event_data_source(market: MarketCandidate, observed_at: str) -> dict[str, Any]:
+    """Return a non-market source describing what would resolve this market.
+
+    Distinct from ``market_data`` (the price feed) and ``resolution_criteria``
+    (the text of the rules) — this points at the underlying real-world feed
+    or authority that the resolution depends on. Falls back to Polymarket's
+    own resolution policy when no category matches.
+    """
+    haystack = " ".join([market.question, *market.tags]).lower()
+    for needles, source in _EVENT_DATA_CATEGORIES:
+        if any(needle in haystack for needle in needles):
+            return {
+                **source,
+                "observed_at": observed_at,
+                "relevance": 0.9,
+                "recency": 0.85,
+            }
+    return {
+        **_EVENT_DATA_FALLBACK,
+        "observed_at": observed_at,
+        "relevance": 0.8,
+        "recency": 0.85,
+    }
+
+
 def _risk_label(plan: TradePlan, market: MarketCandidate) -> RiskLabel:
     """Map plan size + market liquidity to a coarse risk label for the preview.
 
@@ -139,6 +229,7 @@ def to_full(
                 "observed_at": observed_at,
                 "description": market.description[:240],
             },
+            _event_data_source(market, observed_at),
         ],
         "risk_factors": risk_factors,
         "market_url": market_url,

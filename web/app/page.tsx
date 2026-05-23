@@ -49,7 +49,7 @@ export default async function HomePage() {
             <ol className="mt-3 space-y-2 font-display text-[15px] leading-[1.3] text-ink">
               {[
                 "Which markets to analyze",
-                "Which sources to trust",
+                "Which market data and source bundle to trust",
                 "What probability to assign",
                 "Whether the edge is worth publishing",
                 "What size + risk label per profile",

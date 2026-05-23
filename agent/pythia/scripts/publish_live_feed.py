@@ -16,7 +16,9 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import os
 import re
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -215,6 +217,40 @@ def _assert_trace_ok(trace: dict[str, Any]) -> list[str]:
     return failures
 
 
+def _upload_private_blob(repo_root: Path) -> int:
+    """Shell out to the Node uploader for picks-full.private.json.
+
+    Kept in a single Node script so the @vercel/blob SDK is the only
+    Blob-touching code path. Returns 0 on success and the script's exit
+    code (2/3/4) on failure. Prints the Blob URL to stdout on success.
+    """
+    if not os.environ.get("BLOB_READ_WRITE_TOKEN"):
+        print("BLOB_READ_WRITE_TOKEN missing; cannot upload to Vercel Blob.", file=sys.stderr)
+        return 2
+    script = repo_root / "scripts" / "upload-private-blob.mjs"
+    if not script.exists():
+        print(f"uploader script missing at {script}", file=sys.stderr)
+        return 3
+    try:
+        result = subprocess.run(
+            ["node", str(script)],
+            cwd=repo_root,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    except FileNotFoundError:
+        print("node executable not found on PATH; cannot upload to Vercel Blob.", file=sys.stderr)
+        return 4
+    if result.returncode != 0:
+        sys.stderr.write(result.stderr)
+        return result.returncode
+    blob_url = result.stdout.strip()
+    print(f"uploaded picks-full.private.json to: {blob_url}")
+    print("set PRIVATE_TRACES_BLOB_URL=<url> on the Vercel project before promoting.")
+    return 0
+
+
 async def _publish(
     target: int,
     candidate_limit: int,
@@ -222,6 +258,7 @@ async def _publish(
     traces_dir: Path,
     gamma_json: Path | None,
     theme: str | None,
+    upload_blob: bool,
 ) -> int:
     settings = SETTINGS
     if theme:
@@ -323,6 +360,11 @@ async def _publish(
 
     print(f"wrote {out_preview.relative_to(repo_root)} ({len(traces)} entries)")
     print(f"wrote {out_private.relative_to(repo_root)} ({len(traces)} private entries)")
+
+    if upload_blob:
+        rc = _upload_private_blob(repo_root)
+        if rc != 0:
+            return rc
     return 0
 
 
@@ -351,11 +393,27 @@ def main() -> int:
         default=None,
         help="Override the trace theme label for this release run.",
     )
+    parser.add_argument(
+        "--upload-blob",
+        action="store_true",
+        help=(
+            "After writing picks-full.private.json, upload it to Vercel Blob via "
+            "scripts/upload-private-blob.mjs. Requires BLOB_READ_WRITE_TOKEN in env."
+        ),
+    )
     args = parser.parse_args()
 
     args.traces_dir.mkdir(parents=True, exist_ok=True)
     return asyncio.run(
-        _publish(args.target, args.candidate_limit, repo_root, args.traces_dir, args.gamma_json, args.theme)
+        _publish(
+            args.target,
+            args.candidate_limit,
+            repo_root,
+            args.traces_dir,
+            args.gamma_json,
+            args.theme,
+            args.upload_blob,
+        )
     )
 
 

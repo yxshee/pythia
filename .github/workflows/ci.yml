@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  web:
+    name: web (build + typecheck)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
+
+      - name: pnpm build
+        run: pnpm build
+
+      - name: tsc --noEmit
+        run: pnpm exec tsc --noEmit
+
+  agent:
+    name: agent (unittest)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: agent
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        run: pipx install uv
+
+      - name: uv sync --frozen
+        run: uv sync --frozen
+
+      - name: unittest discover
+        run: uv run python -m unittest discover -s tests -v
+
+  contracts:
+    name: contracts (forge test)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: forge test -vvv
+        run: forge test -vvv

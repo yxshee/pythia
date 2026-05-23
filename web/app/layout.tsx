@@ -27,6 +27,11 @@ export const metadata: Metadata = {
     description: "USDC-native marketplace for AI reasoning traces. Settled on Arc.",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Agora Alpha",
+    description: "USDC-native marketplace for AI reasoning traces. Settled on Arc.",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

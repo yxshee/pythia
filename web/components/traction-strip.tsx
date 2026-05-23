@@ -115,6 +115,12 @@ export function TractionStrip() {
         </a>
         .
       </p>
+
+      <p className="mt-2 mono text-[10px] tracking-[0.18em] text-ink-faint">
+        Demo build — paper sizing only, no live capital and no user telemetry
+        collected yet. The two on-chain surfaces above are the only metrics
+        we will assert.
+      </p>
     </section>
   );
 }

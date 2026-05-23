@@ -103,7 +103,9 @@ def validate_repo(repo_root: Path) -> list[str]:
     sys.path.insert(0, str(repo_root / "agent"))
     from pythia.scripts.validate_submission import validate_repo as validate
 
-    return validate(repo_root)
+    # The packager produces the public submission zip; it must not contain
+    # the paid bundle, so validate in package mode.
+    return validate(repo_root, mode="package")
 
 
 def create_zip(repo_root: Path, out_path: Path) -> None:

@@ -167,8 +167,10 @@ class Analyst:
         mismatch). The heuristic is the safety net — failing closed is correct
         here because we publish paper picks, not execute trades.
         """
+        today_iso = datetime.now(timezone.utc).date().isoformat()
+        today_long = datetime.now(timezone.utc).strftime("%B %-d, %Y")
         system_prompt = (
-            "Today is 2026-05-22 (May 22, 2026). All reasoning must be grounded "
+            f"Today is {today_iso} ({today_long}). All reasoning must be grounded "
             "in conditions as of TODAY.\n\n"
             "HARD CONSTRAINTS (violations make the trace audit-fail):\n"
             "- Do NOT cite specific numerical spot prices for any asset. No "

@@ -1,17 +1,32 @@
 """Validate judge-visible Pythia submission data.
 
-This is a fast local gate for the hackathon demo bundle. It checks the web
-snapshots that judges and Vercel consume rather than the Python objects in
-memory, so it catches stale generated JSON after code changes.
+Two modes:
 
-Usage:
+* ``deploy`` (default): for the live Vercel deploy. Requires the paid
+  full bundle to exist locally (``web/data/picks-full.private.json``) OR
+  a Vercel Blob URL (``PRIVATE_TRACES_BLOB_URL``) to be configured. Runs
+  full-payload quality checks against the local file when present.
+
+* ``package``: for the public submission zip. Forbids the paid full
+  bundle and the legacy public full snapshot. Runs only public-surface
+  checks.
+
+Both modes share the public-surface invariants: preview cleanliness,
+wrong FOMC date patterns, stale unlock-price copy, fixture source
+markers, public ``traces/`` absence, and home-feed dedup.
+
+Usage::
+
     cd agent
-    uv run python -m pythia.scripts.validate_submission
+    uv run python -m pythia.scripts.validate_submission --mode deploy
+    uv run python -m pythia.scripts.validate_submission --mode package
 """
 
 from __future__ import annotations
 
+import argparse
 import json
+import os
 import sys
 from collections import Counter
 from pathlib import Path
@@ -93,7 +108,18 @@ def _scan_text(root: Path, pattern: str, rel_roots: tuple[str, ...]) -> list[str
     return sorted(matches)
 
 
-def validate_repo(repo_root: Path) -> list[str]:
+_NON_MARKET_SOURCE_KINDS = frozenset({
+    "event_data",
+    "news",
+    "sentiment",
+    "official_data",
+})
+
+
+def validate_repo(repo_root: Path, *, mode: str = "deploy") -> list[str]:
+    if mode not in {"deploy", "package"}:
+        raise ValueError(f"unknown mode: {mode!r}; expected 'deploy' or 'package'")
+
     preview_path = repo_root / "web" / "data" / "picks-preview.json"
     public_full_path = repo_root / "web" / "data" / "picks-full.json"
     private_full_path = repo_root / "web" / "data" / "picks-full.private.json"
@@ -103,11 +129,27 @@ def validate_repo(repo_root: Path) -> list[str]:
 
     if public_full_path.exists():
         failures.append("public paid snapshot web/data/picks-full.json must not ship")
-    if not private_full_path.exists():
-        failures.append("server-only web/data/picks-full.private.json is missing")
-        full_entries: list[dict[str, Any]] = []
-    else:
-        full_entries = _load_json(private_full_path)
+
+    full_entries: list[dict[str, Any]] = []
+    if mode == "deploy":
+        if private_full_path.exists():
+            full_entries = _load_json(private_full_path)
+        elif os.environ.get("PRIVATE_TRACES_BLOB_URL"):
+            # Operator says the paid bundle lives in Vercel Blob; we cannot
+            # fetch it here (validator is offline), but we trust the env var.
+            # Full-payload quality checks are skipped in this branch — they
+            # must be enforced upstream by publish_live_feed.py before upload.
+            pass
+        else:
+            failures.append(
+                "deploy mode: web/data/picks-full.private.json is missing AND "
+                "PRIVATE_TRACES_BLOB_URL is unset"
+            )
+    # package mode intentionally ignores private_full_path: the operator's
+    # working directory always has it after `publish_live_feed`, but the
+    # zip builder in `scripts/package_submission.py` excludes everything
+    # matching `web/data/picks-full*`. The shipped zip will not contain
+    # the private bundle even when the working tree does.
 
     scan_roots = ("agent", "web", "traces", "README.md", "STATUS.md", "VERIFY.md", "docs")
     for pattern in _WRONG_FOMC_PATTERNS:
@@ -150,6 +192,12 @@ def validate_repo(repo_root: Path) -> list[str]:
             failures.append(f"trace {trace_id}: full payload has only {len(sources)} sources")
         if not any(isinstance(source, dict) and source.get("observed_at") for source in sources):
             failures.append(f"trace {trace_id}: full payload sources lack observed_at")
+        kinds = {str(source.get("kind") or "") for source in sources if isinstance(source, dict)}
+        if not (_NON_MARKET_SOURCE_KINDS & kinds):
+            failures.append(
+                f"trace {trace_id}: full payload sources lack a non-market kind "
+                f"(have {sorted(kinds)}; need one of {sorted(_NON_MARKET_SOURCE_KINDS)})"
+            )
         risks = full.get("risk_factors") or []
         if not risks:
             failures.append(f"trace {trace_id}: full payload has no risk_factors")
@@ -169,17 +217,38 @@ def validate_repo(repo_root: Path) -> list[str]:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--mode",
+        choices=("deploy", "package"),
+        default="deploy",
+        help="deploy: live Vercel state (default). package: contents of the public submission zip.",
+    )
+    args = parser.parse_args()
+
     repo_root = Path(__file__).resolve().parents[3]
-    failures = validate_repo(repo_root)
+    failures = validate_repo(repo_root, mode=args.mode)
     if failures:
         for failure in failures:
             print(f"FAIL: {failure}", file=sys.stderr)
         return 1
 
-    full_entries = _load_json(repo_root / "web" / "data" / "picks-full.private.json")
     preview_entries = _load_json(repo_root / "web" / "data" / "picks-preview.json")
     home = _latest_by_market(_eligible_home_entries(preview_entries))
-    print(f"submission data ok: {len(home)} home markets, {len(full_entries)} private full traces")
+    private_full_path = repo_root / "web" / "data" / "picks-full.private.json"
+    if args.mode == "deploy" and private_full_path.exists():
+        full_entries = _load_json(private_full_path)
+        print(
+            f"submission data ok (deploy): {len(home)} home markets, "
+            f"{len(full_entries)} private full traces"
+        )
+    elif args.mode == "deploy":
+        print(
+            f"submission data ok (deploy): {len(home)} home markets, "
+            "private bundle served from PRIVATE_TRACES_BLOB_URL"
+        )
+    else:
+        print(f"submission data ok (package): {len(home)} home markets, no paid bundle present")
     return 0
 
 

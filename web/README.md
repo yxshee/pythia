@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# web — Agora Alpha frontend
 
-## Getting Started
+The Next.js 16 app that renders the public picks feed, the per-trace pick page,
+and the paid-unlock paywall against the `UnlockMarket` contract on Arc testnet.
 
-First, run the development server:
+- Live: https://agoraalpha.vercel.app
+- Root README: [../README.md](../README.md)
+- Submission status: [../STATUS.md](../STATUS.md)
+- Reproducible verification: [../VERIFY.md](../VERIFY.md)
+- Working-with-this-codebase rules: [./AGENTS.md](./AGENTS.md) (read first)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Stack
+
+- Next.js 16.2.6 (App Router, Turbopack, file-based metadata)
+- React 19, TypeScript 5, Tailwind 4
+- viem 2 + wagmi 2 for wallet + chain reads
+- `@vercel/blob` for the private full-trace payload
+- `@vercel/kv` for the paywall nonce store + rate limiter (in-memory fallback for local dev)
+
+## Paywall flow
+
+```
+1. Visitor opens /pick/[traceId]
+   → SSR renders preview + on-chain anchor only.
+2. Visitor connects wallet → mints DevUSDC if needed → approves → calls
+   UnlockMarket.unlock(traceId).
+3. Client GETs /api/traces/[traceId]/full?address=… → server issues a
+   nonce bound to (host, traceId, address, chainId, contract, expiresAt).
+4. Wallet signs the EIP-191 message containing that nonce.
+5. Client POSTs { address, nonce, signature, message } to the same route.
+6. Server validates message context, freshness, nonce, signature
+   (EOA + EIP-1271), and UnlockMarket.isUnlocked(traceId, address). On
+   pass, returns trace.full and consumes the nonce. Replay returns
+   `nonce-used`.
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Server-only routes:
+- `/api/traces/[traceId]/full` — paywall
+- `/api/rpc` — read-only JSON-RPC proxy over the Canteen-issued upstream
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Env vars
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+See [./.env.local.example](./.env.local.example) for the full annotated list.
+Two contracts you must respect:
 
-## Learn More
+- **Never prefix server-only vars with `NEXT_PUBLIC_`.** `ARC_RPC_URL`,
+  `PRIVATE_TRACES_BLOB_URL`, `BLOB_READ_WRITE_TOKEN`, `KV_REST_API_URL`,
+  and `KV_REST_API_TOKEN` are server-only. They appear only in Node.js
+  runtime bundles, never in the browser.
+- **The Blob URL itself is the secret.** `PRIVATE_TRACES_BLOB_URL` carries
+  a random suffix that is the only access control on the paid payload.
+  Treat it like a token: never log, never commit.
 
-To learn more about Next.js, take a look at the following resources:
+## Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm dev          # next dev
+pnpm build        # next build (Turbopack)
+pnpm start        # serve the production build
+pnpm exec tsc --noEmit   # standalone typecheck
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Use `pnpm install --frozen-lockfile` in CI (see [.github/workflows/ci.yml](../.github/workflows/ci.yml)).
 
-## Deploy on Vercel
+## Notes for AI coding tools
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This is Next.js 16. APIs, conventions, and file structure differ from
+training-data Next.js. Read the relevant guide in `node_modules/next/dist/docs/`
+before writing code. The rules in [./AGENTS.md](./AGENTS.md) take precedence
+over generic Next.js patterns.

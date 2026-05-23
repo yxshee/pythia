@@ -34,6 +34,7 @@ import {
 export const runtime = "nodejs";
 
 const MAX_ISSUED_AGE_MS = 5 * 60 * 1000; // 5 minutes
+const MAX_BODY_BYTES = 4 * 1024; // 4 KB hard cap on the unlock-POST body.
 
 type Body = {
   address?: string;
@@ -102,7 +103,7 @@ export async function GET(
   req: Request,
   ctx: { params: Promise<{ traceId: string }> },
 ): Promise<NextResponse> {
-  const limit = rateLimit(`nonce:${clientIp(req.headers)}`, 20, 60_000);
+  const limit = await rateLimit(`nonce:${clientIp(req.headers)}`, 20, 60_000);
   if (!limit.ok) return rateLimited(limit.retryAfterSeconds);
 
   const { traceId: traceIdParam } = await ctx.params;
@@ -120,7 +121,7 @@ export async function GET(
   const host = getRequestHost(req);
   if (!host) return bad("missing-host", 400);
 
-  return NextResponse.json(issueUnlockNonce({ host, traceId, address }), {
+  return NextResponse.json(await issueUnlockNonce({ host, traceId, address }), {
     headers: { "Cache-Control": "private, no-store, max-age=0" },
   });
 }
@@ -129,7 +130,7 @@ export async function POST(
   req: Request,
   ctx: { params: Promise<{ traceId: string }> },
 ): Promise<NextResponse> {
-  const limit = rateLimit(`full:${clientIp(req.headers)}`, 30, 60_000);
+  const limit = await rateLimit(`full:${clientIp(req.headers)}`, 30, 60_000);
   if (!limit.ok) return rateLimited(limit.retryAfterSeconds);
 
   const rpcUrl = process.env.ARC_RPC_URL;
@@ -149,7 +150,11 @@ export async function POST(
 
   let body: Body;
   try {
-    body = (await req.json()) as Body;
+    const raw = await req.text();
+    if (raw.length > MAX_BODY_BYTES) {
+      return bad("payload-too-large", 413);
+    }
+    body = JSON.parse(raw) as Body;
   } catch {
     return bad("invalid-json");
   }
@@ -172,7 +177,7 @@ export async function POST(
     return bad("message-context-mismatch", 401);
   }
 
-  const nonceValid = validateUnlockNonce({
+  const nonceValid = await validateUnlockNonce({
     nonce,
     host: requestHost,
     traceId,
@@ -244,7 +249,7 @@ export async function POST(
     return bad("trace-not-found", 404);
   }
 
-  const nonceConsumed = consumeUnlockNonce({
+  const nonceConsumed = await consumeUnlockNonce({
     nonce,
     host: requestHost,
     traceId,

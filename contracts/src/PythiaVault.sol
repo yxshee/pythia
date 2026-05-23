@@ -1,6 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
+// ─────────────────────────────────────────────────────────────────────────────
+// EXPERIMENTAL — not in scope for the Agora Agents Hackathon submission.
+//
+// The hackathon submission demonstrates the published, paid, on-chain-verifiable
+// pick flow on Arc: `TraceLog` (anchoring) + `UnlockMarket` (paywall) + the
+// agent + web stack. `PythiaVault` is a planned paper-portfolio track-record
+// vault that will surface resolved-market PnL once a `recordTrade` close-out
+// resolver is wired. Deposits are operator-gated; no third-party USDC is
+// custodied. Do not evaluate this contract as part of the submission.
+// ─────────────────────────────────────────────────────────────────────────────
+
 /// @notice Minimal IERC20 used by the vault.
 interface IERC20 {
     function transfer(address to, uint256 amount) external returns (bool);
