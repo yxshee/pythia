@@ -28,9 +28,13 @@ import argparse
 import json
 import os
 import sys
+import urllib.error
+import urllib.request
 from collections import Counter
 from pathlib import Path
 from typing import Any
+
+_BLOB_FETCH_TIMEOUT_S = 5.0
 
 _PREVIEW_FORBIDDEN_KEYS = frozenset({
     "analyst",
@@ -116,7 +120,49 @@ _NON_MARKET_SOURCE_KINDS = frozenset({
 })
 
 
-def validate_repo(repo_root: Path, *, mode: str = "deploy") -> list[str]:
+def _check_blob_url(url: str, failures: list[str]) -> None:
+    """Fetch `url` and assert the response looks like a non-empty trace bundle.
+
+    The deep quality checks (per-trace source counts, risk factors, etc.) run
+    against the local file at publish time; this is the cheap liveness gate
+    that catches typos in the Vercel env var or a truncated upload.
+    """
+    request = urllib.request.Request(url, method="GET")
+    try:
+        with urllib.request.urlopen(request, timeout=_BLOB_FETCH_TIMEOUT_S) as response:
+            status = response.status
+            content_type = (response.headers.get("Content-Type") or "").lower()
+            body = response.read()
+    except urllib.error.HTTPError as exc:
+        exc.close()
+        failures.append(
+            f"PRIVATE_TRACES_BLOB_URL {url} returned HTTP {exc.code} (expected 200)"
+        )
+        return
+    except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        failures.append(f"PRIVATE_TRACES_BLOB_URL {url} unreachable: {exc}")
+        return
+
+    if status != 200:
+        failures.append(f"PRIVATE_TRACES_BLOB_URL {url} returned HTTP {status} (expected 200)")
+        return
+    if "json" not in content_type:
+        failures.append(
+            f"PRIVATE_TRACES_BLOB_URL {url} has content-type {content_type!r}; expected JSON"
+        )
+        return
+    try:
+        payload = json.loads(body)
+    except json.JSONDecodeError as exc:
+        failures.append(f"PRIVATE_TRACES_BLOB_URL {url} body does not parse as JSON: {exc}")
+        return
+    if not isinstance(payload, list) or not payload:
+        failures.append(f"PRIVATE_TRACES_BLOB_URL {url} body is empty or not a JSON array")
+
+
+def validate_repo(
+    repo_root: Path, *, mode: str = "deploy", check_blob: bool = False
+) -> list[str]:
     if mode not in {"deploy", "package"}:
         raise ValueError(f"unknown mode: {mode!r}; expected 'deploy' or 'package'")
 
@@ -131,12 +177,13 @@ def validate_repo(repo_root: Path, *, mode: str = "deploy") -> list[str]:
         failures.append("public paid snapshot web/data/picks-full.json must not ship")
 
     full_entries: list[dict[str, Any]] = []
+    blob_url = os.environ.get("PRIVATE_TRACES_BLOB_URL")
     if mode == "deploy":
         if private_full_path.exists():
             full_entries = _load_json(private_full_path)
-        elif os.environ.get("PRIVATE_TRACES_BLOB_URL"):
-            # Operator says the paid bundle lives in Vercel Blob; we cannot
-            # fetch it here (validator is offline), but we trust the env var.
+        elif blob_url:
+            # Operator says the paid bundle lives in Vercel Blob; the URL is
+            # trusted as-set unless `--check-blob` was passed (see below).
             # Full-payload quality checks are skipped in this branch — they
             # must be enforced upstream by publish_live_feed.py before upload.
             pass
@@ -145,6 +192,13 @@ def validate_repo(repo_root: Path, *, mode: str = "deploy") -> list[str]:
                 "deploy mode: web/data/picks-full.private.json is missing AND "
                 "PRIVATE_TRACES_BLOB_URL is unset"
             )
+        if check_blob:
+            if not blob_url:
+                failures.append(
+                    "--check-blob requires PRIVATE_TRACES_BLOB_URL to be set in the environment"
+                )
+            else:
+                _check_blob_url(blob_url, failures)
     # package mode intentionally ignores private_full_path: the operator's
     # working directory always has it after `publish_live_feed`, but the
     # zip builder in `scripts/package_submission.py` excludes everything
@@ -224,10 +278,19 @@ def main() -> int:
         default="deploy",
         help="deploy: live Vercel state (default). package: contents of the public submission zip.",
     )
+    parser.add_argument(
+        "--check-blob",
+        action="store_true",
+        help=(
+            "deploy mode only: fetch PRIVATE_TRACES_BLOB_URL and assert it serves a "
+            "non-empty JSON trace bundle. Catches typo'd or truncated Blob URLs in the "
+            "Vercel env before promoting a deploy."
+        ),
+    )
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parents[3]
-    failures = validate_repo(repo_root, mode=args.mode)
+    failures = validate_repo(repo_root, mode=args.mode, check_blob=args.check_blob)
     if failures:
         for failure in failures:
             print(f"FAIL: {failure}", file=sys.stderr)

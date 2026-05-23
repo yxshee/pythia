@@ -91,10 +91,16 @@ Last updated: 2026-05-23 (Asia/Kolkata).
 
 ```bash
 cd agent && uv run python -m unittest discover -s tests
-# 12 tests passed
+# 24 tests passed
 
-cd agent && uv run python -m pythia.scripts.validate_submission
-# submission data ok: 8 home markets, 8 private full traces
+cd agent && uv run python -m pythia.scripts.validate_submission --mode deploy
+# submission data ok (deploy): 8 home markets, 8 private full traces
+
+# Operator pre-prod gate: also fetch PRIVATE_TRACES_BLOB_URL and assert it
+# serves a non-empty JSON trace bundle. Catches a typo'd or truncated Blob
+# URL in the Vercel env before promoting.
+PRIVATE_TRACES_BLOB_URL=https://… cd agent && \
+  uv run python -m pythia.scripts.validate_submission --mode deploy --check-blob
 
 cd web && pnpm exec tsc --noEmit && pnpm build
 # TypeScript and Next.js production build passed
@@ -103,5 +109,6 @@ cd contracts && forge test -vvv
 # 42 tests passed
 
 python3 scripts/package_submission.py
-# creates submission.zip only after validation passes
+# creates submission.zip only after package-mode validation passes
+# (validate_submission --mode package is invoked inside the script)
 ```

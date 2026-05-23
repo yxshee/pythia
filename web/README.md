@@ -62,6 +62,24 @@ pnpm exec tsc --noEmit   # standalone typecheck
 
 Use `pnpm install --frozen-lockfile` in CI (see [.github/workflows/ci.yml](../.github/workflows/ci.yml)).
 
+## Operator pre-deploy gate
+
+Before promoting a build that depends on `PRIVATE_TRACES_BLOB_URL`, run the
+validator's `--check-blob` mode to confirm the URL actually serves a
+non-empty JSON trace bundle (catches a typo'd or truncated Blob URL in the
+Vercel env):
+
+```bash
+cd ../agent
+PRIVATE_TRACES_BLOB_URL=https://…  uv run python -m pythia.scripts.validate_submission \
+  --mode deploy --check-blob
+```
+
+Exit code 0 means the URL is reachable, served as JSON, and parsed to a
+non-empty trace array. Any other case prints a `FAIL:` line naming the URL
+and the reason (HTTP status, content-type mismatch, parse error, empty
+list).
+
 ## Notes for AI coding tools
 
 This is Next.js 16. APIs, conventions, and file structure differ from
