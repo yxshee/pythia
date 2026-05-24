@@ -819,38 +819,67 @@ The original `UnlockMarket.unlock(16)` transaction recovered from
 ### 5.5 Live paid-unlock smoke (audit re-run, operator-captured)
 
 Operator-executed against `https://agoraalpha.vercel.app` on the
-audit-fix commit recorded in §8 (`a16dbc1`). The transcript is
-captured from `scripts/cli-unlock.mjs`; the `PRIVATE_KEY` value is
-never logged. Paste the verbatim output below before re-zipping for
-hackathon submission.
+audit-fix commit recorded in §8 at `2026-05-24T14:31:15Z`. The live
+deploy serves the pre-regen 9-16 batch (the
+`audit/executive-verdict-fixes` branch is local only — not pushed,
+not redeployed); the new 24-31 batch shipped in this submission zip
+is anchored on Arc TraceLog (see
+`web/data/metrics.json:latest_tx_hash` =
+`0xf0a3bb2c3e7212149a6b297d8693163a9b78806d9d2e5ae3abf682da50742bb8`)
+but is not yet promoted to Vercel. The cli-unlock smoke therefore
+exercises **trace 16**, which is in both the live deploy *and*
+`UnlockMarket`'s registered-ID set. The transcript is captured from
+`scripts/cli-unlock.mjs`; the `PRIVATE_KEY` value is never logged.
 
 ```bash
 PRIVATE_KEY=$DEMO_DEPLOYER_PK ARC_RPC_URL=$ARC_RPC_URL \
   node scripts/cli-unlock.mjs --base=https://agoraalpha.vercel.app \
-  --trace-id=<latest-published-id>
+  --trace-id=16
 ```
 
 ```text
-<paste cli-unlock.mjs transcript here — must end with `nonce-used`
-on the second POST. The Phase 9 deliverable from
-docs/superpowers/plans/2026-05-24-executive-verdict-followups.md>
+[1/11] Wallet:    0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e
+[2/11] Args:      base=https://agoraalpha.vercel.app  trace-id=16  rpc=https://rpc.testnet.arc-node.thecanteenapp.com/…  dry-run=false
+[3/11] Clients:   viem public+wallet on chain 5042002
+[4/11] priceFor:  0.1 USDC (raw=100000)
+         balance:  1000001 USDC
+[5/11] mint:      skipped (balance >= price)
+         allow:    0.1 USDC
+[6/11] approve:   skipped (allowance >= price)
+[7/11] unlock:    skipped (already unlocked on-chain)
+[8/11] GET:       https://agoraalpha.vercel.app/api/traces/16/full?address=0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e
+         nonce:    b2b0baa7-01ff-4dcc-a5ac-8ca790c0b624
+         issued:   2026-05-24T14:31:15.087Z
+         expires:  2026-05-24T14:36:15.087Z
+[9/11] sign:      EIP-191 message (287 chars)
+         sig:      0xa0fe543e92619b01…031b
+[10/11] POST:     https://agoraalpha.vercel.app/api/traces/16/full
+         HTTP 200: {"agent_probability_yes":0.18,"confidence":"high","copy_trade_url":"https://polymarket.com/event/will-the-colorado-avalanche-win-the-2026-nhl-stanley-cup?builderCode=pythia&side=no","current_implied_yes":0.3225,"decision":"BUY_NO","edge_bps…
+[11/11] replay:   POST same body again (expect 401 nonce-used)
+         HTTP 401: {"error":"nonce-used"}
+
+DONE: 11/11 steps complete. Trace 16 unlocked and replay rejected.
 ```
 
 | Field | Value |
 |-------|-------|
-| Unlock tx | `<tx hash from the new run>` |
-| Block | `<block number>` |
-| Trace | `<latest trace id>` |
-| Replay rejection | `nonce-used` (second POST 401) |
+| Wallet | `0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e` |
+| Trace | `16` (already unlocked on-chain — original `unlock(16)` tx is in §5.4) |
+| Nonce | `b2b0baa7-01ff-4dcc-a5ac-8ca790c0b624` (issued `2026-05-24T14:31:15.087Z`, 5-minute TTL) |
+| Signature prefix | `0xa0fe543e92619b01…031b` (EIP-191 over the 287-char nonce-bound message) |
+| Full payload POST | HTTP 200 — `decision=BUY_NO`, `agent_probability_yes=0.18`, `confidence=high` |
+| Replay rejection | HTTP 401 `{"error":"nonce-used"}` (second POST) |
+| Exit code | `0` (cli-unlock 11/11) |
 
 Invariants asserted (same as §5.1–§5.3, re-attested against the
 audit-fix deploy):
 
 - Nonce one-time use — POST replay returns 401 `nonce-used`.
-- `UnlockMarket.isUnlocked(traceId, wallet) == true` on Arc testnet.
-- Full payload includes `reasoning`, `sources`, `risk_factors`, and
-  `suggested_size_usdc` — none of which appear in the public
-  preview surface (§3, §4).
+- `UnlockMarket.isUnlocked(16, 0xFA76…0A1e) == true` on Arc testnet.
+- Full payload includes `decision`, `agent_probability_yes`,
+  `current_implied_yes`, `edge_bps`, `confidence`, `copy_trade_url`,
+  `reasoning`, `sources`, `risk_factors`, and `suggested_size_usdc`
+  — none of which appear in the public preview surface (§3, §4).
 
 ---
 
@@ -898,9 +927,11 @@ asserted at runtime by §2.4's `--mode public-package` validator.
 
 ### 7.3 Post-merge zip rebuild
 
-Rebuilt on the `audit/executive-verdict-fixes` branch (`a16dbc1`) at
-`2026-05-24T13:31:00Z`. This is the **final submission artifact** that
-the operator attaches to the hackathon entry.
+Rebuilt on the `audit/executive-verdict-fixes` branch (parent commit
+`b34c761a`) at `2026-05-24T14:32:48Z` after the Phase 4.1 feed regen
+(new 24-31 batch dated 2026-05-24) and the Phase 9 cli-unlock live
+smoke (§5.5). This is the **final submission artifact** that the
+operator attaches to the hackathon entry.
 
 Commands:
 
@@ -913,10 +944,10 @@ unzip -l submission.zip | grep -E '(\.github/workflows/ci\.yml|verify/screenshot
 ```
 
 ```text
-wrote submission.zip (2,047,074 bytes)
+wrote submission.zip (2,047,849 bytes)
 
-333431afa03182ad0f15677b6918469b253315edb3e24134c5683d8320c65ac4  submission.zip
-  2047074 submission.zip
+ea502d683b0a7d2c9fad395c48cc09ebaecaefc8ddf922477a2c61a02e7f3aba  submission.zip
+  2047849 submission.zip
      1416  .github/workflows/ci.yml
    652754  verify/screenshots/explorer-tx.png
    744758  verify/screenshots/unlocked-trace.png
@@ -924,13 +955,15 @@ wrote submission.zip (2,047,074 bytes)
 
 | Field            | Value                                                              |
 |------------------|--------------------------------------------------------------------|
-| Commit           | `a16dbc17c471a2673d128fc76632e58e7edf4c96`                         |
-| Size             | 2 047 074 bytes                                                    |
-| SHA256           | `333431afa03182ad0f15677b6918469b253315edb3e24134c5683d8320c65ac4` |
+| Parent commit    | `b34c761a309d09707e843e9d8c72c03e5ec3e7b0` (audit re-stamp commit lands on top, see `git log audit/executive-verdict-fixes`) |
+| Size             | 2 047 849 bytes                                                    |
+| SHA256           | `ea502d683b0a7d2c9fad395c48cc09ebaecaefc8ddf922477a2c61a02e7f3aba` |
 | File count       | 98                                                                 |
 | Built by         | `scripts/package_submission.py`                                    |
 | Validator        | `validate_submission --mode public-package` (invoked internally; passed) |
-| Proof artefacts  | `.github/workflows/ci.yml`, `verify/screenshots/*.png` (newly included — see P0-1 fix) |
+| Proof artefacts  | `.github/workflows/ci.yml`, `verify/screenshots/*.png` (included since P0-1 fix) |
+| Picks freshness  | trace IDs 24-31, all dated 2026-05-24, all anchored on Arc TraceLog (Phase 4.1) |
+| Paid-unlock smoke | §5.5 — `node scripts/cli-unlock.mjs … --trace-id=16` against the live deploy, exit 0, replay `nonce-used` |
 
 > **Self-referential SHA note.** Because this `### 7.3` block contains
 > the zip's own SHA, any further edit to VERIFY.md will change the
@@ -941,14 +974,18 @@ wrote submission.zip (2,047,074 bytes)
 > reflects the previous build cycle's SHA. Verification:
 > `sha256sum submission.zip` from this commit matches the row above.
 
-The size delta vs §7.1 (337 703 → 2 046 312) reflects two changes:
+The size delta vs §7.1 (337 703 → 2 047 849) reflects three changes:
 - `scripts/cli-unlock.mjs` (+324 lines), `package.json`,
   `agent/pythia/scripts/validate_submission.py` (--check-blob), expanded
   VERIFY.md, and the other audit-branch deliverables (~+12 KB).
-- The two new proof artefacts now actually included: `.github/workflows/ci.yml`
+- The two proof artefacts now actually included: `.github/workflows/ci.yml`
   + `verify/screenshots/*.png` (~+1.4 MB of PNG). Without these, the
   zip was 352 762 bytes (SHA `b7d456f1…`) but VERIFY.md referenced
   files judges could not locate inside it.
+- Phase 4.1 feed regen replaced the 9-16 batch dated 2026-05-22 with a
+  fresh 24-31 batch dated 2026-05-24 (`picks-preview.json`); the +775 B
+  delta vs the prior audit zip (2 047 074 → 2 047 849) is the new
+  picks/metrics payload.
 
 ### 7.4 Post-merge zip surface
 
@@ -979,11 +1016,11 @@ files with no secrets) ship. Same invariants as §7.2; reasserted post-merge.
 | Field                  | Value                                                              |
 |------------------------|--------------------------------------------------------------------|
 | Signed-off by          | `@yxshee`                                                          |
-| Sign-off timestamp     | `2026-05-24T13:31:00Z`                                             |
-| Sign-off commit        | `a16dbc17c471a2673d128fc76632e58e7edf4c96` (audit/executive-verdict-fixes; superseded sign-off on `bcc1d55` after the P0-1 packager fix landed) |
-| Submission artifact    | `submission.zip` — 2 047 074 bytes, SHA256 `333431afa03182ad0f15677b6918469b253315edb3e24134c5683d8320c65ac4` (rebuilt on `a16dbc1`, see §7.3) |
+| Sign-off timestamp     | `2026-05-24T14:32:48Z`                                             |
+| Sign-off commit        | `b34c761a309d09707e843e9d8c72c03e5ec3e7b0` (audit/executive-verdict-fixes; rebuild basis — the sign-off itself lands in the commit containing this VERIFY.md edit, superseding `a16dbc17` after Phase 4.1 + Phase 9 follow-ups) |
+| Submission artifact    | `submission.zip` — 2 047 849 bytes, SHA256 `ea502d683b0a7d2c9fad395c48cc09ebaecaefc8ddf922477a2c61a02e7f3aba` (rebuilt on `b34c761`, see §7.3) |
 | Live deploy            | https://agoraalpha.vercel.app                                      |
-| Paid-unlock transcript | §5.1 (cli-unlock 11/11 steps green) + §5.4 explorer tx `0xabb1d968a98a94bab43c6ced0337eda45436c89371b009c36cc6bbfce97a7dde` on Arc testnet block `43571133` |
+| Paid-unlock transcript | §5.1 (cli-unlock 11/11 steps green) + §5.4 explorer tx `0xabb1d968a98a94bab43c6ced0337eda45436c89371b009c36cc6bbfce97a7dde` on Arc testnet block `43571133` + §5.5 (audit re-run against the live deploy, trace 16, exit 0, replay `nonce-used`) |
 | Visual evidence        | §6 — `verify/screenshots/unlocked-trace.png` + `verify/screenshots/explorer-tx.png` (now actually included in the zip — see §7.3 proof artefacts row) |
 | Repository             | https://github.com/yxshee/pythia (commit listed above)             |
 

@@ -48,9 +48,15 @@ Last updated: 2026-05-24 (Asia/Kolkata).
   `validate_submission --mode private-deploy`.
 - **`UnlockMarket` deployed and registered on Arc testnet.** The current
   `UnlockMarket` at `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` registers
-  the trace IDs in the current published feed. On-chain reads confirmed
-  registered IDs return `true` for `traceExists`, while trace `999` returns
-  `false`.
+  the 9-16 batch that the live deploy currently serves. A fresh 24-31
+  batch was published on Arc TraceLog (`web/data/metrics.json`
+  `latest_tx_hash` =
+  `0xf0a3bb2c3e7212149a6b297d8693163a9b78806d9d2e5ae3abf682da50742bb8`,
+  block 43847112) and ships in this submission zip, but the live deploy
+  and `UnlockMarket` registered-IDs set both still reflect the 9-16
+  batch — the audit branch is intentionally local only until the final
+  PR. On-chain reads confirmed registered IDs return `true` for
+  `traceExists`, while trace `999` returns `false`.
 - **Author-verified live smoke against the private deploy artifact.**
   The production alias `https://agoraalpha.vercel.app` serves the
   published picks, paid `/pick/<id>` pages return 200, SSR HTML contains

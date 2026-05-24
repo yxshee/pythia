@@ -1,242 +1,242 @@
 [
   {
-    "generated_at": "2026-05-22T22:18:16+00:00",
-    "market_id": "0xa0f4c4924ea1a8b410b4ce821c2a9955fad21a1b19bdcfde90816732278b3dd5",
+    "generated_at": "2026-05-24T14:28:09+00:00",
+    "market_id": "0xcdb1f0400949238a63d3e88243d2ada08cd9c2a71985ced9f0cfd5e66354cf90",
     "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43570302,
+      "block_number": 43846905,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 41,
-      "tx_hash": "0xbadfe2bf133558d1be756c9a6a52743109b5df77377946b1f805c058a62255ce"
+      "trace_id": 56,
+      "tx_hash": "0x75c462c21e64964abf2ffab88aa2b63b85445e3dcb9da08196b46edf6962677c"
     },
     "preview": {
-      "agent_probability_yes": 0.018,
-      "confidence": "medium",
-      "current_implied_yes": 0.0135,
-      "decision": "HOLD",
-      "end_date_iso": "2026-07-01T04:00:00Z",
-      "generated_at": "2026-05-22T22:18:16+00:00",
-      "market_id": "0xa0f4c4924ea1a8b410b4ce821c2a9955fad21a1b19bdcfde90816732278b3dd5",
-      "model": "claude-sonnet-4-6",
-      "question": "Will Bitcoin hit $150k by June 30, 2026?",
-      "risk": "aggressive",
-      "trace_hash": "0x55abeb6bc9417549f452e4fd9c58156c3ea902b1b16a8864f1486cf2e342f601",
-      "trace_id": 9
-    },
-    "theme": "general",
-    "trace_id": 9,
-    "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
-  },
-  {
-    "generated_at": "2026-05-22T22:18:32+00:00",
-    "market_id": "0x0e4a0c937b8934c2475613b6322b3f8edc8dedc24762e01e42b0e6f87424a089",
-    "model": "claude-sonnet-4-6",
-    "onchain": {
-      "block_number": 43570331,
-      "chain_id": 5042002,
-      "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
-      "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 42,
-      "tx_hash": "0x4b1d624b3e5d79fc40c6980c1ba781eda043f9178eb64d50586dd8452007938d"
-    },
-    "preview": {
-      "agent_probability_yes": 0.04,
-      "confidence": "high",
-      "current_implied_yes": 0.175,
-      "decision": "BUY_NO",
-      "end_date_iso": "2026-05-31T00:00:00Z",
-      "generated_at": "2026-05-22T22:18:32+00:00",
-      "market_id": "0x0e4a0c937b8934c2475613b6322b3f8edc8dedc24762e01e42b0e6f87424a089",
-      "model": "claude-sonnet-4-6",
-      "question": "US x Iran permanent peace deal by May 31, 2026?",
-      "risk": "aggressive",
-      "trace_hash": "0x0b3282ecc59c3332002496591c66bc881d83eea26f091fc7292ca9699c7c9247",
-      "trace_id": 10
-    },
-    "theme": "general",
-    "trace_id": 10,
-    "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
-  },
-  {
-    "generated_at": "2026-05-22T22:18:47+00:00",
-    "market_id": "0xe99cc59f32b10d23acf196d1a0e8264ea30fca198428acadd3464b06ff60e771",
-    "model": "claude-sonnet-4-6",
-    "onchain": {
-      "block_number": 43570360,
-      "chain_id": 5042002,
-      "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
-      "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 43,
-      "tx_hash": "0x0d6b800d553962a1f65f760fe1d907877438247c17a8d883c8180be2d30b3389"
-    },
-    "preview": {
-      "agent_probability_yes": 0.016,
-      "confidence": "medium",
-      "current_implied_yes": 0.0165,
-      "decision": "HOLD",
-      "end_date_iso": "2026-07-20T00:00:00Z",
-      "generated_at": "2026-05-22T22:18:47+00:00",
-      "market_id": "0xe99cc59f32b10d23acf196d1a0e8264ea30fca198428acadd3464b06ff60e771",
-      "model": "claude-sonnet-4-6",
-      "question": "Will Colombia win the 2026 FIFA World Cup?",
-      "risk": "conservative",
-      "trace_hash": "0x695a0597a4f2f99f56ea9de235d6350ca2843f57996c7083630b84de5bb9a538",
-      "trace_id": 11
-    },
-    "theme": "general",
-    "trace_id": 11,
-    "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
-  },
-  {
-    "generated_at": "2026-05-22T22:19:02+00:00",
-    "market_id": "0x5ccfe1b69a582d2985db08a8481a0d74c314b1fce9b4711ae2efb2c6467fe6aa",
-    "model": "claude-sonnet-4-6",
-    "onchain": {
-      "block_number": 43570390,
-      "chain_id": 5042002,
-      "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
-      "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 44,
-      "tx_hash": "0x6d8e04002d4318bb88d9ec32fbb9acbe6dec87305ac4522b21ebabad0d8aa1f9"
-    },
-    "preview": {
-      "agent_probability_yes": 0.015,
+      "agent_probability_yes": 0.09,
       "confidence": "medium",
       "current_implied_yes": 0.0105,
       "decision": "HOLD",
       "end_date_iso": "2026-07-20T00:00:00Z",
-      "generated_at": "2026-05-22T22:19:02+00:00",
-      "market_id": "0x5ccfe1b69a582d2985db08a8481a0d74c314b1fce9b4711ae2efb2c6467fe6aa",
+      "generated_at": "2026-05-24T14:28:09+00:00",
+      "market_id": "0xcdb1f0400949238a63d3e88243d2ada08cd9c2a71985ced9f0cfd5e66354cf90",
       "model": "claude-sonnet-4-6",
-      "question": "Will Mexico win the 2026 FIFA World Cup?",
+      "question": "Will USA win the 2026 FIFA World Cup?",
       "risk": "conservative",
-      "trace_hash": "0x3ccfbf0a0056208a18598a5a87a0c26a87c837e6774143fd817e1907df4edf9c",
-      "trace_id": 12
+      "trace_hash": "0x09d89328fe484a8904809704dbbae111bff4a9dd5336571ccda30de4d3a455fd",
+      "trace_id": 24
     },
-    "theme": "general",
-    "trace_id": 12,
+    "theme": "crypto",
+    "trace_id": 24,
     "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
   },
   {
-    "generated_at": "2026-05-22T22:19:16+00:00",
-    "market_id": "0x6b44bd667fad6cb5b3b68d8bd1055a038c77d9176dbd51f123879797cc3368a7",
+    "generated_at": "2026-05-24T14:28:27+00:00",
+    "market_id": "0x37a6de1b21803e5f3fb1965116218215d79963af4f7e51659696366267a63a03",
     "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43570415,
+      "block_number": 43846936,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 45,
-      "tx_hash": "0xcd44eddb29495b38ff19820e0cacad5e8541b8686cd7ec6243b56f2998baa907"
+      "trace_id": 57,
+      "tx_hash": "0x32fbd0adf391b2d17187523c668a7f0a365752a0b0954c3bf609e63e18c97bf9"
     },
     "preview": {
-      "agent_probability_yes": 0.025,
+      "agent_probability_yes": 0.014,
       "confidence": "medium",
-      "current_implied_yes": 0.0205,
+      "current_implied_yes": 0.0145,
       "decision": "HOLD",
-      "end_date_iso": "2026-07-01T00:00:00Z",
-      "generated_at": "2026-05-22T22:19:16+00:00",
-      "market_id": "0x6b44bd667fad6cb5b3b68d8bd1055a038c77d9176dbd51f123879797cc3368a7",
+      "end_date_iso": "2026-07-20T00:00:00Z",
+      "generated_at": "2026-05-24T14:28:27+00:00",
+      "market_id": "0x37a6de1b21803e5f3fb1965116218215d79963af4f7e51659696366267a63a03",
       "model": "claude-sonnet-4-6",
-      "question": "Will the Cleveland Cavaliers win the 2026 NBA Finals?",
+      "question": "Will Morocco win the 2026 FIFA World Cup?",
       "risk": "conservative",
-      "trace_hash": "0x26ed633f6d304456b69ffae0ee9a72e842fd93745f7ac8f46b43b8bb2c53a95f",
-      "trace_id": 13
+      "trace_hash": "0x31447ed64cf2899b5c4d20340bbce379b941ce8a488bcf82066037f83b6831fd",
+      "trace_id": 25
     },
-    "theme": "general",
-    "trace_id": 13,
+    "theme": "crypto",
+    "trace_id": 25,
     "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
   },
   {
-    "generated_at": "2026-05-22T22:19:33+00:00",
+    "generated_at": "2026-05-24T14:28:41+00:00",
     "market_id": "0xb6b3d7a2037b3faa7e1306d741840d453432902d73cc9a146a035e40271eae73",
     "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43570448,
+      "block_number": 43846964,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 46,
-      "tx_hash": "0x648f02eaa5c145235c4ab578ddd8c530bf8ff65dce696ac613855c81088eb993"
+      "trace_id": 58,
+      "tx_hash": "0x1535ad5bda3a7e75a2767d551bb649a88ce24100708ab4bcfda9e03be0ef8aaa"
     },
     "preview": {
-      "agent_probability_yes": 0.06,
+      "agent_probability_yes": 0.04,
       "confidence": "high",
-      "current_implied_yes": 0.3065,
+      "current_implied_yes": 0.1555,
       "decision": "BUY_NO",
       "end_date_iso": "2026-07-01T00:00:00Z",
-      "generated_at": "2026-05-22T22:19:33+00:00",
+      "generated_at": "2026-05-24T14:28:41+00:00",
       "market_id": "0xb6b3d7a2037b3faa7e1306d741840d453432902d73cc9a146a035e40271eae73",
       "model": "claude-sonnet-4-6",
       "question": "Will the San Antonio Spurs win the 2026 NBA Finals?",
       "risk": "aggressive",
-      "trace_hash": "0x5e0c99025e4edb6e9f8173c2650070c2d2d33a03173c8e7f5399927d938c7e7b",
-      "trace_id": 14
+      "trace_hash": "0x2fac9d206d7d07687f521cf9ab7e1736fbe8fa7e3ca47ec912fea468c8c6a6d4",
+      "trace_id": 26
     },
-    "theme": "general",
-    "trace_id": 14,
+    "theme": "crypto",
+    "trace_id": 26,
     "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
   },
   {
-    "generated_at": "2026-05-22T22:19:50+00:00",
-    "market_id": "0x52847ca1413b76a5570b97c0c432e38dbe61b0140f9d45e912604591b08f6fca",
+    "generated_at": "2026-05-24T14:28:56+00:00",
+    "market_id": "0x713641f745d71f6ec61f906237ffca3c8583f251e49384429a63ceb0ccdb2d37",
     "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43570482,
+      "block_number": 43846992,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 47,
-      "tx_hash": "0x60b04b8cd1207bf00e61af338c0ca631f231613e09900cee5af91b59f9a0ad3f"
+      "trace_id": 59,
+      "tx_hash": "0xea22cbc871daf436305ba4016e3bfecaef18db3a04efb11dbf9493b419e3d052"
     },
     "preview": {
-      "agent_probability_yes": 0.06,
+      "agent_probability_yes": 0.22,
+      "confidence": "medium",
+      "current_implied_yes": 0.2305,
+      "decision": "HOLD",
+      "end_date_iso": "2026-07-01T00:00:00Z",
+      "generated_at": "2026-05-24T14:28:56+00:00",
+      "market_id": "0x713641f745d71f6ec61f906237ffca3c8583f251e49384429a63ceb0ccdb2d37",
+      "model": "claude-sonnet-4-6",
+      "question": "Will the New York Knicks win the 2026 NBA Finals?",
+      "risk": "conservative",
+      "trace_hash": "0x0ae14dac34587e5f98b7f3eb9461f4f700149c76c738b0d07c1c3e19d62196af",
+      "trace_id": 27
+    },
+    "theme": "crypto",
+    "trace_id": 27,
+    "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
+  },
+  {
+    "generated_at": "2026-05-24T14:29:13+00:00",
+    "market_id": "0xf8f63bb47b2a7c2e0c1be3cedf4075079b11c07476d76a9469065b0c4791961a",
+    "model": "claude-sonnet-4-6",
+    "onchain": {
+      "block_number": 43847024,
+      "chain_id": 5042002,
+      "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
+      "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
+      "trace_id": 60,
+      "tx_hash": "0xb088bc655ccb8e8d34d3e6dd720ac6d1a5a99b028827d016e615d1fbd60b6c33"
+    },
+    "preview": {
+      "agent_probability_yes": 0.16,
+      "confidence": "medium",
+      "current_implied_yes": 0.176,
+      "decision": "HOLD",
+      "end_date_iso": "2026-06-30T00:00:00Z",
+      "generated_at": "2026-05-24T14:29:13+00:00",
+      "market_id": "0xf8f63bb47b2a7c2e0c1be3cedf4075079b11c07476d76a9469065b0c4791961a",
+      "model": "claude-sonnet-4-6",
+      "question": "Will the Colorado Avalanche win the 2026 NHL Stanley Cup?",
+      "risk": "conservative",
+      "trace_hash": "0xa529e7b8cfa852417c02cc9438024e779df9aefd8f9ce9c5b7c4491d48785860",
+      "trace_id": 28
+    },
+    "theme": "crypto",
+    "trace_id": 28,
+    "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
+  },
+  {
+    "generated_at": "2026-05-24T14:29:29+00:00",
+    "market_id": "0x52847ca1413b76a5570b97c0c432e38dbe61b0140f9d45e912604591b08f6fca",
+    "model": "claude-sonnet-4-6",
+    "onchain": {
+      "block_number": 43847053,
+      "chain_id": 5042002,
+      "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
+      "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
+      "trace_id": 61,
+      "tx_hash": "0xe83d9fad0bbf0ce260ae55130fe51358c51136dc7d14ce19280f09c2b4aa66d1"
+    },
+    "preview": {
+      "agent_probability_yes": 0.04,
       "confidence": "high",
-      "current_implied_yes": 0.185,
+      "current_implied_yes": 0.143,
       "decision": "BUY_NO",
       "end_date_iso": "2026-06-30T00:00:00Z",
-      "generated_at": "2026-05-22T22:19:50+00:00",
+      "generated_at": "2026-05-24T14:29:29+00:00",
       "market_id": "0x52847ca1413b76a5570b97c0c432e38dbe61b0140f9d45e912604591b08f6fca",
       "model": "claude-sonnet-4-6",
       "question": "Will the Montreal Canadiens win the 2026 NHL Stanley Cup?",
       "risk": "aggressive",
-      "trace_hash": "0x1be923515f7c979a2bc2ad8a73824489b64fa8ae71ef4fa29f266f67285e8580",
-      "trace_id": 15
+      "trace_hash": "0x177874e17f36cb75ccb08d2e5ee67f7a54f291a3e2c246a6465f07d010deaa6b",
+      "trace_id": 29
     },
-    "theme": "general",
-    "trace_id": 15,
+    "theme": "crypto",
+    "trace_id": 29,
     "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
   },
   {
-    "generated_at": "2026-05-22T22:20:09+00:00",
-    "market_id": "0xf8f63bb47b2a7c2e0c1be3cedf4075079b11c07476d76a9469065b0c4791961a",
+    "generated_at": "2026-05-24T14:29:45+00:00",
+    "market_id": "0xa467b14d51f01b957109d9cbb1d6c124fab2a089d52ed8f471d23c2812e743b7",
     "model": "claude-sonnet-4-6",
     "onchain": {
-      "block_number": 43570518,
+      "block_number": 43847083,
       "chain_id": 5042002,
       "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
       "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
-      "trace_id": 48,
-      "tx_hash": "0x6d5e6eb0eae1017daebd3d9127efb7f77fd667194f088cd55981af7c439a462e"
+      "trace_id": 62,
+      "tx_hash": "0x77341da50a6a39b014a1b7f796a2cedd44fb31105b453d46934cdee01a04a518"
     },
     "preview": {
-      "agent_probability_yes": 0.18,
-      "confidence": "high",
-      "current_implied_yes": 0.3225,
-      "decision": "BUY_NO",
-      "end_date_iso": "2026-06-30T00:00:00Z",
-      "generated_at": "2026-05-22T22:20:09+00:00",
-      "market_id": "0xf8f63bb47b2a7c2e0c1be3cedf4075079b11c07476d76a9469065b0c4791961a",
+      "agent_probability_yes": 0.04,
+      "confidence": "medium",
+      "current_implied_yes": 0.0645,
+      "decision": "HOLD",
+      "end_date_iso": "2026-12-31T00:00:00Z",
+      "generated_at": "2026-05-24T14:29:45+00:00",
+      "market_id": "0xa467b14d51f01b957109d9cbb1d6c124fab2a089d52ed8f471d23c2812e743b7",
       "model": "claude-sonnet-4-6",
-      "question": "Will the Colorado Avalanche win the 2026 NHL Stanley Cup?",
-      "risk": "aggressive",
-      "trace_hash": "0x236a00172f99ee698d9fed8bc1a18eb7eef10202813f5c6b6d9ceb2ec145b64d",
-      "trace_id": 16
+      "question": "Xi Jinping out before 2027?",
+      "risk": "conservative",
+      "trace_hash": "0xd4510569860b5ca735128bede4bb4aa9eb7f84db7ced3be59d5060f61da9ef9d",
+      "trace_id": 30
     },
-    "theme": "general",
-    "trace_id": 16,
+    "theme": "crypto",
+    "trace_id": 30,
+    "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
+  },
+  {
+    "generated_at": "2026-05-24T14:30:00+00:00",
+    "market_id": "0x4c325469d9b516ef4e6b8f73a81a12607dec075e3c2fd454f91765aaeafc4760",
+    "model": "claude-sonnet-4-6",
+    "onchain": {
+      "block_number": 43847112,
+      "chain_id": 5042002,
+      "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
+      "publisher": "0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e",
+      "trace_id": 63,
+      "tx_hash": "0xf0a3bb2c3e7212149a6b297d8693163a9b78806d9d2e5ae3abf682da50742bb8"
+    },
+    "preview": {
+      "agent_probability_yes": 0.05,
+      "confidence": "medium",
+      "current_implied_yes": 0.0415,
+      "decision": "HOLD",
+      "end_date_iso": "2028-11-07T00:00:00Z",
+      "generated_at": "2026-05-24T14:30:00+00:00",
+      "market_id": "0x4c325469d9b516ef4e6b8f73a81a12607dec075e3c2fd454f91765aaeafc4760",
+      "model": "claude-sonnet-4-6",
+      "question": "Will Pete Buttigieg win the 2028 Democratic presidential nomination?",
+      "risk": "conservative",
+      "trace_hash": "0x3129444b2a70d79f7d2edb58c8ea85cf52680c1fb3812bf28b4b868fc33778a5",
+      "trace_id": 31
+    },
+    "theme": "crypto",
+    "trace_id": 31,
     "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
   }
 ]
