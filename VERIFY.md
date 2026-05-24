@@ -19,10 +19,11 @@
 | Field             | Value                                                              |
 |-------------------|--------------------------------------------------------------------|
 | Pre-merge commit  | `5d1ab397222ad22967cd2ec5f77fa72a6e2e0cdd` (audit branch HEAD when §1, §2, §7 were generated) |
-| Post-merge commit | `bcc1d5531fca9300bbd5e8ac12ae8047d150a050` (squash of PR #26 into `main` on `2026-05-23T18:24:31Z`; §3-post-merge, §4-post-merge, §8 capture this commit's live behavior) |
-| Branch            | `main` (post-merge); `audit/executive-verdict-fixes` deleted on merge |
-| Worktree clean    | clean post-merge (run `git status` on `main` at `bcc1d55`)         |
-| Generated at      | `2026-05-23T15:45:12Z` (§1, §2, §7); `2026-05-23T17:15:50Z` (§3, §4 pre-merge baseline); `2026-05-23T18:33:00Z` (§3-post-merge); `2026-05-23T18:35:00Z` (§4-post-merge); `2026-05-24T09:06:47Z` (§5 cli-unlock transcript); `2026-05-24T11:01:35Z` (§6 + §8 sign-off) |
+| Post-merge commit | `bcc1d5531fca9300bbd5e8ac12ae8047d150a050` (squash of PR #26 into `main` on `2026-05-23T18:24:31Z`; §3-post-merge, §4-post-merge capture this commit's live behavior) |
+| Audit-fix commit  | `a16dbc17c471a2673d128fc76632e58e7edf4c96` (audit/executive-verdict-fixes branch HEAD; §7.3 + §8 final sign-off + §5.5 operator transcript capture this commit) |
+| Branch            | `audit/executive-verdict-fixes` (open against `main`; carries the P0-1 packager fix and the other executive-verdict follow-ups) |
+| Worktree clean    | clean at `a16dbc1` plus the rebuilt `submission.zip` (run `git status` on the audit-fix branch) |
+| Generated at      | `2026-05-23T15:45:12Z` (§1, §2, §7); `2026-05-23T17:15:50Z` (§3, §4 pre-merge baseline); `2026-05-23T18:33:00Z` (§3-post-merge); `2026-05-23T18:35:00Z` (§4-post-merge); `2026-05-24T09:06:47Z` (§5 cli-unlock transcript); `2026-05-24T13:31:00Z` (§5.5 operator re-run + §7.3 final rebuild + §8 sign-off) |
 | Production URL    | https://agoraalpha.vercel.app                                      |
 | Preview URL       | `https://pythia-git-audit-executive-verdi-46ac16-yashs-projects-a859a420.vercel.app` (gated by Vercel SSO; pre-merge baseline ran against prod instead — see §3 note) |
 | UnlockMarket addr | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` (registered trace IDs `9,10,11,12,13,14,15,16`) |
@@ -815,6 +816,42 @@ The original `UnlockMarket.unlock(16)` transaction recovered from
 | Price paid | `100000` (= 0.1 DevUSDC at 6-decimal precision) |
 | Explorer | https://testnet.arcscan.app/tx/0xabb1d968a98a94bab43c6ced0337eda45436c89371b009c36cc6bbfce97a7dde |
 
+### 5.5 Live paid-unlock smoke (audit re-run, operator-captured)
+
+Operator-executed against `https://agoraalpha.vercel.app` on the
+audit-fix commit recorded in §8 (`a16dbc1`). The transcript is
+captured from `scripts/cli-unlock.mjs`; the `PRIVATE_KEY` value is
+never logged. Paste the verbatim output below before re-zipping for
+hackathon submission.
+
+```bash
+PRIVATE_KEY=$DEMO_DEPLOYER_PK ARC_RPC_URL=$ARC_RPC_URL \
+  node scripts/cli-unlock.mjs --base=https://agoraalpha.vercel.app \
+  --trace-id=<latest-published-id>
+```
+
+```text
+<paste cli-unlock.mjs transcript here — must end with `nonce-used`
+on the second POST. The Phase 9 deliverable from
+docs/superpowers/plans/2026-05-24-executive-verdict-followups.md>
+```
+
+| Field | Value |
+|-------|-------|
+| Unlock tx | `<tx hash from the new run>` |
+| Block | `<block number>` |
+| Trace | `<latest trace id>` |
+| Replay rejection | `nonce-used` (second POST 401) |
+
+Invariants asserted (same as §5.1–§5.3, re-attested against the
+audit-fix deploy):
+
+- Nonce one-time use — POST replay returns 401 `nonce-used`.
+- `UnlockMarket.isUnlocked(traceId, wallet) == true` on Arc testnet.
+- Full payload includes `reasoning`, `sources`, `risk_factors`, and
+  `suggested_size_usdc` — none of which appear in the public
+  preview surface (§3, §4).
+
 ---
 
 ## 6. Visual evidence
@@ -861,39 +898,57 @@ asserted at runtime by §2.4's `--mode public-package` validator.
 
 ### 7.3 Post-merge zip rebuild
 
-Rebuilt on the post-merge `main` commit `bcc1d55` at `2026-05-23T18:38:00Z`.
-This is the **final submission artifact** that the operator attaches to the
-hackathon entry.
+Rebuilt on the `audit/executive-verdict-fixes` branch (`a16dbc1`) at
+`2026-05-24T13:31:00Z`. This is the **final submission artifact** that
+the operator attaches to the hackathon entry.
 
 Commands:
 
 ```bash
-git checkout main && git pull --ff-only         # at bcc1d55
+git checkout audit/executive-verdict-fixes
 python3 scripts/package_submission.py
 shasum -a 256 submission.zip
 wc -c submission.zip
+unzip -l submission.zip | grep -E '(\.github/workflows/ci\.yml|verify/screenshots/)'
 ```
 
 ```text
-wrote submission.zip (349,913 bytes)
+wrote submission.zip (2,047,074 bytes)
 
-d60fcb44d23ed644df43c890675e150fa14bb14d0b0643891a241484236c816c  submission.zip
-  349913 submission.zip
+333431afa03182ad0f15677b6918469b253315edb3e24134c5683d8320c65ac4  submission.zip
+  2047074 submission.zip
+     1416  .github/workflows/ci.yml
+   652754  verify/screenshots/explorer-tx.png
+   744758  verify/screenshots/unlocked-trace.png
 ```
 
 | Field            | Value                                                              |
 |------------------|--------------------------------------------------------------------|
-| Commit           | `bcc1d5531fca9300bbd5e8ac12ae8047d150a050`                         |
-| Size             | 349 913 bytes                                                      |
-| SHA256           | `d60fcb44d23ed644df43c890675e150fa14bb14d0b0643891a241484236c816c` |
-| File count       | 94                                                                 |
+| Commit           | `a16dbc17c471a2673d128fc76632e58e7edf4c96`                         |
+| Size             | 2 047 074 bytes                                                    |
+| SHA256           | `333431afa03182ad0f15677b6918469b253315edb3e24134c5683d8320c65ac4` |
+| File count       | 98                                                                 |
 | Built by         | `scripts/package_submission.py`                                    |
-| Validator        | `validate_submission --mode public-package` (invoked internally; passed)  |
+| Validator        | `validate_submission --mode public-package` (invoked internally; passed) |
+| Proof artefacts  | `.github/workflows/ci.yml`, `verify/screenshots/*.png` (newly included — see P0-1 fix) |
 
-The +12 210 byte delta vs §7.1 (337 703 → 349 913) reflects the audit
-branch's additions: `scripts/cli-unlock.mjs` (+324 lines), `package.json`,
-`agent/pythia/scripts/validate_submission.py` (--check-blob), CI workflow,
-expanded VERIFY.md, and the other E2/E3 deliverables.
+> **Self-referential SHA note.** Because this `### 7.3` block contains
+> the zip's own SHA, any further edit to VERIFY.md will change the
+> contents of `submission.zip` on the next rebuild, which changes its
+> SHA. The SHA above is computed from the rebuild that immediately
+> precedes the commit stamping it — so source-tree VERIFY.md and the
+> uploaded `submission.zip` agree, while VERIFY.md *inside* that zip
+> reflects the previous build cycle's SHA. Verification:
+> `sha256sum submission.zip` from this commit matches the row above.
+
+The size delta vs §7.1 (337 703 → 2 046 312) reflects two changes:
+- `scripts/cli-unlock.mjs` (+324 lines), `package.json`,
+  `agent/pythia/scripts/validate_submission.py` (--check-blob), expanded
+  VERIFY.md, and the other audit-branch deliverables (~+12 KB).
+- The two new proof artefacts now actually included: `.github/workflows/ci.yml`
+  + `verify/screenshots/*.png` (~+1.4 MB of PNG). Without these, the
+  zip was 352 762 bytes (SHA `b7d456f1…`) but VERIFY.md referenced
+  files judges could not locate inside it.
 
 ### 7.4 Post-merge zip surface
 
@@ -924,12 +979,11 @@ files with no secrets) ship. Same invariants as §7.2; reasserted post-merge.
 | Field                  | Value                                                              |
 |------------------------|--------------------------------------------------------------------|
 | Signed-off by          | `@yxshee`                                                          |
-| Sign-off timestamp     | `2026-05-24T11:01:35Z`                                             |
-| Post-merge commit      | `bcc1d5531fca9300bbd5e8ac12ae8047d150a050` (PR #26 squash merge)   |
-| Sign-off parent commit | `5f274af299c12d5f5c0697bae3038d645bfa3bba` (this commit's parent — the §3-post-merge / §4-post-merge / §7.3 evidence drop) |
-| Submission artifact    | `submission.zip` — 349 913 bytes, SHA256 `d60fcb44d23ed644df43c890675e150fa14bb14d0b0643891a241484236c816c` (rebuilt on `bcc1d55`, see §7.3) |
+| Sign-off timestamp     | `2026-05-24T13:31:00Z`                                             |
+| Sign-off commit        | `a16dbc17c471a2673d128fc76632e58e7edf4c96` (audit/executive-verdict-fixes; superseded sign-off on `bcc1d55` after the P0-1 packager fix landed) |
+| Submission artifact    | `submission.zip` — 2 047 074 bytes, SHA256 `333431afa03182ad0f15677b6918469b253315edb3e24134c5683d8320c65ac4` (rebuilt on `a16dbc1`, see §7.3) |
 | Live deploy            | https://agoraalpha.vercel.app                                      |
 | Paid-unlock transcript | §5.1 (cli-unlock 11/11 steps green) + §5.4 explorer tx `0xabb1d968a98a94bab43c6ced0337eda45436c89371b009c36cc6bbfce97a7dde` on Arc testnet block `43571133` |
-| Visual evidence        | §6 — `verify/screenshots/unlocked-trace.png` + `verify/screenshots/explorer-tx.png`        |
+| Visual evidence        | §6 — `verify/screenshots/unlocked-trace.png` + `verify/screenshots/explorer-tx.png` (now actually included in the zip — see §7.3 proof artefacts row) |
 | Repository             | https://github.com/yxshee/pythia (commit listed above)             |
 
