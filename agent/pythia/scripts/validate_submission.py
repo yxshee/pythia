@@ -189,6 +189,9 @@ def _fetch_blob_entries(url: str, failures: list[str]) -> list[dict[str, Any]]:
         payload = _decrypt_blob_payload(payload, failures)
         if payload is None:
             return []
+    else:
+        failures.append("PRIVATE_TRACES_BLOB_URL body must be encrypted")
+        return []
     if not isinstance(payload, list) or not payload:
         failures.append("PRIVATE_TRACES_BLOB_URL body is empty or not a JSON array")
         return []
@@ -474,9 +477,10 @@ def main() -> int:
         action="store_true",
         help=(
             "private-deploy mode only: fetch PRIVATE_TRACES_BLOB_URL and assert it "
-            "serves the same full trace IDs as web/data/picks-preview.json and "
-            "passes full-payload quality checks. Catches typo'd, truncated, or "
-            "stale Blob URLs in the Vercel env before promoting a deploy."
+            "serves an encrypted private bundle whose decrypted full trace IDs "
+            "match web/data/picks-preview.json and pass full-payload quality "
+            "checks. Catches typo'd, truncated, plaintext, or stale Blob URLs "
+            "in the Vercel env before promoting a deploy."
         ),
     )
     args = parser.parse_args()

@@ -88,10 +88,10 @@ PRIVATE_TRACES_BLOB_URL=https://…  PRIVATE_TRACES_ENCRYPTION_KEY=… \
   --mode private-deploy --check-blob
 ```
 
-Exit code 0 means the URL is reachable, served as JSON, parsed to a
-non-empty trace array after decryption, ID-matched to the public preview file, and passes
-source/risk/HOLD-copy-trade checks. Any other case prints a `FAIL:` line
-with the reason while redacting the URL itself.
+Exit code 0 means the URL is reachable, serves an encrypted JSON envelope,
+decrypts to a non-empty trace array, is ID-matched to the public preview file,
+and passes source/risk/HOLD-copy-trade checks. Any other case prints a `FAIL:`
+line with the reason while redacting the URL itself.
 
 ## Wallet smoke (operator)
 

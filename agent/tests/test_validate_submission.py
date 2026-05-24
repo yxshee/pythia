@@ -375,11 +375,19 @@ class ValidateSubmissionCheckBlobTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             self._scaffold_deploy_tree(root)
+            key = "test-private-traces-key-with-32-bytes-minimum"
+            body = _encrypted_blob_payload([], key)
             with _serve_blob(
-                {"/picks-full.private.json": (200, "application/json", b"[]")}
+                {"/picks-full.private.json.enc": (200, "application/json", body)}
             ) as base:
-                url = f"{base}/picks-full.private.json"
-                with mock.patch.dict(os.environ, {"PRIVATE_TRACES_BLOB_URL": url}):
+                url = f"{base}/picks-full.private.json.enc"
+                with mock.patch.dict(
+                    os.environ,
+                    {
+                        "PRIVATE_TRACES_BLOB_URL": url,
+                        "PRIVATE_TRACES_ENCRYPTION_KEY": key,
+                    },
+                ):
                     failures = validate_repo(root, mode="deploy", check_blob=True)
             self.assertTrue(
                 any("PRIVATE_TRACES_BLOB_URL" in failure and "empty" in failure for failure in failures),
@@ -387,7 +395,7 @@ class ValidateSubmissionCheckBlobTests(unittest.TestCase):
             )
             self.assertFalse(any(url in failure for failure in failures), failures)
 
-    def test_check_blob_flag_passes_when_url_serves_json(self) -> None:
+    def test_check_blob_flag_rejects_plaintext_json_blob(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             self._scaffold_deploy_tree(root)
@@ -398,7 +406,10 @@ class ValidateSubmissionCheckBlobTests(unittest.TestCase):
                 url = f"{base}/picks-full.private.json"
                 with mock.patch.dict(os.environ, {"PRIVATE_TRACES_BLOB_URL": url}):
                     failures = validate_repo(root, mode="deploy", check_blob=True)
-            self.assertEqual(failures, [])
+            self.assertTrue(
+                any("must be encrypted" in failure for failure in failures),
+                failures,
+            )
 
     def test_check_blob_flag_decrypts_encrypted_blob_when_key_set(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -448,13 +459,20 @@ class ValidateSubmissionCheckBlobTests(unittest.TestCase):
             old_blob_full = [_full_entry(i) for i in range(9, 17)]
             (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
             (root / "web" / "data" / "picks-full.private.json").write_text(json.dumps(local_full))
-            body = json.dumps(old_blob_full).encode()
+            key = "test-private-traces-key-with-32-bytes-minimum"
+            body = _encrypted_blob_payload(old_blob_full, key)
 
             with _serve_blob(
-                {"/picks-full.private.json": (200, "application/json", body)}
+                {"/picks-full.private.json.enc": (200, "application/json", body)}
             ) as base:
-                url = f"{base}/picks-full.private.json"
-                with mock.patch.dict(os.environ, {"PRIVATE_TRACES_BLOB_URL": url}):
+                url = f"{base}/picks-full.private.json.enc"
+                with mock.patch.dict(
+                    os.environ,
+                    {
+                        "PRIVATE_TRACES_BLOB_URL": url,
+                        "PRIVATE_TRACES_ENCRYPTION_KEY": key,
+                    },
+                ):
                     failures = validate_repo(root, mode="deploy", check_blob=True)
 
             self.assertTrue(
@@ -470,13 +488,20 @@ class ValidateSubmissionCheckBlobTests(unittest.TestCase):
             preview[0]["onchain"]["tx_hash"] = ""
             blob_full = [_full_entry(i) for i in range(25, 33)]
             (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
-            body = json.dumps(blob_full).encode()
+            key = "test-private-traces-key-with-32-bytes-minimum"
+            body = _encrypted_blob_payload(blob_full, key)
 
             with _serve_blob(
-                {"/picks-full.private.json": (200, "application/json", body)}
+                {"/picks-full.private.json.enc": (200, "application/json", body)}
             ) as base:
-                url = f"{base}/picks-full.private.json"
-                with mock.patch.dict(os.environ, {"PRIVATE_TRACES_BLOB_URL": url}):
+                url = f"{base}/picks-full.private.json.enc"
+                with mock.patch.dict(
+                    os.environ,
+                    {
+                        "PRIVATE_TRACES_BLOB_URL": url,
+                        "PRIVATE_TRACES_ENCRYPTION_KEY": key,
+                    },
+                ):
                     failures = validate_repo(root, mode="deploy", check_blob=True)
 
             self.assertTrue(
@@ -497,13 +522,20 @@ class ValidateSubmissionCheckBlobTests(unittest.TestCase):
             ]
             (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
             (root / "web" / "data" / "picks-full.private.json").write_text(json.dumps(local_full))
-            body = json.dumps(blob_full).encode()
+            key = "test-private-traces-key-with-32-bytes-minimum"
+            body = _encrypted_blob_payload(blob_full, key)
 
             with _serve_blob(
-                {"/picks-full.private.json": (200, "application/json", body)}
+                {"/picks-full.private.json.enc": (200, "application/json", body)}
             ) as base:
-                url = f"{base}/picks-full.private.json"
-                with mock.patch.dict(os.environ, {"PRIVATE_TRACES_BLOB_URL": url}):
+                url = f"{base}/picks-full.private.json.enc"
+                with mock.patch.dict(
+                    os.environ,
+                    {
+                        "PRIVATE_TRACES_BLOB_URL": url,
+                        "PRIVATE_TRACES_ENCRYPTION_KEY": key,
+                    },
+                ):
                     failures = validate_repo(root, mode="deploy", check_blob=True)
 
             self.assertTrue(
