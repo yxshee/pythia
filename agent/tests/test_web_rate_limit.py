@@ -6,6 +6,13 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 
 
 class WebRateLimitStateTests(unittest.TestCase):
+    def test_client_ip_does_not_trust_generic_forwarded_for(self) -> None:
+        source = (ROOT / "web" / "lib" / "server" / "rate-limit.ts").read_text()
+
+        self.assertIn('"x-vercel-forwarded-for"', source)
+        self.assertNotIn('"x-forwarded-for"', source)
+        self.assertNotIn('"x-real-ip"', source)
+
     def test_rate_limit_does_not_use_blob_as_counter_store(self) -> None:
         source = (ROOT / "web" / "lib" / "server" / "rate-limit.ts").read_text()
 
@@ -20,4 +27,3 @@ class WebRateLimitStateTests(unittest.TestCase):
                 self.assertNotIn("durable Blob fallback", text)
                 self.assertNotIn("durable nonce/rate-limit fallback", text)
                 self.assertNotIn("durable Blob-backed state store", text)
-

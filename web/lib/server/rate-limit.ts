@@ -15,9 +15,8 @@ function cleanIp(value: string | null): string | null {
 }
 
 export function clientIp(headers: Headers): string {
-  for (const name of ["x-vercel-forwarded-for", "x-real-ip", "x-forwarded-for"]) {
-    const value = headers.get(name);
-    if (!value) continue;
+  const value = headers.get("x-vercel-forwarded-for");
+  if (value) {
     for (const part of value.split(",")) {
       const ip = cleanIp(part);
       if (ip) return ip;
