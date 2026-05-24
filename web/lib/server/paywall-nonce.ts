@@ -90,6 +90,59 @@ function putOptions() {
   };
 }
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function getBlobNonceRecord(nonce: string): Promise<NonceRecord | null> {
+  const blob = getBlobStateClient();
+  if (!blob) return null;
+  const result = await blob
+    .get(blobActivePath(nonce), {
+      access: STATE_BLOB_ACCESS,
+      useCache: false,
+    })
+    .catch((err) => {
+      if (isBlobMissingRead(err)) return null;
+      throw err;
+    });
+  if (!result || result.statusCode !== 200) return null;
+  return parseNonceRecord(await blobStreamToText(result.stream, MAX_NONCE_RECORD_BYTES));
+}
+
+async function blobUsedExists(nonce: string): Promise<boolean> {
+  const blob = getBlobStateClient();
+  if (!blob) return false;
+  const result = await blob
+    .get(blobUsedPath(nonce), {
+      access: STATE_BLOB_ACCESS,
+      useCache: false,
+    })
+    .catch((err) => {
+      if (isBlobMissingRead(err)) return null;
+      throw err;
+    });
+  if (result?.stream) await result.stream.cancel().catch(() => undefined);
+  return result !== null;
+}
+
+async function waitForBlobActiveRecord(nonce: string, message: string): Promise<void> {
+  for (const delayMs of [0, 100, 250, 500, 1_000]) {
+    if (delayMs > 0) await sleep(delayMs);
+    const record = await getBlobNonceRecord(nonce);
+    if (record?.message === message) return;
+  }
+  throw new Error("active nonce blob was not readable after write");
+}
+
+async function waitForBlobUsedMarker(nonce: string): Promise<void> {
+  for (const delayMs of [0, 100, 250, 500, 1_000]) {
+    if (delayMs > 0) await sleep(delayMs);
+    if (await blobUsedExists(nonce)) return;
+  }
+  throw new Error("used nonce blob was not readable after write");
+}
+
 export function buildUnlockMessage(input: {
   host: string;
   traceId: number;
@@ -143,6 +196,7 @@ export async function issueUnlockNonce(input: {
     await kv.set(activeKey(nonce), record, { ex: NONCE_TTL_SECONDS });
   } else if (getBlobStateClient()) {
     await getBlobStateClient()!.put(blobActivePath(nonce), JSON.stringify(record), putOptions());
+    await waitForBlobActiveRecord(nonce, record.message);
   } else if (productionRequiresDurableState()) {
     throw new StateStoreUnavailableError();
   } else {
@@ -160,17 +214,7 @@ async function loadActive(nonce: string): Promise<NonceRecord | null> {
   }
   const blob = getBlobStateClient();
   if (blob) {
-    const result = await blob
-      .get(blobActivePath(nonce), {
-        access: STATE_BLOB_ACCESS,
-        useCache: false,
-      })
-      .catch((err) => {
-        if (isBlobMissingRead(err)) return null;
-        throw err;
-      });
-    if (!result || result.statusCode !== 200) return null;
-    return parseNonceRecord(await blobStreamToText(result.stream, MAX_NONCE_RECORD_BYTES));
+    return getBlobNonceRecord(nonce);
   }
   if (productionRequiresDurableState()) {
     throw new StateStoreUnavailableError();
@@ -187,17 +231,7 @@ async function isUsed(nonce: string): Promise<boolean> {
   }
   const blob = getBlobStateClient();
   if (blob) {
-    const result = await blob
-      .get(blobUsedPath(nonce), {
-        access: STATE_BLOB_ACCESS,
-        useCache: false,
-      })
-      .catch((err) => {
-        if (isBlobMissingRead(err)) return null;
-        throw err;
-      });
-    if (result?.stream) await result.stream.cancel().catch(() => undefined);
-    return result !== null;
+    return blobUsedExists(nonce);
   }
   if (productionRequiresDurableState()) {
     throw new StateStoreUnavailableError();
@@ -231,6 +265,7 @@ async function markUsed(nonce: string): Promise<boolean> {
       if (isBlobWriteConflict(err)) return false;
       throw err;
     }
+    await waitForBlobUsedMarker(nonce);
     await blob.del(blobActivePath(nonce)).catch(() => undefined);
     return true;
   }
