@@ -32,7 +32,7 @@ An autonomous Delphic oracle for prediction markets. Pythia scans Polymarket, sc
 
 <div align="center">
 
-<!-- <a href="https://agoraalpha.vercel.app"><img src="verify/screenshots/home-picks-grid.png" alt="Pythia home — 8 live picks anchored on Arc" width="900" /></a> -->
+<a href="https://agoraalpha.vercel.app"><img src="verify/screenshots/home-picks-grid.png" alt="Pythia home — 8 live picks anchored on Arc" width="900" /></a>
 
 <sub><em>↑ The live feed — 8 picks scored by <code>claude-sonnet-4-6</code>, each hashed on Arc testnet.</em></sub>
 
