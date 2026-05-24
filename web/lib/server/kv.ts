@@ -1,8 +1,9 @@
 import "server-only";
 /**
  * Lazy Vercel KV client. Returns `null` when the runtime is not configured for
- * KV (no `KV_REST_API_URL` / `KV_REST_API_TOKEN`). Callers can then use the
- * durable Blob fallback, or local in-memory state outside production.
+ * KV (no `KV_REST_API_URL` / `KV_REST_API_TOKEN`). Callers then decide their
+ * own fallback: paywall nonce replay can use Blob write-once markers, while
+ * rate limiting falls back to local in-memory buckets.
  *
  * Why lazy: the `@vercel/kv` module reads env vars at import time. Importing
  * it in environments without those vars set (local dev, unit tests, CI)

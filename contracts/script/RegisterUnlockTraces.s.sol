@@ -7,7 +7,7 @@ import {UnlockMarket} from "../src/UnlockMarket.sol";
 /// @notice Register public trace IDs on an existing UnlockMarket deploy.
 ///
 /// Usage:
-///   UNLOCK_MARKET_ADDRESS=0x... REGISTER_TRACE_IDS=9,10,11,12,13,14,15,16 \
+///   UNLOCK_MARKET_ADDRESS=0x... REGISTER_TRACE_IDS=24,25,26,27,28,29,30,31 \
 ///   forge script script/RegisterUnlockTraces.s.sol --rpc-url "$ARC_RPC_URL" --broadcast --skip-simulation
 contract RegisterUnlockTraces is Script {
     function run() external {

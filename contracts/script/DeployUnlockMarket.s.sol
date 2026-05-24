@@ -8,7 +8,7 @@ import {UnlockMarket} from "../src/UnlockMarket.sol";
 /// @notice Deploy only UnlockMarket against an existing DevUSDC/test USDC token.
 ///
 /// Usage:
-///   USDC_ADDRESS_ARC=0x... REGISTER_TRACE_IDS=9,10,11,12,13,14,15,16 \
+///   USDC_ADDRESS_ARC=0x... REGISTER_TRACE_IDS=24,25,26,27,28,29,30,31 \
 ///   forge script script/DeployUnlockMarket.s.sol --rpc-url "$ARC_RPC_URL" --broadcast --skip-simulation
 contract DeployUnlockMarket is Script {
     function run() external {
