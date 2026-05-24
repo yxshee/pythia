@@ -35,3 +35,18 @@ class SecretHandlingTests(unittest.TestCase):
         self.assertIn("productionRequiresDurableState()", body)
         self.assertNotIn("BLOB_READ_WRITE_TOKEN", body)
         self.assertNotIn("KV_REST_API_TOKEN", body)
+
+    def test_paywall_nonce_rejects_weak_hmac_secret(self) -> None:
+        source = (ROOT / "web" / "lib" / "server" / "paywall-nonce.ts").read_text()
+        nonce_secret = re.search(
+            r"function nonceSecret\(\): string \{(?P<body>.*?)\n\}",
+            source,
+            re.DOTALL,
+        )
+        self.assertIsNotNone(nonce_secret)
+        body = nonce_secret.group("body")
+
+        self.assertIn("MIN_PAYWALL_NONCE_SECRET_BYTES", source)
+        self.assertRegex(source, r"MIN_PAYWALL_NONCE_SECRET_BYTES\s*=\s*32")
+        self.assertIn('Buffer.byteLength(secret, "utf8")', body)
+        self.assertIn("StateStoreUnavailableError", body)

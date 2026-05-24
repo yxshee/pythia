@@ -10,8 +10,8 @@ let cached: BlobClient | null | undefined;
 export const STATE_BLOB_ACCESS = "public" as const;
 
 export class StateStoreUnavailableError extends Error {
-  constructor() {
-    super("No durable server-side state store is configured");
+  constructor(message = "No durable server-side state store is configured") {
+    super(message);
   }
 }
 

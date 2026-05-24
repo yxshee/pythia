@@ -49,8 +49,9 @@ Two contracts you must respect:
   are server-only. They appear only in Node.js runtime bundles, never in
   the browser.
 - **Use a dedicated nonce signing secret.** `PAYWALL_NONCE_SECRET` is
-  required in production for HMAC-bound unlock messages; do not reuse Blob,
-  RPC, wallet, or API credentials.
+  required in production for HMAC-bound unlock messages and must be at least
+  32 UTF-8 bytes after trimming; do not reuse Blob, RPC, wallet, or API
+  credentials.
 - **The Blob URL itself is the secret.** `PRIVATE_TRACES_BLOB_URL` carries
   a random suffix that is the only access control on the paid payload.
   Treat it like a token: never log, never commit.

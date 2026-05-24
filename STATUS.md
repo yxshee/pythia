@@ -99,13 +99,13 @@ Last updated: 2026-05-25 (Asia/Kolkata).
   trace-coherence validator and a proof trace with HOLD/no-trade consistency,
   but it does not yet include a 20-market resolved long-tail backtest.
 - **Paywall nonce replay uses durable production state.** Unlock messages are
-  HMAC-bound with a dedicated `PAYWALL_NONCE_SECRET`; storage credentials are
-  not reused as signing keys. Replay markers prefer Vercel KV when
-  `KV_REST_API_URL` / `KV_REST_API_TOKEN` are present; otherwise production
-  writes one-use markers to the existing Vercel Blob store through
-  `BLOB_READ_WRITE_TOKEN`. Rate limiting uses KV when configured and otherwise
-  falls back to per-instance counters so a Blob counter outage cannot block
-  paid unlocks.
+  HMAC-bound with a dedicated `PAYWALL_NONCE_SECRET` that is at least 32 bytes
+  after trimming; storage credentials are not reused as signing keys. Replay
+  markers prefer Vercel KV when `KV_REST_API_URL` / `KV_REST_API_TOKEN` are
+  present; otherwise production writes one-use markers to the existing Vercel
+  Blob store through `BLOB_READ_WRITE_TOKEN`. Rate limiting uses KV when
+  configured and otherwise falls back to per-instance counters so a Blob
+  counter outage cannot block paid unlocks.
 
 ## Does Not Yet Work
 

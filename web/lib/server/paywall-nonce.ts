@@ -13,6 +13,7 @@ import { getKv } from "@/lib/server/kv";
 
 const NONCE_TTL_MS = 5 * 60 * 1000;
 const NONCE_TTL_SECONDS = NONCE_TTL_MS / 1000;
+const MIN_PAYWALL_NONCE_SECRET_BYTES = 32;
 
 type NonceTokenPayload = {
   v: 1;
@@ -45,8 +46,15 @@ function blobUsedPath(nonce: string): string {
 }
 
 function nonceSecret(): string {
-  const secret = process.env.PAYWALL_NONCE_SECRET;
-  if (secret) return secret;
+  const secret = process.env.PAYWALL_NONCE_SECRET?.trim();
+  if (secret) {
+    if (Buffer.byteLength(secret, "utf8") < MIN_PAYWALL_NONCE_SECRET_BYTES) {
+      throw new StateStoreUnavailableError(
+        `PAYWALL_NONCE_SECRET must be at least ${MIN_PAYWALL_NONCE_SECRET_BYTES} bytes`,
+      );
+    }
+    return secret;
+  }
   if (productionRequiresDurableState()) throw new StateStoreUnavailableError();
   return "local-dev-paywall-nonce-secret";
 }
