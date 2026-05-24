@@ -20,7 +20,7 @@
 |-------------------|--------------------------------------------------------------------|
 | Historical baseline | Earlier sections retain pre-promotion audit transcripts for comparison. The final promotion proof is §5 onward. |
 | Final promotion tree | `main` / `origin/main` aligned for the final package and deploy verification; final runtime hardening keeps rate-limit counters out of Blob while preserving durable nonce replay. |
-| Generated at      | `2026-05-24T18:27:21Z` (§5.4 final trace-24 live unlock); screenshots refreshed on `2026-05-24`; package manifest generated after final zip (§7). |
+| Generated at      | `2026-05-24T20:04:12Z` (§5.4 final trace-24 live unlock); screenshots refreshed on `2026-05-24`; package manifest generated after final zip (§7). |
 | Production URL    | https://agoraalpha.vercel.app                                      |
 | Production deploy | Latest `https://agoraalpha.vercel.app` production alias verified with `vercel inspect`. The exact deployment id is kept in the operator handoff because docs-only proof commits can trigger a fresh Vercel deployment. |
 | UnlockMarket addr | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` (registered trace IDs `24,25,26,27,28,29,30,31`) |
@@ -677,7 +677,7 @@ at the size gate before any parsing or context work.
 
 ## 5. Paid unlock — live transcript (current public batch)
 
-Captured `2026-05-24T18:27:21Z` via [scripts/cli-unlock.mjs](scripts/cli-unlock.mjs)
+Captured `2026-05-24T20:04:12Z` via [scripts/cli-unlock.mjs](scripts/cli-unlock.mjs)
 against the production deploy `https://agoraalpha.vercel.app`, after the
 public preview, private Blob bundle, live deploy, and `UnlockMarket`
 registration were aligned on trace IDs `24,25,26,27,28,29,30,31`.
@@ -708,11 +708,11 @@ PRIVATE_KEY=$DEMO_DEPLOYER_PK ARC_RPC_URL=$ARC_RPC_URL \
 [6/11] approve:   skipped (allowance >= price)
 [7/11] unlock:    skipped (already unlocked on-chain)
 [8/11] GET:       https://agoraalpha.vercel.app/api/traces/24/full?address=0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e
-         nonce:    eyJ2Ijox...OY-N8
-         issued:   2026-05-24T18:27:21.822Z
-         expires:  2026-05-24T18:32:21.822Z
+         nonce:    eyJ2Ijox...r5jcx8
+         issued:   2026-05-24T20:04:12.260Z
+         expires:  2026-05-24T20:09:12.260Z
 [9/11] sign:      EIP-191 message (599 chars)
-         sig:      0x4aefff6a45e0847a…461b
+         sig:      0x84e23cfe37215249…921c
 [10/11] POST:     https://agoraalpha.vercel.app/api/traces/24/full
          HTTP 200: {"agent_probability_yes":0.09,"confidence":"medium","copy_trade_url":null,"current_implied_yes":0.0105,"decision":"HOLD","edge_bps":795,"end_date_iso":"2026-07-20T00:00:00Z","expected_value_pct":0,"generated_at":"2026-05-24T14:28:09+00:00",…
 [11/11] replay:   POST same body again (expect 401 nonce-used)
@@ -759,9 +759,9 @@ was re-smoked against trace `24`:
 
 ```text
 [8/11] GET:       https://agoraalpha.vercel.app/api/traces/24/full?address=0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e
-         nonce:    eyJ2Ijox...OY-N8
-         issued:   2026-05-24T18:27:21.822Z
-         expires:  2026-05-24T18:32:21.822Z
+         nonce:    eyJ2Ijox...r5jcx8
+         issued:   2026-05-24T20:04:12.260Z
+         expires:  2026-05-24T20:09:12.260Z
 [9/11] sign:      EIP-191 message (599 chars)
 [10/11] POST:     https://agoraalpha.vercel.app/api/traces/24/full
          HTTP 200: {"agent_probability_yes":0.09,"confidence":"medium","copy_trade_url":null,...}
@@ -925,7 +925,7 @@ files with no secrets) ship. Same invariants as §7.2; reasserted post-merge.
 | Field                  | Value                                                              |
 |------------------------|--------------------------------------------------------------------|
 | Signed-off by          | `@yxshee`                                                          |
-| Sign-off timestamp     | `2026-05-24T18:27:21Z`                                             |
+| Sign-off timestamp     | `2026-05-24T20:04:12Z`                                             |
 | Sign-off commit        | final pushed commit is verified with `git rev-parse HEAD` and `git rev-parse origin/main`; the commit hash is not embedded here to avoid self-referential proof churn |
 | Submission artifact    | `submission.zip` — exact SHA256 and byte count live in external `submission.zip.sha256` (excluded from the zip; see §7.3) |
 | Live deploy            | https://agoraalpha.vercel.app                                      |
