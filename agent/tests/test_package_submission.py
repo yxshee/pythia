@@ -49,6 +49,19 @@ class PackageSubmissionTests(unittest.TestCase):
             with self.subTest(rel=rel):
                 self.assertFalse(should_exclude(Path(rel), is_dir=False))
 
+    def test_includes_audit_proof_files(self) -> None:
+        # VERIFY.md and STATUS.md reference these files; if they don't ship in
+        # the zip, the uploaded artifact contradicts its own sign-off.
+        included = [
+            ".github/workflows/ci.yml",
+            "verify/screenshots/unlocked-trace.png",
+            "verify/screenshots/explorer-tx.png",
+        ]
+
+        for rel in included:
+            with self.subTest(rel=rel):
+                self.assertFalse(should_exclude(Path(rel), is_dir=False))
+
 
 if __name__ == "__main__":
     unittest.main()

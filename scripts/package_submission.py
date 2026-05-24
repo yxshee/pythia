@@ -22,12 +22,14 @@ ROOT_FILES = {
     "VERIFY.md",
 }
 ROOT_DIRS = {
+    ".github",
     "agent",
     "bot",
     "contracts",
     "docs",
     "scripts",
     "traces",
+    "verify",
     "web",
 }
 EXCLUDED_PARTS = {
