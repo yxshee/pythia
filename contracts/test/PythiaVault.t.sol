@@ -149,6 +149,17 @@ contract PythiaVaultTest is Test {
         vault.recordTrade(-int256(11 * ONE_USDC), bytes32("trace-x"));
     }
 
+    function test_convertToShares_zeroNav_returnsZero() public {
+        // Wipe NAV exactly (loss == totalAssets is allowed) while leaving shares
+        // outstanding. convertToShares must not divide by zero — return 0 instead.
+        _deposit(alice, 10 * ONE_USDC);
+        vm.prank(operator);
+        vault.recordTrade(-int256(10 * ONE_USDC), bytes32("trace-wipe"));
+        assertEq(vault.totalAssets(), 0, "NAV wiped");
+        assertEq(vault.totalSupply(), 10 * ONE_USDC, "shares outstanding");
+        assertEq(vault.convertToShares(1 * ONE_USDC), 0, "0 shares when NAV is 0");
+    }
+
     function test_setPerformanceFee_capped() public {
         vm.startPrank(operator);
         vault.setPerformanceFeeBps(2000); // max

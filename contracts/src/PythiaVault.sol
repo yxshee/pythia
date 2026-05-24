@@ -186,7 +186,9 @@ contract PythiaVault {
     function convertToShares(uint256 assets) public view returns (uint256) {
         uint256 supply = totalSupply;
         if (supply == 0) return assets; // 1:1 on first deposit
-        return (assets * supply) / totalAssets;
+        uint256 nav = totalAssets;
+        if (nav == 0) return 0; // shares outstanding but NAV wiped — can't price
+        return (assets * supply) / nav;
     }
 
     function convertToAssets(uint256 shares) public view returns (uint256) {
