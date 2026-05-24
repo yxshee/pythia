@@ -29,6 +29,14 @@ class SecretHandlingTests(unittest.TestCase):
         self.assertNotIn("uploaded picks-full.private.json to:", source)
         self.assertIn("web/data/.blob-url", source)
 
+    def test_vercel_deploy_excludes_private_operator_artifacts(self) -> None:
+        source = (ROOT / ".vercelignore").read_text()
+
+        self.assertRegex(source, re.compile(r"^\.private/$", re.MULTILINE))
+        self.assertIn("web/data/.blob-url", source)
+        self.assertIn("web/data/picks-full.private.json", source)
+        self.assertIn("submission.zip.sha256", source)
+
     def test_paywall_nonce_uses_dedicated_hmac_secret(self) -> None:
         source = (ROOT / "web" / "lib" / "server" / "paywall-nonce.ts").read_text()
         nonce_secret = re.search(

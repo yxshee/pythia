@@ -8,6 +8,7 @@ contracts/out/
 contracts/broadcast/
 
 # Local secrets and Vercel Blob handoff files
+.private/
 .env
 .env.local
 .env.*.local
@@ -21,4 +22,3 @@ traces/trace-*.json
 submission.zip
 submission.zip.sha256
 *.log
-
