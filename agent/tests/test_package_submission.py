@@ -36,6 +36,8 @@ class PackageSubmissionTests(unittest.TestCase):
     def test_includes_public_deliverables(self) -> None:
         included = [
             ".env.example",
+            ".vercelignore",
+            "EVAL.md",
             "README.md",
             "STATUS.md",
             "VERIFY.md",

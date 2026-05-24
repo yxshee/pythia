@@ -256,6 +256,20 @@ class ValidateSubmissionDeployModeTests(unittest.TestCase):
             self.assertTrue(any("wrong FOMC" in failure for failure in failures))
             self.assertTrue(any("stale unlock-price copy" in failure for failure in failures))
 
+    def test_rejects_stale_test_count_claims(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _scaffold(root)
+            preview = [_entry(i) for i in range(1, 9)]
+            full = [_full_entry(i) for i in range(1, 9)]
+            (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
+            (root / "web" / "data" / "picks-full.private.json").write_text(json.dumps(full))
+            (root / "README.md").write_text("tests 61/61 passing")
+
+            failures = validate_repo(root, mode="deploy")
+
+            self.assertTrue(any("stale test-count claim" in failure for failure in failures), failures)
+
 
 @contextlib.contextmanager
 def _serve_blob(routes: dict[str, tuple[int, str, bytes]]) -> Iterator[str]:

@@ -90,6 +90,6 @@ The mock fixtures live in `agent/pythia/fixtures.py` and mirror real Gamma paylo
 ## Why this hits the rubric
 
 - **Agency (30%):** Pythia autonomously chooses what to publish, when, and at what hypothetical size.
-- **Traction (30%):** Web/Telegram distribution, unlock interest, and attributed order proof once the builder-code flow is registered.
+- **Traction (30%):** Web/Telegram distribution and Arc unlock proof today; external paid-user traction and attributed order proof remain future evidence.
 - **Circle tools (20%):** Arc testnet DevUSDC unlocks today; CCTP/Gateway revenue integrations later.
-- **Innovation (20%):** Paid reasoning traces with on-Arc provenance and a verifiable paper-portfolio track record.
+- **Innovation (20%):** Paid reasoning traces with on-Arc provenance. A resolved-market paper-portfolio track record is planned but not claimed in this submission.

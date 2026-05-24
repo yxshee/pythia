@@ -7,20 +7,20 @@
 
 # ✦ &nbsp; P Y T H I A &nbsp; ✦
 
-### *The first USDC-native marketplace for auditable AI reasoning traces.*
+### *A USDC-native marketplace prototype for auditable AI reasoning traces.*
 
-An autonomous Delphic oracle for prediction markets. Pythia scans Polymarket, scores each candidate with Claude Sonnet 4.6, sizes a paper position, and publishes a paid reasoning trace — every hash anchored on Arc.
+An autonomous analyst for prediction markets. Pythia scans Polymarket, scores each candidate with Claude Sonnet 4.6, sizes a paper position, and publishes a paid reasoning trace — every hash anchored on Arc.
 
 <br />
 
 [![live demo](https://img.shields.io/badge/live-agoraalpha.vercel.app-6b1818?style=for-the-badge&logo=vercel&logoColor=white)](https://agoraalpha.vercel.app)
 [![Arc testnet](https://img.shields.io/badge/Arc-chain%205042002-b78b3a?style=for-the-badge)](https://testnet.arcscan.app/address/0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4)
-[![tests](https://img.shields.io/badge/tests-61%2F61%20passing-1c1a16?style=for-the-badge)](VERIFY.md)
+[![tests](https://img.shields.io/badge/tests-current%20gates-1c1a16?style=for-the-badge)](VERIFY.md)
 [![license](https://img.shields.io/badge/license-MIT-1c1a16?style=for-the-badge)](#-license)
 
 <br />
 
-[**Live demo**](https://agoraalpha.vercel.app) · [**Try an unlock**](https://agoraalpha.vercel.app/pick/24) · [**Verify**](VERIFY.md) · [**Status**](STATUS.md) · [**Hackathon**](https://agora.thecanteenapp.com/)
+[**Live demo**](https://agoraalpha.vercel.app) · [**Try an unlock**](https://agoraalpha.vercel.app/pick/24) · [**Verify**](VERIFY.md) · [**Eval status**](EVAL.md) · [**Status**](STATUS.md) · [**Hackathon**](https://agora.thecanteenapp.com/)
 
 </div>
 
@@ -94,7 +94,7 @@ Every trace hash is written to Arc via `TraceLog`. Sub-second finality, ~$0.01 f
 
 ### ◈ Non-custodial by design
 
-Pythia recommends; it never trades. Followers place orders themselves on Polymarket via a builder-code deep link. The operator never touches user capital — by construction, not by policy.
+Pythia recommends; it never trades. Followers place orders themselves on Polymarket via a recommendation link; production builder-fee attribution still requires order-level builder-code registration. The operator never touches user capital — by construction, not by policy.
 
 </td>
 </tr>

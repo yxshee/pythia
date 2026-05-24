@@ -26,9 +26,17 @@ Tests: `cd contracts && forge test`; see [`VERIFY.md`](../VERIFY.md) and CI for 
 
 | Contract | Address | Arcscan | Source verification |
 |---|---|---|---|
-| `TraceLog` | `0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4` | https://testnet.arcscan.app/address/0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4 | Confirm on Arcscan before final portal submission; do not claim verified source unless the Contract tab shows it. |
-| `UnlockMarket` | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` | https://testnet.arcscan.app/address/0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA | Confirm on Arcscan before final portal submission; do not claim verified source unless the Contract tab shows it. |
-| `DevUSDC` | `0x6d3bda6e93dd02a1c237642C5af837796bF47511` | https://testnet.arcscan.app/address/0x6d3bda6e93dd02a1c237642C5af837796bF47511 | Confirm on Arcscan before final portal submission; do not claim verified source unless the Contract tab shows it. |
+| `TraceLog` | `0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4` | https://testnet.arcscan.app/address/0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4 | Not source-verified as of 2026-05-25: Arcscan `getsourcecode` returned empty `SourceCode`. |
+| `UnlockMarket` | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` | https://testnet.arcscan.app/address/0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA | Not source-verified as of 2026-05-25: Arcscan `getsourcecode` returned empty `SourceCode`. |
+| `DevUSDC` | `0x6d3bda6e93dd02a1c237642C5af837796bF47511` | https://testnet.arcscan.app/address/0x6d3bda6e93dd02a1c237642C5af837796bF47511 | Not source-verified as of 2026-05-25: Arcscan `getsourcecode` returned empty `SourceCode`. |
+
+Command used for the source-verification status:
+
+```bash
+curl "https://testnet.arcscan.app/api?module=contract&action=getsourcecode&address=<address>"
+```
+
+Do not claim verified source until these rows are updated from Arcscan evidence.
 
 ### UnlockMarket flow
 

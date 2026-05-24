@@ -17,6 +17,8 @@ ROOT_FILES = {
     ".env.example",
     ".gitignore",
     ".gitmodules",
+    ".vercelignore",
+    "EVAL.md",
     "README.md",
     "STATUS.md",
     "VERIFY.md",

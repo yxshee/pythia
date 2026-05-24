@@ -37,7 +37,7 @@ class PublishResult:
 
 
 class Publisher:
-    """Emit picks to the broadcast surfaces with a builder-code copy-trade link.
+    """Emit picks to the broadcast surfaces with a placeholder trade link.
 
     The actual Telegram + web broadcast happens out-of-process via the bot
     subcommand ``pythia-bot broadcast <trace.json>``; this class formats the
@@ -119,8 +119,9 @@ def copy_trade_url(
     Shared between :class:`Publisher` (the broadcast path) and the paid trace
     payload assembled in ``preview.to_full`` so the link the user clicks in the
     bot matches what is rendered in the web UI. Keeping a single source of
-    truth here avoids the failure mode where the broadcast link is attributed
-    but the unlocked content sends users to an unattributed event URL.
+    truth here avoids the failure mode where the broadcast and unlocked content
+    point users to different event URLs. Production attribution still requires
+    a registered order-level builder code.
     """
     if decision == "HOLD":
         return None

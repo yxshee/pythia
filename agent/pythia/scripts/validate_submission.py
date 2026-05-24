@@ -70,6 +70,17 @@ _HOLD_ACTIONABLE_RECOMMENDATION_MARKERS = (
     "take the position",
     "copy trade",
 )
+_STALE_TEST_COUNT_PATTERNS = (
+    "61%2F61",
+    "61/61",
+    "42/42",
+    "42 forge",
+    "42 tests",
+    "19 agent",
+    "33 tests",
+    "35 tests",
+    "37 tests passed",
+)
 
 
 def _load_json(path: Path) -> Any:
@@ -277,6 +288,10 @@ def validate_repo(
         fixture_paths = _scan_text(repo_root, marker, scan_roots)
         if fixture_paths:
             failures.append(f"fixture source marker {marker!r} appears in {fixture_paths}")
+    for pattern in _STALE_TEST_COUNT_PATTERNS:
+        stale_test_paths = _scan_text(repo_root, pattern, ("README.md", "STATUS.md", "VERIFY.md", "docs"))
+        if stale_test_paths:
+            failures.append(f"stale test-count claim {pattern!r} appears in {stale_test_paths}")
 
     for entry in preview_entries:
         trace_id = entry.get("trace_id")

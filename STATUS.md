@@ -3,7 +3,7 @@
 > Honest current-state status for the hackathon submission. When this file and
 > the README disagree about what is shipping today, this file wins.
 
-Last updated: 2026-05-24 (Asia/Kolkata).
+Last updated: 2026-05-25 (Asia/Kolkata).
 
 ## Works Today
 
@@ -72,6 +72,11 @@ Last updated: 2026-05-24 (Asia/Kolkata).
   traces yet; the unlock-count surface is intentionally blank in
   `TractionStrip` rather than faked. The Arcscan link to
   `UnlockMarket` is the verifiable surface for any future paid unlocks.
+- **Historical oracle quality is not claimed yet.** This submission proves
+  paid trace generation, Arc anchoring, and the unlock/paywall path. It does
+  not claim statistically validated market accuracy or calibration. See
+  [`EVAL.md`](EVAL.md) for the current red-team status and the exact evidence
+  required before calling Pythia an effective oracle.
 
 ## Partially Works
 
@@ -85,6 +90,9 @@ Last updated: 2026-05-24 (Asia/Kolkata).
 - **Source bundles are market-data first.** Live traces include model,
   Polymarket market data, and resolution text. Broader news/sentiment/source
   credibility ingestion remains post-submission work.
+- **Oracle red-team is scoped, not completed.** The current package contains a
+  trace-coherence validator and a proof trace with HOLD/no-trade consistency,
+  but it does not yet include a 20-market resolved long-tail backtest.
 - **Paywall nonce replay uses durable production state.** The API prefers
   Vercel KV when `KV_REST_API_URL` / `KV_REST_API_TOKEN` are present; otherwise
   production writes one-use replay markers to the existing Vercel Blob store
@@ -119,7 +127,7 @@ mode does not imply a failure in the other; they assert different invariants.
 
 ```bash
 cd agent && uv run python -m unittest discover -s tests
-# 37 tests passed
+# pass; see VERIFY.md / CI for current count
 
 cd agent && uv run python -m pythia.scripts.validate_submission --mode private-deploy
 # submission data ok (private-deploy): 8 home markets, 8 private full traces
