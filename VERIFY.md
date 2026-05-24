@@ -187,20 +187,21 @@ Ran 8 tests for test/DevUSDC.t.sol:DevUSDCTest
 [PASS] test_transferWithAuthorization_validSig_transfersAndMarksNonce() (gas: 81064)
 Suite result: ok. 8 passed; 0 failed; 0 skipped; finished in 9.66ms (11.25ms CPU time)
 
-Ran 12 tests for test/PythiaVault.t.sol:PythiaVaultTest
-[PASS] test_bridgeOut_thenIn_preservesAccounting() (gas: 176935)
+Ran 13 tests for test/PythiaVault.t.sol:PythiaVaultTest
+[PASS] test_bridgeOut_thenIn_preservesAccounting() (gas: 176963)
+[PASS] test_convertToShares_zeroNav_returnsZero() (gas: 143039)
 [PASS] test_deposit_revertsForNonOperator() (gas: 79004)
-[PASS] test_deposit_revertsWhenPaused() (gas: 75942)
-[PASS] test_firstDeposit_mintsOneToOne() (gas: 157261)
-[PASS] test_recordTrade_lossExceedingNav_reverts() (gas: 156649)
-[PASS] test_recordTrade_revertsForNonOperator() (gas: 156349)
-[PASS] test_secondDeposit_afterProfit_getsFewerShares() (gas: 220883)
-[PASS] test_secondDeposit_atFlatNav_isProRata() (gas: 216109)
+[PASS] test_deposit_revertsWhenPaused() (gas: 75964)
+[PASS] test_firstDeposit_mintsOneToOne() (gas: 157289)
+[PASS] test_recordTrade_lossExceedingNav_reverts() (gas: 156655)
+[PASS] test_recordTrade_revertsForNonOperator() (gas: 156355)
+[PASS] test_secondDeposit_afterProfit_getsFewerShares() (gas: 220911)
+[PASS] test_secondDeposit_atFlatNav_isProRata() (gas: 216137)
 [PASS] test_setPerformanceFee_capped() (gas: 23182)
-[PASS] test_withdraw_loss_paysNoFee() (gas: 182355)
-[PASS] test_withdraw_noProfit_noFee() (gas: 170135)
-[PASS] test_withdraw_profitTakesFee() (gas: 204352)
-Suite result: ok. 12 passed; 0 failed; 0 skipped; finished in 9.67ms (3.26ms CPU time)
+[PASS] test_withdraw_loss_paysNoFee() (gas: 182409)
+[PASS] test_withdraw_noProfit_noFee() (gas: 170157)
+[PASS] test_withdraw_profitTakesFee() (gas: 204374)
+Suite result: ok. 13 passed; 0 failed; 0 skipped; finished in 11.17ms (1.54ms CPU time)
 
 Current final packaging gates re-run `cd contracts && forge test -vvv`; see the latest verification summary and CI output for the current Foundry count.
 ```
@@ -214,28 +215,14 @@ cd agent && uv run python -m unittest discover -s tests -v
 ```
 
 ```text
-test_excludes_private_paid_traces_and_runtime_artifacts (test_package_submission.PackageSubmissionTests.test_excludes_private_paid_traces_and_runtime_artifacts) ... ok
-test_includes_public_deliverables (test_package_submission.PackageSubmissionTests.test_includes_public_deliverables) ... ok
-test_dedupe_caps_repeated_template_clusters (test_publish_live_feed.PublishLiveFeedTests.test_dedupe_caps_repeated_template_clusters) ... ok
-test_dedupe_rejects_expired_or_low_signal_markets (test_publish_live_feed.PublishLiveFeedTests.test_dedupe_rejects_expired_or_low_signal_markets) ... ok
-test_dedupe_rejects_fixture_markers_and_duplicate_questions (test_publish_live_feed.PublishLiveFeedTests.test_dedupe_rejects_fixture_markers_and_duplicate_questions) ... ok
-test_load_gamma_candidates_marks_import_as_live_not_fixture (test_publish_live_feed.PublishLiveFeedTests.test_load_gamma_candidates_marks_import_as_live_not_fixture) ... ok
-test_buy_decisions_include_side_hint (test_publisher_payload.PublisherPayloadTests.test_buy_decisions_include_side_hint) ... ok
-test_full_payload_adds_default_risk_factor_when_reasoning_has_no_risk_step (test_publisher_payload.PublisherPayloadTests.test_full_payload_adds_default_risk_factor_when_reasoning_has_no_risk_step) ... ok
-test_full_payload_hides_copy_trade_for_hold_and_includes_source_bundle (test_publisher_payload.PublisherPayloadTests.test_full_payload_hides_copy_trade_for_hold_and_includes_source_bundle) ... ok
-test_hold_decision_has_no_copy_trade_url (test_publisher_payload.PublisherPayloadTests.test_hold_decision_has_no_copy_trade_url) ... ok
-test_preview_payload_never_includes_builder_code (test_publisher_payload.PublisherPayloadTests.test_preview_payload_never_includes_builder_code) ... ok
-test_accepts_blob_url_when_local_file_absent (test_validate_submission.ValidateSubmissionDeployModeTests.test_accepts_blob_url_when_local_file_absent) ... ok
-test_accepts_private_full_snapshot_and_public_preview_only (test_validate_submission.ValidateSubmissionDeployModeTests.test_accepts_private_full_snapshot_and_public_preview_only) ... ok
-test_rejects_full_payload_without_non_market_source (test_validate_submission.ValidateSubmissionDeployModeTests.test_rejects_full_payload_without_non_market_source) ... ok
-test_rejects_public_full_snapshot_fixture_source_wrong_dates_and_stale_copy (test_validate_submission.ValidateSubmissionDeployModeTests.test_rejects_public_full_snapshot_fixture_source_wrong_dates_and_stale_copy) ... ok
-test_rejects_when_both_private_file_and_blob_url_missing (test_validate_submission.ValidateSubmissionDeployModeTests.test_rejects_when_both_private_file_and_blob_url_missing) ... ok
-test_accepts_preview_only_zip (test_validate_submission.ValidateSubmissionPackageModeTests.test_accepts_preview_only_zip) ... ok
-test_ignores_private_full_in_working_tree (test_validate_submission.ValidateSubmissionPackageModeTests.test_ignores_private_full_in_working_tree) ... ok
-test_rejects_public_full_present_in_package (test_validate_submission.ValidateSubmissionPackageModeTests.test_rejects_public_full_present_in_package) ... ok
+test_contract_read_error_copy_is_user_actionable (test_unlock_button_safety.UnlockButtonSafetyTests.test_contract_read_error_copy_is_user_actionable) ... ok
+test_contract_read_failures_block_unlock_state_machine (test_unlock_button_safety.UnlockButtonSafetyTests.test_contract_read_failures_block_unlock_state_machine) ... ok
+... full suite output omitted here for readability; the run covers contract bytecode checks,
+oracle-eval gating, package exclusions, publish gates, publisher payload shaping,
+secret handling, submission validation, unlock UI read-error safety, and web rate-limit state.
 
 ----------------------------------------------------------------------
-Ran 19 tests in 0.021s
+Ran 58 tests in 4.644s
 
 OK
 ```

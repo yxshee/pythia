@@ -49,6 +49,10 @@ Last updated: 2026-05-25 (Asia/Kolkata).
   caps request/response size and batch size, and rate-limits callers.
 - **Wallet flow uses DevUSDC/testnet wording.** The UI no longer presents the
   demo unlock as production USDC.
+- **Wallet flow fails closed on Arc read errors.** If any `priceFor`,
+  `isUnlocked`, `balanceOf`, or `allowance` read fails, the unlock UI now shows
+  `Arc state unavailable` and disables mint/approve/unlock actions instead of
+  falling through to default price/balance values.
 - **Polymarket attribution is worded as placeholder-only.** The app does not
   claim builder-fee revenue until a registered V2 bytes32 builder code is
   attached to actual orders.

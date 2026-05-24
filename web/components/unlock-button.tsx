@@ -60,6 +60,7 @@ type UiState =
   | "disconnected"
   | "wrong-chain"
   | "loading"
+  | "read-error"
   | "unlocked"
   | "needs-funds"
   | "minting"
@@ -144,6 +145,12 @@ export function UnlockButton({ traceId }: Props) {
   const isUnlocked = (isUnlockedQuery.data as boolean | undefined) ?? false;
   const balance = (balanceQuery.data as bigint | undefined) ?? 0n;
   const allowance = (allowanceQuery.data as bigint | undefined) ?? 0n;
+  const readError =
+    priceQuery.error ??
+    isUnlockedQuery.error ??
+    balanceQuery.error ??
+    allowanceQuery.error ??
+    null;
 
   // Writes — three independent hooks so each has its own loading state.
   const mintWrite = useWriteContract();
@@ -265,6 +272,7 @@ export function UnlockButton({ traceId }: Props) {
   const errorMessage = prettyError(
     connectError ?? switchError ?? writeError ?? receiptError,
   );
+  const readErrorMessage = prettyError(readError);
 
   const state: UiState = (() => {
     if (!isConnected) return "disconnected";
@@ -276,6 +284,14 @@ export function UnlockButton({ traceId }: Props) {
       allowanceQuery.isLoading
     ) {
       return "loading";
+    }
+    if (
+      priceQuery.isError ||
+      isUnlockedQuery.isError ||
+      balanceQuery.isError ||
+      allowanceQuery.isError
+    ) {
+      return "read-error";
     }
     if (isUnlocked) return "unlocked";
     if (unlockWrite.isPending || unlockReceipt.isLoading) return "unlocking";
@@ -348,7 +364,11 @@ export function UnlockButton({ traceId }: Props) {
               isUnlocked ? "text-laurel" : "text-oxblood"
             }`}
           >
-            {isUnlocked ? "Paid · on Arc" : `${fmtUsdc(price)} test USDC · Arc`}
+            {isUnlocked
+              ? "Paid · on Arc"
+              : state === "read-error"
+                ? "Arc state unavailable"
+                : `${fmtUsdc(price)} test USDC · Arc`}
           </span>
         </div>
 
@@ -419,6 +439,13 @@ export function UnlockButton({ traceId }: Props) {
               </p>
             )}
 
+            {state === "read-error" && (
+              <p className="relative mt-4 rounded border border-oxblood/40 bg-oxblood/5 p-3 mono text-[11px] uppercase tracking-[0.18em] text-oxblood">
+                Could not read Arc state. Check your network connection and try again.
+                {readErrorMessage ? ` ${readErrorMessage}` : ""}
+              </p>
+            )}
+
             {errorMessage && (
               <p className="relative mt-4 rounded border border-oxblood/40 bg-oxblood/5 p-3 mono text-[11px] uppercase tracking-[0.18em] text-oxblood">
                 {errorMessage}
@@ -486,6 +513,10 @@ function ActionRow({
       break;
     case "loading":
       label = "Reading on-chain state…";
+      disabled = true;
+      break;
+    case "read-error":
+      label = "Arc read unavailable";
       disabled = true;
       break;
     case "needs-funds":
