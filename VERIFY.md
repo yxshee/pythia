@@ -944,10 +944,10 @@ unzip -l submission.zip | grep -E '(\.github/workflows/ci\.yml|verify/screenshot
 ```
 
 ```text
-wrote submission.zip (2,047,849 bytes)
+wrote submission.zip (2,048,142 bytes)
 
-ea502d683b0a7d2c9fad395c48cc09ebaecaefc8ddf922477a2c61a02e7f3aba  submission.zip
-  2047849 submission.zip
+bb7dbfeeb34f6fad9c394740af07bd450e91147fdcdb20c96ff91e5f187c1d0b  submission.zip
+  2048142 submission.zip
      1416  .github/workflows/ci.yml
    652754  verify/screenshots/explorer-tx.png
    744758  verify/screenshots/unlocked-trace.png
@@ -955,9 +955,9 @@ ea502d683b0a7d2c9fad395c48cc09ebaecaefc8ddf922477a2c61a02e7f3aba  submission.zip
 
 | Field            | Value                                                              |
 |------------------|--------------------------------------------------------------------|
-| Parent commit    | `b34c761a309d09707e843e9d8c72c03e5ec3e7b0` (audit re-stamp commit lands on top, see `git log audit/executive-verdict-fixes`) |
-| Size             | 2 047 849 bytes                                                    |
-| SHA256           | `ea502d683b0a7d2c9fad395c48cc09ebaecaefc8ddf922477a2c61a02e7f3aba` |
+| Parent commit    | `27beabe6327865da5001d9ed543639abb79b4261` (on main; this VERIFY.md restamp commit lands on top, see `git log main`) |
+| Size             | 2 048 142 bytes                                                    |
+| SHA256           | `bb7dbfeeb34f6fad9c394740af07bd450e91147fdcdb20c96ff91e5f187c1d0b` |
 | File count       | 98                                                                 |
 | Built by         | `scripts/package_submission.py`                                    |
 | Validator        | `validate_submission --mode public-package` (invoked internally; passed) |
@@ -974,7 +974,7 @@ ea502d683b0a7d2c9fad395c48cc09ebaecaefc8ddf922477a2c61a02e7f3aba  submission.zip
 > reflects the previous build cycle's SHA. Verification:
 > `sha256sum submission.zip` from this commit matches the row above.
 
-The size delta vs §7.1 (337 703 → 2 047 849) reflects three changes:
+The size delta vs §7.1 (337 703 → 2 048 142) reflects four changes:
 - `scripts/cli-unlock.mjs` (+324 lines), `package.json`,
   `agent/pythia/scripts/validate_submission.py` (--check-blob), expanded
   VERIFY.md, and the other audit-branch deliverables (~+12 KB).
@@ -986,6 +986,10 @@ The size delta vs §7.1 (337 703 → 2 047 849) reflects three changes:
   fresh 24-31 batch dated 2026-05-24 (`picks-preview.json`); the +775 B
   delta vs the prior audit zip (2 047 074 → 2 047 849) is the new
   picks/metrics payload.
+- This restamp swapped audit-branch SHA references (`b34c761`, `eaf9b73`)
+  for the on-main rebased SHAs (`27beabe`, `7f30d00`) so judges scanning
+  §7.3 + §8 can resolve them via `git log main`. The +293 B delta vs the
+  prior cycle (2 047 849 → 2 048 142) is purely the longer VERIFY.md text.
 
 ### 7.4 Post-merge zip surface
 
@@ -1016,9 +1020,9 @@ files with no secrets) ship. Same invariants as §7.2; reasserted post-merge.
 | Field                  | Value                                                              |
 |------------------------|--------------------------------------------------------------------|
 | Signed-off by          | `@yxshee`                                                          |
-| Sign-off timestamp     | `2026-05-24T14:32:48Z`                                             |
-| Sign-off commit        | `b34c761a309d09707e843e9d8c72c03e5ec3e7b0` (audit/executive-verdict-fixes; rebuild basis — the sign-off itself lands in the commit containing this VERIFY.md edit, superseding `a16dbc17` after Phase 4.1 + Phase 9 follow-ups) |
-| Submission artifact    | `submission.zip` — 2 047 849 bytes, SHA256 `ea502d683b0a7d2c9fad395c48cc09ebaecaefc8ddf922477a2c61a02e7f3aba` (rebuilt on `b34c761`, see §7.3) |
+| Sign-off timestamp     | `2026-05-24T15:01:22Z`                                             |
+| Sign-off commit        | `7f30d00679f4599f9c1d942be99fdb913e78ebe2` (on main, was `eaf9b73` on audit branch — PR #27 rebase merged; this VERIFY.md restamp commit lands on top via PR #28). Earlier sign-off was on `a16dbc1` (now `f052658` on main) |
+| Submission artifact    | `submission.zip` — 2 048 142 bytes, SHA256 `bb7dbfeeb34f6fad9c394740af07bd450e91147fdcdb20c96ff91e5f187c1d0b` (rebuilt on `27beabe`, see §7.3) |
 | Live deploy            | https://agoraalpha.vercel.app                                      |
 | Paid-unlock transcript | §5.1 (cli-unlock 11/11 steps green) + §5.4 explorer tx `0xabb1d968a98a94bab43c6ced0337eda45436c89371b009c36cc6bbfce97a7dde` on Arc testnet block `43571133` + §5.5 (audit re-run against the live deploy, trace 16, exit 0, replay `nonce-used`) |
 | Visual evidence        | §6 — `verify/screenshots/unlocked-trace.png` + `verify/screenshots/explorer-tx.png` (now actually included in the zip — see §7.3 proof artefacts row) |
