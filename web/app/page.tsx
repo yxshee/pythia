@@ -71,7 +71,9 @@ export default async function HomePage() {
               Today&rsquo;s picks &middot; {picks.length}
             </h2>
             <span className="mono text-[10px] uppercase tracking-[0.28em] text-ink-faint">
-              cached 30s · Arc trace
+              {picks[0]?.generated_at
+                ? `refreshed ${new Date(picks[0].generated_at).toISOString().slice(0, 16).replace("T", " ")} UTC · Arc trace`
+                : "cached 30s · Arc trace"}
             </span>
           </div>
 
