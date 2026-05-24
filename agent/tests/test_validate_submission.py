@@ -110,6 +110,23 @@ def _scaffold(root: Path) -> None:
     (root / "agent").mkdir()
     (root / "README.md").write_text("Public README")
     (root / "STATUS.md").write_text("Production paid traces are private.")
+    (root / ".vercelignore").write_text(
+        "\n".join(
+            [
+                ".private/",
+                ".env",
+                ".env.local",
+                ".env.*.local",
+                "web/.env.local",
+                "web/.env.*.local",
+                "web/data/.blob-url",
+                "web/data/picks-full.private.json",
+                "traces/trace-*.json",
+                "submission.zip",
+                "submission.zip.sha256",
+            ]
+        )
+    )
     (root / "docs").mkdir()
     (root / "web" / "components" / "pick-card.tsx").write_text("Unlock 0.10 DevUSDC")
 
@@ -595,6 +612,30 @@ class ValidateSubmissionPackageModeTests(unittest.TestCase):
             failures = validate_repo(root, mode="package")
             self.assertTrue(
                 any("public paid snapshot" in f for f in failures),
+                failures,
+            )
+
+    def test_rejects_missing_deploy_secret_exclusions(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _scaffold(root)
+            (root / ".vercelignore").write_text(
+                "\n".join(
+                    [
+                        ".env",
+                        "web/data/.blob-url",
+                        "web/data/picks-full.private.json",
+                        "submission.zip.sha256",
+                    ]
+                )
+            )
+            preview = [_entry(i) for i in range(1, 9)]
+            (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
+
+            failures = validate_repo(root, mode="package")
+
+            self.assertTrue(
+                any(".vercelignore" in f and ".private/" in f for f in failures),
                 failures,
             )
 

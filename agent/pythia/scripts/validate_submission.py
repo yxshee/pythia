@@ -87,6 +87,19 @@ _STALE_TEST_COUNT_PATTERNS = (
     "35 tests",
     "37 tests passed",
 )
+_REQUIRED_VERCELIGNORE_ENTRIES = (
+    ".private/",
+    ".env",
+    ".env.local",
+    ".env.*.local",
+    "web/.env.local",
+    "web/.env.*.local",
+    "web/data/.blob-url",
+    "web/data/picks-full.private.json",
+    "traces/trace-*.json",
+    "submission.zip",
+    "submission.zip.sha256",
+)
 
 
 def _load_json(path: Path) -> Any:
@@ -146,6 +159,26 @@ def _scan_text(root: Path, pattern: str, rel_roots: tuple[str, ...]) -> list[str
         if pattern in text:
             matches.append(str(path.relative_to(root)))
     return sorted(matches)
+
+
+def _check_vercelignore_policy(repo_root: Path, failures: list[str]) -> None:
+    """Keep deploy-time secret exclusions under the same release gate as packaging."""
+    path = repo_root / ".vercelignore"
+    if not path.exists():
+        failures.append(".vercelignore is missing; Vercel deploy inputs may include secrets")
+        return
+
+    lines = {
+        line.strip()
+        for line in path.read_text().splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    }
+    missing = [entry for entry in _REQUIRED_VERCELIGNORE_ENTRIES if entry not in lines]
+    if missing:
+        failures.append(
+            ".vercelignore is missing required secret/deploy artifact exclusions: "
+            f"{missing}"
+        )
 
 
 _NON_MARKET_SOURCE_KINDS = frozenset({
@@ -368,6 +401,7 @@ def validate_repo(
 
     if public_full_path.exists():
         failures.append("public paid snapshot web/data/picks-full.json must not ship")
+    _check_vercelignore_policy(repo_root, failures)
 
     full_entries: list[dict[str, Any]] = []
     blob_entries: list[dict[str, Any]] = []
