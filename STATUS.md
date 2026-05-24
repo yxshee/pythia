@@ -28,8 +28,10 @@ Last updated: 2026-05-25 (Asia/Kolkata).
 - **Preview/full split is structural.** `web/data/picks-preview.json` is the
   public browser bundle. Full paid traces are loaded from the server-side
   `PRIVATE_TRACES_BLOB_URL` on production, with `web/data/picks-full.private.json`
-  kept as the local operator snapshot. Both private full bundles are excluded
-  from the public submission zip.
+  kept as the local operator snapshot. The production Blob payload is
+  AES-256-GCM encrypted with server-only `PRIVATE_TRACES_ENCRYPTION_KEY`, so a
+  leaked Blob URL alone cannot reveal paid traces. Both private full bundles are
+  excluded from the public submission zip.
 - **Server-side signed-message paywall.** `/api/traces/[id]/full` now issues a
   short-lived nonce with `GET`, requires the wallet to sign the exact
   host/trace/address/chain/contract/nonce message, checks
@@ -59,7 +61,7 @@ Last updated: 2026-05-25 (Asia/Kolkata).
   registers trace IDs `24,25,26,27,28,29,30,31`. The 24-31 batch was
   published on Arc TraceLog (`web/data/metrics.json` `latest_tx_hash` =
   `0xf0a3bb2c3e7212149a6b297d8693163a9b78806d9d2e5ae3abf682da50742bb8`,
-  block 43847112), promoted to Vercel Blob, wired into
+  block 43847112), promoted to encrypted Vercel Blob, wired into
   `PRIVATE_TRACES_BLOB_URL`, and redeployed to `https://agoraalpha.vercel.app`.
   On-chain reads confirmed `traceExists(24..31) == true`, while trace `999`
   returns `false`.
@@ -119,10 +121,11 @@ Last updated: 2026-05-25 (Asia/Kolkata).
 - **Production Polymarket builder attribution.** Current links are
   recommendation deep-links. Production fee attribution requires the official
   V2 order object to include the registered bytes32 `builderCode`.
-- **Encrypted/pinned private storage.** The hackathon deploy now serves paid
-  traces from Vercel Blob through the server-only `PRIVATE_TRACES_BLOB_URL`.
-  Production should still add encryption-at-rest policy, object rotation, and
-  IPFS/Irys-style content pinning before real paid traffic.
+- **Private storage rotation and pinning.** The hackathon deploy now serves
+  AES-256-GCM encrypted paid traces from Vercel Blob through the server-only
+  `PRIVATE_TRACES_BLOB_URL` + `PRIVATE_TRACES_ENCRYPTION_KEY`. Production
+  should still add object/key rotation runbooks and IPFS/Irys-style content
+  pinning before real paid traffic.
 
 ## Verification Run Before Packaging
 

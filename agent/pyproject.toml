@@ -12,6 +12,7 @@ dependencies = [
     "anthropic>=0.39",
     "openai>=1.40",
     "web3>=7.0",
+    "pycryptodome>=3.23",
     "tenacity>=8.3",
     "structlog>=24.1",
     "rich>=13.7",

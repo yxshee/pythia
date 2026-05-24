@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import contextlib
+import base64
+import hashlib
 import http.server
 import json
 import os
@@ -11,6 +13,8 @@ import unittest
 from pathlib import Path
 from typing import Iterator
 from unittest import mock
+
+from Crypto.Cipher import AES
 
 from pythia.scripts.validate_submission import validate_repo
 
@@ -307,6 +311,28 @@ def _serve_blob(routes: dict[str, tuple[int, str, bytes]]) -> Iterator[str]:
         thread.join(timeout=2)
 
 
+def _b64url(data: bytes) -> str:
+    return base64.urlsafe_b64encode(data).decode().rstrip("=")
+
+
+def _encrypted_blob_payload(entries: list[dict], key: str) -> bytes:
+    nonce = bytes(range(12))
+    cipher = AES.new(hashlib.sha256(key.encode()).digest(), AES.MODE_GCM, nonce=nonce)
+    cipher.update(b"pythia-private-traces-v1")
+    ciphertext, tag = cipher.encrypt_and_digest(json.dumps(entries).encode())
+    return json.dumps(
+        {
+            "pythia_private_traces_encrypted": 1,
+            "alg": "AES-256-GCM",
+            "kdf": "sha256",
+            "aad": "pythia-private-traces-v1",
+            "nonce": _b64url(nonce),
+            "tag": _b64url(tag),
+            "ciphertext": _b64url(ciphertext),
+        }
+    ).encode()
+
+
 class ValidateSubmissionCheckBlobTests(unittest.TestCase):
     """`--check-blob` flag: live HEAD/GET against PRIVATE_TRACES_BLOB_URL."""
 
@@ -373,6 +399,45 @@ class ValidateSubmissionCheckBlobTests(unittest.TestCase):
                 with mock.patch.dict(os.environ, {"PRIVATE_TRACES_BLOB_URL": url}):
                     failures = validate_repo(root, mode="deploy", check_blob=True)
             self.assertEqual(failures, [])
+
+    def test_check_blob_flag_decrypts_encrypted_blob_when_key_set(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._scaffold_deploy_tree(root)
+            key = "test-private-traces-key-with-32-bytes-minimum"
+            body = _encrypted_blob_payload([_full_entry(i) for i in range(1, 9)], key)
+            with _serve_blob(
+                {"/picks-full.private.json.enc": (200, "application/json", body)}
+            ) as base:
+                url = f"{base}/picks-full.private.json.enc"
+                with mock.patch.dict(
+                    os.environ,
+                    {
+                        "PRIVATE_TRACES_BLOB_URL": url,
+                        "PRIVATE_TRACES_ENCRYPTION_KEY": key,
+                    },
+                ):
+                    failures = validate_repo(root, mode="deploy", check_blob=True)
+            self.assertEqual(failures, [])
+
+    def test_check_blob_flag_rejects_encrypted_blob_without_key(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._scaffold_deploy_tree(root)
+            key = "test-private-traces-key-with-32-bytes-minimum"
+            body = _encrypted_blob_payload([_full_entry(i) for i in range(1, 9)], key)
+            with _serve_blob(
+                {"/picks-full.private.json.enc": (200, "application/json", body)}
+            ) as base:
+                url = f"{base}/picks-full.private.json.enc"
+                env = {k: v for k, v in os.environ.items() if k != "PRIVATE_TRACES_ENCRYPTION_KEY"}
+                env["PRIVATE_TRACES_BLOB_URL"] = url
+                with mock.patch.dict(os.environ, env, clear=True):
+                    failures = validate_repo(root, mode="deploy", check_blob=True)
+            self.assertTrue(
+                any("PRIVATE_TRACES_ENCRYPTION_KEY" in failure for failure in failures),
+                failures,
+            )
 
     def test_check_blob_flag_fails_when_blob_trace_ids_do_not_match_preview(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

@@ -53,8 +53,10 @@ Two contracts you must respect:
   32 UTF-8 bytes after trimming; do not reuse Blob, RPC, wallet, or API
   credentials.
 - **The Blob URL itself is the secret.** `PRIVATE_TRACES_BLOB_URL` carries
-  a random suffix that is the only access control on the paid payload.
-  Treat it like a token: never log, never commit.
+  a random suffix and must still be treated like a token: never log, never
+  commit. Production uploads are also encrypted with
+  `PRIVATE_TRACES_ENCRYPTION_KEY`, so the URL alone is not enough to read the
+  paid payload.
 - **Durable nonce replay state is required in production.** The API prefers
   `KV_REST_API_URL` / `KV_REST_API_TOKEN` when present, otherwise it uses
   write-once Vercel Blob markers through `BLOB_READ_WRITE_TOKEN`. Rate limiting
@@ -76,16 +78,18 @@ Use `pnpm install --frozen-lockfile` in CI (see [.github/workflows/ci.yml](../.g
 Before promoting a build that depends on `PRIVATE_TRACES_BLOB_URL`, run the
 validator's `--check-blob` mode to confirm the URL actually serves the full
 trace bundle whose IDs exactly match `web/data/picks-preview.json` and whose
-entries pass full-payload quality checks:
+entries pass full-payload quality checks. Production Blob payloads are
+encrypted, so include `PRIVATE_TRACES_ENCRYPTION_KEY` in the environment:
 
 ```bash
 cd ../agent
-PRIVATE_TRACES_BLOB_URL=https://…  uv run python -m pythia.scripts.validate_submission \
+PRIVATE_TRACES_BLOB_URL=https://…  PRIVATE_TRACES_ENCRYPTION_KEY=… \
+  uv run python -m pythia.scripts.validate_submission \
   --mode private-deploy --check-blob
 ```
 
 Exit code 0 means the URL is reachable, served as JSON, parsed to a
-non-empty trace array, ID-matched to the public preview file, and passes
+non-empty trace array after decryption, ID-matched to the public preview file, and passes
 source/risk/HOLD-copy-trade checks. Any other case prints a `FAIL:` line
 with the reason while redacting the URL itself.
 

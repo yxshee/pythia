@@ -26,8 +26,12 @@ Usage::
 from __future__ import annotations
 
 import argparse
+import base64
+import binascii
+import hashlib
 import json
 import os
+import subprocess
 import sys
 import urllib.error
 import urllib.request
@@ -36,6 +40,8 @@ from pathlib import Path
 from typing import Any
 
 _BLOB_FETCH_TIMEOUT_S = 5.0
+_PRIVATE_TRACE_AAD = b"pythia-private-traces-v1"
+_MIN_PRIVATE_TRACES_ENCRYPTION_KEY_BYTES = 32
 
 # Old names accepted as aliases so STATUS.md / README.md examples keep working
 # while docs are updated. Canonical names are 'private-deploy' / 'public-package'.
@@ -179,6 +185,10 @@ def _fetch_blob_entries(url: str, failures: list[str]) -> list[dict[str, Any]]:
     except json.JSONDecodeError as exc:
         failures.append(f"PRIVATE_TRACES_BLOB_URL body does not parse as JSON: {exc}")
         return []
+    if isinstance(payload, dict) and payload.get("pythia_private_traces_encrypted") == 1:
+        payload = _decrypt_blob_payload(payload, failures)
+        if payload is None:
+            return []
     if not isinstance(payload, list) or not payload:
         failures.append("PRIVATE_TRACES_BLOB_URL body is empty or not a JSON array")
         return []
@@ -186,6 +196,116 @@ def _fetch_blob_entries(url: str, failures: list[str]) -> list[dict[str, Any]]:
         failures.append("PRIVATE_TRACES_BLOB_URL body must be an array of trace objects")
         return []
     return payload
+
+
+def _b64url_decode(value: Any, label: str, failures: list[str]) -> bytes | None:
+    if not isinstance(value, str) or not value:
+        failures.append(f"PRIVATE_TRACES_BLOB_URL encrypted payload missing {label}")
+        return None
+    try:
+        padding = "=" * (-len(value) % 4)
+        return base64.urlsafe_b64decode(value + padding)
+    except (ValueError, binascii.Error) as exc:
+        failures.append(f"PRIVATE_TRACES_BLOB_URL encrypted payload has invalid {label}: {exc}")
+        return None
+
+
+def _private_traces_encryption_key(failures: list[str]) -> bytes | None:
+    secret = (os.environ.get("PRIVATE_TRACES_ENCRYPTION_KEY") or "").strip()
+    if not secret:
+        failures.append(
+            "PRIVATE_TRACES_BLOB_URL is encrypted but PRIVATE_TRACES_ENCRYPTION_KEY is unset"
+        )
+        return None
+    if len(secret.encode("utf-8")) < _MIN_PRIVATE_TRACES_ENCRYPTION_KEY_BYTES:
+        failures.append(
+            "PRIVATE_TRACES_ENCRYPTION_KEY must be at least "
+            f"{_MIN_PRIVATE_TRACES_ENCRYPTION_KEY_BYTES} bytes"
+        )
+        return None
+    return hashlib.sha256(secret.encode("utf-8")).digest()
+
+
+def _decrypt_blob_payload(payload: dict[str, Any], failures: list[str]) -> Any | None:
+    if payload.get("alg") != "AES-256-GCM" or payload.get("kdf") != "sha256":
+        failures.append("PRIVATE_TRACES_BLOB_URL encrypted payload uses unsupported crypto metadata")
+        return None
+    if payload.get("aad") != _PRIVATE_TRACE_AAD.decode():
+        failures.append("PRIVATE_TRACES_BLOB_URL encrypted payload has unexpected aad")
+        return None
+
+    key = _private_traces_encryption_key(failures)
+    nonce = _b64url_decode(payload.get("nonce"), "nonce", failures)
+    tag = _b64url_decode(payload.get("tag"), "tag", failures)
+    ciphertext = _b64url_decode(payload.get("ciphertext"), "ciphertext", failures)
+    if key is None or nonce is None or tag is None or ciphertext is None:
+        return None
+    try:
+        plaintext = _decrypt_aes_gcm(key, nonce, tag, ciphertext)
+    except ValueError as exc:
+        failures.append(f"PRIVATE_TRACES_BLOB_URL encrypted payload failed authentication: {exc}")
+        return None
+    try:
+        return json.loads(plaintext)
+    except json.JSONDecodeError as exc:
+        failures.append(f"PRIVATE_TRACES_BLOB_URL decrypted body does not parse as JSON: {exc}")
+        return None
+
+
+def _decrypt_aes_gcm(key: bytes, nonce: bytes, tag: bytes, ciphertext: bytes) -> bytes:
+    try:
+        from Crypto.Cipher import AES  # type: ignore[import-not-found]
+
+        cipher = AES.new(key, AES.MODE_GCM, nonce=nonce)
+        cipher.update(_PRIVATE_TRACE_AAD)
+        return cipher.decrypt_and_verify(ciphertext, tag)
+    except ModuleNotFoundError:
+        return _decrypt_aes_gcm_with_node(key, nonce, tag, ciphertext)
+
+
+def _decrypt_aes_gcm_with_node(key: bytes, nonce: bytes, tag: bytes, ciphertext: bytes) -> bytes:
+    script = r"""
+const { createDecipheriv } = require("node:crypto");
+const chunks = [];
+process.stdin.on("data", (chunk) => chunks.push(chunk));
+process.stdin.on("end", () => {
+  try {
+    const payload = JSON.parse(Buffer.concat(chunks).toString("utf8"));
+    const decipher = createDecipheriv(
+      "aes-256-gcm",
+      Buffer.from(payload.key, "base64url"),
+      Buffer.from(payload.nonce, "base64url"),
+    );
+    decipher.setAAD(Buffer.from("pythia-private-traces-v1", "utf8"));
+    decipher.setAuthTag(Buffer.from(payload.tag, "base64url"));
+    const plaintext = Buffer.concat([
+      decipher.update(Buffer.from(payload.ciphertext, "base64url")),
+      decipher.final(),
+    ]);
+    process.stdout.write(plaintext);
+  } catch (err) {
+    process.stderr.write(err?.message || String(err));
+    process.exit(1);
+  }
+});
+"""
+    proc = subprocess.run(
+        ["node", "-e", script],
+        input=json.dumps(
+            {
+                "key": base64.urlsafe_b64encode(key).decode().rstrip("="),
+                "nonce": base64.urlsafe_b64encode(nonce).decode().rstrip("="),
+                "tag": base64.urlsafe_b64encode(tag).decode().rstrip("="),
+                "ciphertext": base64.urlsafe_b64encode(ciphertext).decode().rstrip("="),
+            }
+        ).encode(),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if proc.returncode != 0:
+        raise ValueError(proc.stderr.decode("utf-8", "replace") or "node AES-GCM decrypt failed")
+    return proc.stdout
 
 
 def _check_full_entries(

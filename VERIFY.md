@@ -804,9 +804,10 @@ traceExists(31)   true
 ```
 
 `validate_submission --mode private-deploy --check-blob` now fetches
-`PRIVATE_TRACES_BLOB_URL`, verifies the Blob's trace IDs exactly match
-`web/data/picks-preview.json`, and runs the same full-payload quality
-checks against the Blob entries.
+`PRIVATE_TRACES_BLOB_URL`, decrypts the Blob with server-only
+`PRIVATE_TRACES_ENCRYPTION_KEY`, verifies the trace IDs exactly match
+`web/data/picks-preview.json`, and runs the same full-payload quality checks
+against the decrypted Blob entries.
 
 ---
 

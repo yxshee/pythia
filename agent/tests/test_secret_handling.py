@@ -14,6 +14,14 @@ class SecretHandlingTests(unittest.TestCase):
         self.assertIn("URL_CACHE", source)
         self.assertIn("writeFile(URL_CACHE", source)
 
+    def test_private_blob_uploader_encrypts_before_upload(self) -> None:
+        source = (ROOT / "scripts" / "upload-private-blob.mjs").read_text()
+
+        self.assertIn("PRIVATE_TRACES_ENCRYPTION_KEY", source)
+        self.assertIn("createCipheriv", source)
+        self.assertIn("aes-256-gcm", source)
+        self.assertNotIn('put("picks-full.private.json", data', source)
+
     def test_publish_live_feed_does_not_reprint_blob_url(self) -> None:
         source = (ROOT / "agent" / "pythia" / "scripts" / "publish_live_feed.py").read_text()
 

@@ -16,6 +16,7 @@ import "server-only";
  */
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { createDecipheriv, createHash } from "node:crypto";
 import path from "node:path";
 import { utf8ByteLength } from "@/lib/server/request-security";
 import type { Trace } from "@/lib/traces";
@@ -23,6 +24,9 @@ import type { Trace } from "@/lib/traces";
 const TTL_MS = 30_000;
 const FETCH_TIMEOUT_MS = 8_000;
 const MAX_PRIVATE_TRACE_BYTES = 1_000_000;
+const MAX_ENCRYPTED_PRIVATE_TRACE_BYTES = 2_000_000;
+const MIN_PRIVATE_TRACES_ENCRYPTION_KEY_BYTES = 32;
+const PRIVATE_TRACE_AAD = "pythia-private-traces-v1";
 
 let cached: { at: number; traces: Trace[] } | null = null;
 
@@ -30,15 +34,76 @@ function localSnapshotPath(): string {
   return path.resolve(process.cwd(), "data", "picks-full.private.json");
 }
 
+function parseTraceArrayValue(parsed: unknown): Trace[] {
+  if (!Array.isArray(parsed) || !parsed.every((entry) => entry && typeof entry === "object")) {
+    throw new Error("private trace payload must be an array of trace objects");
+  }
+  return parsed as Trace[];
+}
+
 function parseTraceArray(body: string): Trace[] {
   if (utf8ByteLength(body) > MAX_PRIVATE_TRACE_BYTES) {
     throw new Error(`private trace payload exceeds ${MAX_PRIVATE_TRACE_BYTES} bytes`);
   }
   const parsed = JSON.parse(body) as unknown;
-  if (!Array.isArray(parsed) || !parsed.every((entry) => entry && typeof entry === "object")) {
-    throw new Error("private trace payload must be an array of trace objects");
+  return parseTraceArrayValue(parsed);
+}
+
+function decodeBase64Url(value: unknown, label: string): Buffer {
+  if (typeof value !== "string" || !value) {
+    throw new Error(`encrypted private trace payload is missing ${label}`);
   }
-  return parsed as Trace[];
+  return Buffer.from(value, "base64url");
+}
+
+function privateTraceEncryptionKey(): Buffer {
+  const secret = process.env.PRIVATE_TRACES_ENCRYPTION_KEY?.trim();
+  if (!secret) {
+    throw new Error("PRIVATE_TRACES_ENCRYPTION_KEY is required for encrypted private traces");
+  }
+  if (Buffer.byteLength(secret, "utf8") < MIN_PRIVATE_TRACES_ENCRYPTION_KEY_BYTES) {
+    throw new Error(
+      `PRIVATE_TRACES_ENCRYPTION_KEY must be at least ${MIN_PRIVATE_TRACES_ENCRYPTION_KEY_BYTES} bytes`,
+    );
+  }
+  return createHash("sha256").update(secret, "utf8").digest();
+}
+
+function decryptPrivateTraceBundle(payload: Record<string, unknown>): string {
+  if (
+    payload.pythia_private_traces_encrypted !== 1 ||
+    payload.alg !== "AES-256-GCM" ||
+    payload.kdf !== "sha256"
+  ) {
+    throw new Error("unsupported encrypted private trace payload");
+  }
+  if (payload.aad !== PRIVATE_TRACE_AAD) {
+    throw new Error("encrypted private trace payload has unexpected aad");
+  }
+  const nonce = decodeBase64Url(payload.nonce, "nonce");
+  const tag = decodeBase64Url(payload.tag, "tag");
+  const ciphertext = decodeBase64Url(payload.ciphertext, "ciphertext");
+  const decipher = createDecipheriv("aes-256-gcm", privateTraceEncryptionKey(), nonce);
+  decipher.setAAD(Buffer.from(PRIVATE_TRACE_AAD, "utf8"));
+  decipher.setAuthTag(tag);
+  return Buffer.concat([decipher.update(ciphertext), decipher.final()]).toString("utf8");
+}
+
+function parsePrivateTracePayload(body: string, options: { source: "blob" | "local" }): Trace[] {
+  if (utf8ByteLength(body) > MAX_ENCRYPTED_PRIVATE_TRACE_BYTES) {
+    throw new Error(`private trace blob exceeds ${MAX_ENCRYPTED_PRIVATE_TRACE_BYTES} bytes`);
+  }
+  const parsed = JSON.parse(body) as unknown;
+  if (Array.isArray(parsed)) {
+    if (options.source === "blob" && process.env.VERCEL_ENV === "production") {
+      throw new Error("production private trace Blob must be encrypted");
+    }
+    return parseTraceArrayValue(parsed);
+  }
+  if (parsed && typeof parsed === "object" && "pythia_private_traces_encrypted" in parsed) {
+    return parseTraceArray(decryptPrivateTraceBundle(parsed as Record<string, unknown>));
+  }
+  throw new Error("private trace payload must be an array or encrypted bundle");
 }
 
 async function loadFromBlob(url: string): Promise<Trace[]> {
@@ -52,7 +117,7 @@ async function loadFromBlob(url: string): Promise<Trace[]> {
     if (!res.ok) {
       throw new Error(`blob fetch ${res.status}`);
     }
-    return parseTraceArray(await res.text());
+    return parsePrivateTracePayload(await res.text(), { source: "blob" });
   } finally {
     clearTimeout(t);
   }
