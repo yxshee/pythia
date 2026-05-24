@@ -16,7 +16,9 @@ class PackageSubmissionTests(unittest.TestCase):
             ".env",
             ".private/archive-traces/trace-000023.json",
             "submission.zip",
+            "submission.zip.sha256",
             "traces/trace-000023.json",
+            "verify/submission.zip.sha256",
             "web/data/.blob-url",
             "web/data/picks-full.json",
             "web/data/picks-full.private.json",
@@ -56,6 +58,7 @@ class PackageSubmissionTests(unittest.TestCase):
             ".github/workflows/ci.yml",
             "verify/screenshots/unlocked-trace.png",
             "verify/screenshots/explorer-tx.png",
+            "verify/agora-alpha-demo.mp4",
         ]
 
         for rel in included:

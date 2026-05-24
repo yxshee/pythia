@@ -130,13 +130,8 @@ _NON_MARKET_SOURCE_KINDS = frozenset({
 })
 
 
-def _check_blob_url(url: str, failures: list[str]) -> None:
-    """Fetch `url` and assert the response looks like a non-empty trace bundle.
-
-    The deep quality checks (per-trace source counts, risk factors, etc.) run
-    against the local file at publish time; this is the cheap liveness gate
-    that catches typos in the Vercel env var or a truncated upload.
-    """
+def _fetch_blob_entries(url: str, failures: list[str]) -> list[dict[str, Any]]:
+    """Fetch the private Blob trace bundle without echoing its secret URL."""
     request = urllib.request.Request(url, method="GET")
     try:
         with urllib.request.urlopen(request, timeout=_BLOB_FETCH_TIMEOUT_S) as response:
@@ -145,29 +140,58 @@ def _check_blob_url(url: str, failures: list[str]) -> None:
             body = response.read()
     except urllib.error.HTTPError as exc:
         exc.close()
-        failures.append(
-            f"PRIVATE_TRACES_BLOB_URL {url} returned HTTP {exc.code} (expected 200)"
-        )
-        return
+        failures.append(f"PRIVATE_TRACES_BLOB_URL returned HTTP {exc.code} (expected 200)")
+        return []
     except (urllib.error.URLError, TimeoutError, OSError) as exc:
-        failures.append(f"PRIVATE_TRACES_BLOB_URL {url} unreachable: {exc}")
-        return
+        failures.append(f"PRIVATE_TRACES_BLOB_URL unreachable: {exc}")
+        return []
 
     if status != 200:
-        failures.append(f"PRIVATE_TRACES_BLOB_URL {url} returned HTTP {status} (expected 200)")
-        return
+        failures.append(f"PRIVATE_TRACES_BLOB_URL returned HTTP {status} (expected 200)")
+        return []
     if "json" not in content_type:
         failures.append(
-            f"PRIVATE_TRACES_BLOB_URL {url} has content-type {content_type!r}; expected JSON"
+            f"PRIVATE_TRACES_BLOB_URL has content-type {content_type!r}; expected JSON"
         )
-        return
+        return []
     try:
         payload = json.loads(body)
     except json.JSONDecodeError as exc:
-        failures.append(f"PRIVATE_TRACES_BLOB_URL {url} body does not parse as JSON: {exc}")
-        return
+        failures.append(f"PRIVATE_TRACES_BLOB_URL body does not parse as JSON: {exc}")
+        return []
     if not isinstance(payload, list) or not payload:
-        failures.append(f"PRIVATE_TRACES_BLOB_URL {url} body is empty or not a JSON array")
+        failures.append("PRIVATE_TRACES_BLOB_URL body is empty or not a JSON array")
+        return []
+    if not all(isinstance(entry, dict) for entry in payload):
+        failures.append("PRIVATE_TRACES_BLOB_URL body must be an array of trace objects")
+        return []
+    return payload
+
+
+def _check_full_entries(
+    entries: list[dict[str, Any]], failures: list[str], *, source_label: str
+) -> None:
+    for entry in entries:
+        full = entry.get("full") or {}
+        trace_id = entry.get("trace_id")
+        if _FIXTURE_SOURCE in json.dumps(entry):
+            failures.append(f"{source_label} trace {trace_id}: full payload contains fixture source marker")
+        if full.get("decision") == "HOLD" and full.get("copy_trade_url"):
+            failures.append(f"{source_label} trace {trace_id}: HOLD full payload still has copy_trade_url")
+        sources = full.get("sources") or []
+        if len(sources) < 3:
+            failures.append(f"{source_label} trace {trace_id}: full payload has only {len(sources)} sources")
+        if not any(isinstance(source, dict) and source.get("observed_at") for source in sources):
+            failures.append(f"{source_label} trace {trace_id}: full payload sources lack observed_at")
+        kinds = {str(source.get("kind") or "") for source in sources if isinstance(source, dict)}
+        if not (_NON_MARKET_SOURCE_KINDS & kinds):
+            failures.append(
+                f"{source_label} trace {trace_id}: full payload sources lack a non-market kind "
+                f"(have {sorted(kinds)}; need one of {sorted(_NON_MARKET_SOURCE_KINDS)})"
+            )
+        risks = full.get("risk_factors") or []
+        if not risks:
+            failures.append(f"{source_label} trace {trace_id}: full payload has no risk_factors")
 
 
 def validate_repo(
@@ -191,6 +215,7 @@ def validate_repo(
         failures.append("public paid snapshot web/data/picks-full.json must not ship")
 
     full_entries: list[dict[str, Any]] = []
+    blob_entries: list[dict[str, Any]] = []
     blob_url = os.environ.get("PRIVATE_TRACES_BLOB_URL")
     if mode == "private-deploy":
         if private_full_path.exists():
@@ -212,7 +237,7 @@ def validate_repo(
                     "--check-blob requires PRIVATE_TRACES_BLOB_URL to be set in the environment"
                 )
             else:
-                _check_blob_url(blob_url, failures)
+                blob_entries = _fetch_blob_entries(blob_url, failures)
     # public-package mode intentionally ignores private_full_path: the
     # operator's working directory always has it after `publish_live_feed`,
     # but the zip builder in `scripts/package_submission.py` excludes
@@ -248,27 +273,9 @@ def validate_repo(
     if duplicate_questions:
         failures.append(f"home feed has duplicate questions: {duplicate_questions}")
 
-    for entry in full_entries:
-        full = entry.get("full") or {}
-        trace_id = entry.get("trace_id")
-        if _FIXTURE_SOURCE in json.dumps(entry):
-            failures.append(f"trace {trace_id}: full payload contains fixture source marker")
-        if full.get("decision") == "HOLD" and full.get("copy_trade_url"):
-            failures.append(f"trace {trace_id}: HOLD full payload still has copy_trade_url")
-        sources = full.get("sources") or []
-        if len(sources) < 3:
-            failures.append(f"trace {trace_id}: full payload has only {len(sources)} sources")
-        if not any(isinstance(source, dict) and source.get("observed_at") for source in sources):
-            failures.append(f"trace {trace_id}: full payload sources lack observed_at")
-        kinds = {str(source.get("kind") or "") for source in sources if isinstance(source, dict)}
-        if not (_NON_MARKET_SOURCE_KINDS & kinds):
-            failures.append(
-                f"trace {trace_id}: full payload sources lack a non-market kind "
-                f"(have {sorted(kinds)}; need one of {sorted(_NON_MARKET_SOURCE_KINDS)})"
-            )
-        risks = full.get("risk_factors") or []
-        if not risks:
-            failures.append(f"trace {trace_id}: full payload has no risk_factors")
+    _check_full_entries(full_entries, failures, source_label="trace")
+    if blob_entries:
+        _check_full_entries(blob_entries, failures, source_label="PRIVATE_TRACES_BLOB_URL")
 
     public_trace_files = sorted((repo_root / "traces").glob("trace-*.json")) if (repo_root / "traces").exists() else []
     if public_trace_files:
@@ -276,10 +283,16 @@ def validate_repo(
         more = "" if len(public_trace_files) <= 5 else f" and {len(public_trace_files) - 5} more"
         failures.append(f"public traces/ contains production trace JSON: {names}{more}")
 
+    preview_ids = {entry.get("trace_id") for entry in preview_entries}
     full_ids = {entry.get("trace_id") for entry in full_entries}
-    home_ids = {entry.get("trace_id") for entry in home}
-    if full_entries and home_ids != full_ids:
-        failures.append(f"private full trace ids {sorted(full_ids)} do not match preview ids {sorted(home_ids)}")
+    if full_entries and preview_ids != full_ids:
+        failures.append(f"private full trace ids {sorted(full_ids)} do not match preview ids {sorted(preview_ids)}")
+    blob_ids = {entry.get("trace_id") for entry in blob_entries}
+    if blob_entries and preview_ids != blob_ids:
+        failures.append(
+            f"PRIVATE_TRACES_BLOB_URL full trace ids {sorted(blob_ids)} "
+            f"do not match preview ids {sorted(preview_ids)}"
+        )
 
     return failures
 
@@ -303,8 +316,9 @@ def main() -> int:
         action="store_true",
         help=(
             "private-deploy mode only: fetch PRIVATE_TRACES_BLOB_URL and assert it "
-            "serves a non-empty JSON trace bundle. Catches typo'd or truncated Blob "
-            "URLs in the Vercel env before promoting a deploy."
+            "serves the same full trace IDs as web/data/picks-preview.json and "
+            "passes full-payload quality checks. Catches typo'd, truncated, or "
+            "stale Blob URLs in the Vercel env before promoting a deploy."
         ),
     )
     args = parser.parse_args()

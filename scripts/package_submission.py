@@ -58,6 +58,7 @@ EXCLUDED_NAMES = {
     "next-env.d.ts",
     "tsconfig.tsbuildinfo",
     "submission.zip",
+    "submission.zip.sha256",
 }
 
 

@@ -231,9 +231,10 @@ class ValidateSubmissionCheckBlobTests(unittest.TestCase):
                 with mock.patch.dict(os.environ, {"PRIVATE_TRACES_BLOB_URL": url}):
                     failures = validate_repo(root, mode="deploy", check_blob=True)
             self.assertTrue(
-                any(url in failure and "404" in failure for failure in failures),
+                any("PRIVATE_TRACES_BLOB_URL" in failure and "404" in failure for failure in failures),
                 failures,
             )
+            self.assertFalse(any(url in failure for failure in failures), failures)
 
     def test_check_blob_flag_fails_when_url_is_not_json(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -246,9 +247,10 @@ class ValidateSubmissionCheckBlobTests(unittest.TestCase):
                 with mock.patch.dict(os.environ, {"PRIVATE_TRACES_BLOB_URL": url}):
                     failures = validate_repo(root, mode="deploy", check_blob=True)
             self.assertTrue(
-                any(url in failure and "content-type" in failure for failure in failures),
+                any("PRIVATE_TRACES_BLOB_URL" in failure and "content-type" in failure for failure in failures),
                 failures,
             )
+            self.assertFalse(any(url in failure for failure in failures), failures)
 
     def test_check_blob_flag_fails_when_url_is_empty_list(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -261,9 +263,10 @@ class ValidateSubmissionCheckBlobTests(unittest.TestCase):
                 with mock.patch.dict(os.environ, {"PRIVATE_TRACES_BLOB_URL": url}):
                     failures = validate_repo(root, mode="deploy", check_blob=True)
             self.assertTrue(
-                any(url in failure and "empty" in failure for failure in failures),
+                any("PRIVATE_TRACES_BLOB_URL" in failure and "empty" in failure for failure in failures),
                 failures,
             )
+            self.assertFalse(any(url in failure for failure in failures), failures)
 
     def test_check_blob_flag_passes_when_url_serves_json(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -277,6 +280,78 @@ class ValidateSubmissionCheckBlobTests(unittest.TestCase):
                 with mock.patch.dict(os.environ, {"PRIVATE_TRACES_BLOB_URL": url}):
                     failures = validate_repo(root, mode="deploy", check_blob=True)
             self.assertEqual(failures, [])
+
+    def test_check_blob_flag_fails_when_blob_trace_ids_do_not_match_preview(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _scaffold(root)
+            preview = [_entry(i) for i in range(24, 32)]
+            local_full = [_full_entry(i) for i in range(24, 32)]
+            old_blob_full = [_full_entry(i) for i in range(9, 17)]
+            (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
+            (root / "web" / "data" / "picks-full.private.json").write_text(json.dumps(local_full))
+            body = json.dumps(old_blob_full).encode()
+
+            with _serve_blob(
+                {"/picks-full.private.json": (200, "application/json", body)}
+            ) as base:
+                url = f"{base}/picks-full.private.json"
+                with mock.patch.dict(os.environ, {"PRIVATE_TRACES_BLOB_URL": url}):
+                    failures = validate_repo(root, mode="deploy", check_blob=True)
+
+            self.assertTrue(
+                any("do not match preview ids" in failure for failure in failures),
+                failures,
+            )
+
+    def test_check_blob_flag_compares_against_raw_preview_ids_not_home_projection(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _scaffold(root)
+            preview = [_entry(i) for i in range(24, 33)]
+            preview[0]["onchain"]["tx_hash"] = ""
+            blob_full = [_full_entry(i) for i in range(25, 33)]
+            (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
+            body = json.dumps(blob_full).encode()
+
+            with _serve_blob(
+                {"/picks-full.private.json": (200, "application/json", body)}
+            ) as base:
+                url = f"{base}/picks-full.private.json"
+                with mock.patch.dict(os.environ, {"PRIVATE_TRACES_BLOB_URL": url}):
+                    failures = validate_repo(root, mode="deploy", check_blob=True)
+
+            self.assertTrue(
+                any("do not match preview ids" in failure for failure in failures),
+                failures,
+            )
+
+    def test_check_blob_flag_runs_full_payload_quality_checks_on_blob_entries(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _scaffold(root)
+            preview = [_entry(i) for i in range(24, 32)]
+            local_full = [_full_entry(i) for i in range(24, 32)]
+            blob_full = [_full_entry(i) for i in range(24, 32)]
+            blob_full[0]["full"]["sources"] = [
+                source for source in blob_full[0]["full"]["sources"]
+                if source.get("kind") != "event_data"
+            ]
+            (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
+            (root / "web" / "data" / "picks-full.private.json").write_text(json.dumps(local_full))
+            body = json.dumps(blob_full).encode()
+
+            with _serve_blob(
+                {"/picks-full.private.json": (200, "application/json", body)}
+            ) as base:
+                url = f"{base}/picks-full.private.json"
+                with mock.patch.dict(os.environ, {"PRIVATE_TRACES_BLOB_URL": url}):
+                    failures = validate_repo(root, mode="deploy", check_blob=True)
+
+            self.assertTrue(
+                any("lack a non-market kind" in failure for failure in failures),
+                failures,
+            )
 
     def test_check_blob_flag_fails_when_env_var_unset(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

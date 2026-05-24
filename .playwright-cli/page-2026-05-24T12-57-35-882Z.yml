@@ -1,0 +1,246 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e7]:
+        - generic [ref=e9]:
+          - generic [ref=e11]:
+            - heading "Agora Agents Submission!" [level=1] [ref=e13]
+            - generic [ref=e14]:
+              - text: Submit your project for the Agora Agents Hackathon!
+              - generic [ref=e15]: You can submit many times! We recommend you submit early and often! (v1.2)
+          - generic [ref=e17]:
+            - generic [ref=e19]:
+              - link "Sign in to Google" [ref=e20] [cursor=pointer]:
+                - /url: https://accounts.google.com/Login?continue=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSfgDV0TLAEONtGYDKSjxusDCeqsa4prj01FhoBM2a8NTQvfmA%2Fviewform%3Fentry.1231414276%3DPythia%2520%252F%2520Agora%2520Alpha%26entry.166578365%3D%2540yxshee%26entry.1199949619%3D%2540yxshdogra%26entry.1428800688%3D%2540yxshdogra%26entry.913264366%26entry.621211774%3DYash%2520Dogra%26entry.1534390798%3DPrediction-market%2520signals%2520are%2520easy%2520to%2520publish%2520but%2520hard%2520to%2520trust.%2520Most%2520AI%2520pick%2520feeds%2520expose%2520conclusions%2520without%2520auditable%2520reasoning%252C%2520source%2520discipline%252C%2520or%2520a%2520verifiable%2520record%2520that%2520the%2520paid%2520reasoning%2520shown%2520to%2520a%2520user%2520matches%2520the%2520trace%2520the%2520agent%2520actually%2520produced.%2520Pythia%2520solves%2520the%2520trust%2520gap%2520for%2520AI-generated%2520market%2520recommendations%2520by%2520making%2520provenance%252C%2520payment%252C%2520and%2520the%2520post-unlock%2520reasoning%2520path%2520verifiable%2520on%2520Arc.%26entry.1557322474%3DPythia%2520%252F%2520Agora%2520Alpha%2520is%2520a%2520non-custodial%2520Polymarket%2520recommendation%2520agent.%2520A%2520Python%2520analyst%2520generates%2520market%2520picks%252C%2520the%2520public%2520feed%2520shows%2520the%2520free%2520thesis%2520and%2520edge%252C%2520and%2520the%2520full%2520reasoning%2520trace%2520is%2520gated%2520behind%2520an%2520Arc%2520USDC%2520unlock.%2520Trace%2520hashes%2520are%2520anchored%2520on%2520Arc%2520via%2520TraceLog%252C%2520UnlockMarket%2520tracks%2520paid%2520access%252C%2520and%2520the%2520Next.js%2520app%2520verifies%2520a%2520nonce-bound%2520EIP-191%2520signature%2520plus%2520on-chain%2520isUnlocked%2520before%2520returning%2520the%2520full%2520trace%2520from%2520server-only%2520storage.%2520The%2520stack%2520uses%2520Python%252C%2520Solidity%252C%2520Foundry%252C%2520Next.js%252016%252C%2520wagmi%252Fviem%252C%2520Vercel%252C%2520and%2520Vercel%2520Blob.%2520Full%2520build%252C%2520test%252C%2520deploy%252C%2520wallet-smoke%252C%2520screenshot%252C%2520and%2520packaging%2520evidence%2520is%2520in%2520VERIFY.md.%26entry.206689788%3DLive%2520demo%2520is%2520deployed%2520at%2520agoraalpha.vercel.app%2520with%25208%2520generated%2520Polymarket%2520picks%252C%2520each%2520with%2520public%2520preview%2520metadata%2520and%2520Arc%2520trace%2520anchoring.%2520The%2520paid%2520unlock%2520path%2520was%2520verified%2520end-to-end%2520on%2520%252Fpick%252F16%253A%2520mint%252Fapprove%252Funlock%2520was%2520already%2520satisfied%2520on-chain%252C%2520the%2520API%2520returned%2520HTTP%2520200%2520for%2520the%2520full%2520trace%2520after%2520a%2520nonce-bound%2520EIP-191%2520signature%252C%2520and%2520replay%2520was%2520rejected%2520with%2520nonce-used.%2520VERIFY.md%2520includes%2520the%252011-step%2520cli-unlock%2520transcript%252C%2520Arcscan%2520transaction%2520link%252C%2520unlocked%2520page%2520screenshot%252C%2520package%2520validation%252C%2520and%2520final%2520sign-off.%2520Public%252Fsocial%2520traction%2520is%2520intentionally%2520not%2520overclaimed%2520yet%253B%2520this%2520is%2520a%2520judge-ready%2520hackathon%2520MVP%2520with%2520reproducible%2520evidence%2520rather%2520than%2520a%2520production%2520user-growth%2520launch.%26entry.689094089%3Dhttps%253A%252F%252Fgithub.com%252Fyxshee%252Fpythia%26entry.2004882604%3Dhttps%253A%252F%252Fagoraalpha.vercel.app%26entry.739608242%3Dhttps%253A%252F%252Fgithub.com%252Fyxshee%252Fpythia%252Fblob%252Fmain%252Fverify%252Fagora-alpha-demo.mp4%26entry.1190881901%3DPythia%2520exposes%2520reusable%2520Arc%2520primitives%2520for%2520other%2520builders%253A%2520a%2520USDC-denominated%2520UnlockMarket%2520with%2520registered%2520trace%2520IDs%2520and%2520price%2520overrides%252C%2520an%2520isUnlocked%2520gate%2520for%2520server-side%2520content%2520release%252C%2520a%2520nonce-bound%2520API%2520signature%2520pattern%252C%2520a%2520read-only%2520%252Fapi%252Frpc%2520proxy%2520that%2520keeps%2520Canteen%2520RPC%2520credentials%2520server-side%252C%2520package%2520validators%2520that%2520prevent%2520private%2520trace%2520leaks%252C%2520and%2520a%2520cli-unlock%2520smoke%2520harness%2520for%2520reproducing%2520the%2520whole%2520paid-access%2520path.%2520Compared%2520with%2520lower-level%2520Arc%2520examples%252C%2520this%2520is%2520an%2520app-level%2520reference%2520for%2520AI%2520agents%2520that%2520sell%2520or%2520gate%2520auditable%2520reasoning%2520while%2520preserving%2520a%2520clean%2520public%252Fprivate%2520data%2520split.%26entry.873456304%3DArc%2520worked%2520well%2520for%2520this%2520use%2520case%2520because%2520settlement%2520is%2520fast%252C%2520fees%2520are%2520tiny%252C%2520and%2520USDC-denominated%2520gas%252Fpayments%2520make%2520the%2520demo%2520legible%2520to%2520normal%2520fintech%2520users.%2520The%2520Canteen%2520RPC%2520and%2520Arcscan%2520made%2520the%2520audit%2520trail%2520easy%2520to%2520show%2520in%2520VERIFY.md.%2520Improvements%253A%2520publish%2520an%2520official%2520wagmi%252Fviem%2520chain%2520config%252C%2520make%2520the%2520faucet%252Ftest%2520USDC%2520path%2520more%2520discoverable%252C%2520document%2520which%2520JSON-RPC%2520methods%2520wallet%2520providers%2520should%2520expect%252C%2520and%2520add%2520a%2520canonical%2520paywall%252Funlock%2520example%2520that%2520combines%2520native%2520USDC%252C%2520signatures%252C%2520and%2520on-chain%2520access%2520checks.%26entry.2066378694%3DThe%2520hackathon%2520format%2520was%2520builder-friendly%2520and%2520the%2520repeat-submit%2520policy%2520reduced%2520deadline%2520risk.%2520The%2520biggest%2520improvement%2520would%2520be%2520publishing%2520the%2520final%2520submission%2520checklist%2520earlier%252C%2520especially%2520required%2520contact%2520fields%252C%2520public%2520repo%2520expectations%252C%2520and%2520the%2520video-demo%2520URL%2520requirement.%2520A%2520sample%2520excellent%2520submission%2520would%2520also%2520help%2520teams%2520calibrate%2520how%2520much%2520proof%2520to%2520include%2520in%2520README%252FVERIFY%2520artifacts.%26entry.2020871764%3D1%2520%28Solo%29%26entry.855240683%3DYes%2520-%2520I%2520would%2520love%2520to%2520apply%2520for%2520Arc%2520OSS!%2520I%2520can%2520commit%2520to%2520keeping%2520my%2520code%2520open%2520source!%26fbzx%3D4016986613565919162%26emailAddress%3Dyxshdogra%2540gmail.com
+              - text: to save your progress.
+              - button "Learn more" [ref=e21] [cursor=pointer]
+            - generic [ref=e23]: "* Indicates required question"
+        - list [ref=e24]:
+          - listitem [ref=e25]:
+            - generic [ref=e27]:
+              - heading "Email Required question" [level=3] [ref=e29]:
+                - generic [ref=e30]: Email
+                - generic "Required question" [ref=e31]: "*"
+              - textbox "Your email address" [ref=e36]: yxshdogra@gmail.com
+          - listitem [ref=e38]:
+            - generic [ref=e40]:
+              - heading "Project Name Required question" [level=3] [ref=e43]:
+                - generic [ref=e44]: Project Name
+                - generic "Required question" [ref=e45]: "*"
+              - textbox "Project Name Required question" [ref=e51]: Pythia / Agora Alpha
+          - listitem [ref=e53]:
+            - generic [ref=e55]:
+              - heading "Github Handle (include all Github handles if you're a team) Required question" [level=3] [ref=e58]:
+                - generic [ref=e59]: Github Handle (include all Github handles if you're a team)
+                - generic "Required question" [ref=e60]: "*"
+              - textbox "Github Handle (include all Github handles if you're a team) Required question" [ref=e66]: "@yxshee"
+          - listitem [ref=e68]:
+            - generic [ref=e70]:
+              - generic [ref=e72]:
+                - heading "Discord Handle (include all Discord handles if you're a team) Required question" [level=3] [ref=e73]:
+                  - generic [ref=e74]: Discord Handle (include all Discord handles if you're a team)
+                  - generic "Required question" [ref=e75]: "*"
+                - generic [ref=e76]: e.g. username#1234 or @username
+              - textbox "Discord Handle (include all Discord handles if you're a team) Required question" [ref=e82]: "@yxshdogra"
+          - listitem [ref=e84]:
+            - generic [ref=e86]:
+              - generic [ref=e88]:
+                - heading "Telegram Handle (include all Telegram handles if you're a team) Required question" [level=3] [ref=e89]:
+                  - generic [ref=e90]: Telegram Handle (include all Telegram handles if you're a team)
+                  - generic "Required question" [ref=e91]: "*"
+                - generic [ref=e92]: e.g. @username
+              - textbox "Telegram Handle (include all Telegram handles if you're a team) Required question" [ref=e98]: "@yxshdogra"
+          - listitem [ref=e100]:
+            - generic [ref=e102]:
+              - generic [ref=e104]:
+                - heading "Twitter / X Profile" [level=3] [ref=e105]:
+                  - generic [ref=e106]: Twitter / X Profile
+                - generic [ref=e107]:
+                  - text: Full URL, e.g.
+                  - link "https://x.com/username" [ref=e108] [cursor=pointer]:
+                    - /url: https://x.com/username
+              - generic [ref=e113]:
+                - textbox "Twitter / X Profile" [ref=e114]
+                - generic: Your answer
+          - listitem [ref=e116]:
+            - generic [ref=e118]:
+              - heading "Number of Team Members Required question" [level=3] [ref=e121]:
+                - generic [ref=e122]: Number of Team Members
+                - generic "Required question" [ref=e123]: "*"
+              - radiogroup "Number of Team Members Required question" [ref=e126]:
+                - generic [ref=e127]:
+                  - generic [ref=e130]:
+                    - radio "1 (Solo)" [checked] [ref=e132] [cursor=pointer]
+                    - generic [ref=e137]: 1 (Solo)
+                  - generic [ref=e140]:
+                    - radio "2" [ref=e142] [cursor=pointer]
+                    - generic [ref=e147]: "2"
+                  - generic [ref=e150]:
+                    - radio "3" [ref=e152] [cursor=pointer]
+                    - generic [ref=e157]: "3"
+                  - generic [ref=e160]:
+                    - radio "4" [ref=e162] [cursor=pointer]
+                    - generic [ref=e167]: "4"
+                  - generic [ref=e170]:
+                    - radio "5+" [ref=e172] [cursor=pointer]
+                    - generic [ref=e177]: 5+
+          - listitem [ref=e178]:
+            - generic [ref=e180]:
+              - generic [ref=e182]:
+                - heading "Team Members Names Required question" [level=3] [ref=e183]:
+                  - generic [ref=e184]: Team Members Names
+                  - generic "Required question" [ref=e185]: "*"
+                - generic [ref=e186]: List all team members, one per line. Include yourself.
+              - textbox "Team Members Names Required question" [ref=e191]: Yash Dogra
+          - listitem [ref=e193]:
+            - generic [ref=e195]:
+              - generic [ref=e197]:
+                - heading "Problem Statement Required question" [level=3] [ref=e198]:
+                  - generic [ref=e199]: Problem Statement
+                  - generic "Required question" [ref=e200]: "*"
+                - generic [ref=e201]: What problem is your project solving? What is compelling about this problem?
+              - textbox "Problem Statement Required question" [ref=e206]: Prediction-market signals are easy to publish but hard to trust. Most AI pick feeds expose conclusions without auditable reasoning, source discipline, or a verifiable record that the paid reasoning shown to a user matches the trace the agent actually produced. Pythia solves the trust gap for AI-generated market recommendations by making provenance, payment, and the post-unlock reasoning path verifiable on Arc.
+          - listitem [ref=e208]:
+            - generic [ref=e210]:
+              - generic [ref=e212]:
+                - heading "Project Description Required question" [level=3] [ref=e213]:
+                  - generic [ref=e214]: Project Description
+                  - generic "Required question" [ref=e215]: "*"
+                - generic [ref=e216]: Describe what your project does, how it works, and what tech you used.
+              - textbox "Project Description Required question" [ref=e221]: Pythia / Agora Alpha is a non-custodial Polymarket recommendation agent. A Python analyst generates market picks, the public feed shows the free thesis and edge, and the full reasoning trace is gated behind an Arc USDC unlock. Trace hashes are anchored on Arc via TraceLog, UnlockMarket tracks paid access, and the Next.js app verifies a nonce-bound EIP-191 signature plus on-chain isUnlocked before returning the full trace from server-only storage. The stack uses Python, Solidity, Foundry, Next.js 16, wagmi/viem, Vercel, and Vercel Blob. Full build, test, deploy, wallet-smoke, screenshot, and packaging evidence is in VERIFY.md.
+          - listitem [ref=e223]:
+            - generic [ref=e225]:
+              - generic [ref=e227]:
+                - heading "Traction Required question" [level=3] [ref=e228]:
+                  - generic [ref=e229]: Traction
+                  - generic "Required question" [ref=e230]: "*"
+                - generic [ref=e231]: How many real people have tried the product? How much validation were you able to get from end users? Also include things like RTs / follows / stars here =)
+              - textbox "Traction Required question" [ref=e236]: "Live demo is deployed at agoraalpha.vercel.app with 8 generated Polymarket picks, each with public preview metadata and Arc trace anchoring. The paid unlock path was verified end-to-end on /pick/16: mint/approve/unlock was already satisfied on-chain, the API returned HTTP 200 for the full trace after a nonce-bound EIP-191 signature, and replay was rejected with nonce-used. VERIFY.md includes the 11-step cli-unlock transcript, Arcscan transaction link, unlocked page screenshot, package validation, and final sign-off. Public/social traction is intentionally not overclaimed yet; this is a judge-ready hackathon MVP with reproducible evidence rather than a production user-growth launch."
+          - listitem [ref=e238]:
+            - generic [ref=e240]:
+              - generic [ref=e242]:
+                - heading "Project Source Code Required question" [level=3] [ref=e243]:
+                  - generic [ref=e244]: Project Source Code
+                  - generic "Required question" [ref=e245]: "*"
+                - generic [ref=e246]: GitHub repo URL - Make sure it is accessible publicly. (Ping us if that is not possible.)
+              - textbox "Project Source Code Required question" [ref=e252]: https://github.com/yxshee/pythia
+          - listitem [ref=e254]:
+            - generic [ref=e256]:
+              - generic [ref=e258]:
+                - heading "Project Live" [level=3] [ref=e259]:
+                  - generic [ref=e260]: Project Live
+                - generic [ref=e261]: URL to your deployed project
+              - textbox "Project Live" [ref=e267]: https://agoraalpha.vercel.app
+          - listitem [ref=e269]:
+            - generic [ref=e271]:
+              - generic [ref=e273]:
+                - heading "Project Video Demo Required question" [level=3] [ref=e274]:
+                  - generic [ref=e275]: Project Video Demo
+                  - generic "Required question" [ref=e276]: "*"
+                - generic [ref=e277]:
+                  - text: Loom / YouTube / Vimeo link — max 3 minutes recommended
+                  - text: Focus on the core features. Keep it concise. Add subtitles if audio is hard to understand / hear.
+              - textbox "Project Video Demo Required question" [ref=e283]: https://github.com/yxshee/pythia/blob/main/verify/agora-alpha-demo.mp4
+          - listitem [ref=e285]:
+            - generic [ref=e287]:
+              - 'heading "(Arc OSS) We''re creating an Arc Open Source Showcase. More here: https://arc-oss.thecanteenapp.com/ We want to create codebases that other builders can hack upon!" [level=3] [ref=e290]':
+                - generic [ref=e291]:
+                  - text: "(Arc OSS) We're creating an Arc Open Source Showcase. More here:"
+                  - link "https://arc-oss.thecanteenapp.com/" [ref=e292] [cursor=pointer]:
+                    - /url: https://arc-oss.thecanteenapp.com/
+                  - generic [ref=e294]: We want to create codebases that other builders can hack upon!
+              - 'list "(Arc OSS) We''re creating an Arc Open Source Showcase. More here: https://arc-oss.thecanteenapp.com/ We want to create codebases that other builders can hack upon!" [ref=e296]':
+                - listitem [ref=e297]:
+                  - generic [ref=e299]:
+                    - checkbox "Yes - I would love to apply for Arc OSS! I can commit to keeping my code open source!" [checked] [ref=e300] [cursor=pointer]
+                    - generic [ref=e305]: Yes - I would love to apply for Arc OSS! I can commit to keeping my code open source!
+          - listitem [ref=e306]:
+            - generic [ref=e308]:
+              - heading "(Arc OSS) If you are applying for Arc OSS, why should we choose your project? What primitives are you exposing that other builders could find useful? Compared to the code out there for Arc builders (mostly in circlefin/arc-* repos) what tools and flows do you add? (You can also answer in the CLI.)" [level=3] [ref=e311]:
+                - generic [ref=e312]:
+                  - text: (
+                  - link "Arc OSS" [ref=e313] [cursor=pointer]:
+                    - /url: https://arc-oss.thecanteenapp.com/
+                  - text: ) If you are applying for Arc OSS, why should we choose your project? What primitives are you exposing that other builders could find useful?
+                  - generic [ref=e315]: Compared to the code out there for Arc builders (mostly in circlefin/arc-* repos) what tools and flows do you add? (You can also answer in the CLI.)
+              - textbox "(Arc OSS) If you are applying for Arc OSS, why should we choose your project? What primitives are you exposing that other builders could find useful? Compared to the code out there for Arc builders (mostly in circlefin/arc-* repos) what tools and flows do you add? (You can also answer in the CLI.)" [ref=e320]: "Pythia exposes reusable Arc primitives for other builders: a USDC-denominated UnlockMarket with registered trace IDs and price overrides, an isUnlocked gate for server-side content release, a nonce-bound API signature pattern, a read-only /api/rpc proxy that keeps Canteen RPC credentials server-side, package validators that prevent private trace leaks, and a cli-unlock smoke harness for reproducing the whole paid-access path. Compared with lower-level Arc examples, this is an app-level reference for AI agents that sell or gate auditable reasoning while preserving a clean public/private data split."
+          - listitem [ref=e322]:
+            - generic [ref=e324]:
+              - generic [ref=e326]:
+                - heading "Circle / Arc Feedback" [level=3] [ref=e327]:
+                  - generic [ref=e328]: Circle / Arc Feedback
+                - generic [ref=e329]:
+                  - text: What worked with Circle / Arc, and where can Circle / Arc improve as a product and resources?
+                  - text: (The specificity and quality of your answer might win you a feedback award!)
+              - textbox "Circle / Arc Feedback" [ref=e334]: "Arc worked well for this use case because settlement is fast, fees are tiny, and USDC-denominated gas/payments make the demo legible to normal fintech users. The Canteen RPC and Arcscan made the audit trail easy to show in VERIFY.md. Improvements: publish an official wagmi/viem chain config, make the faucet/test USDC path more discoverable, document which JSON-RPC methods wallet providers should expect, and add a canonical paywall/unlock example that combines native USDC, signatures, and on-chain access checks."
+          - listitem [ref=e336]:
+            - generic [ref=e338]:
+              - generic [ref=e340]:
+                - heading "General Feedback" [level=3] [ref=e341]:
+                  - generic [ref=e342]: General Feedback
+                - generic [ref=e343]: What worked well? What didn't? What could the Canteen team improve for future hackathons?
+              - textbox "General Feedback" [ref=e348]: The hackathon format was builder-friendly and the repeat-submit policy reduced deadline risk. The biggest improvement would be publishing the final submission checklist earlier, especially required contact fields, public repo expectations, and the video-demo URL requirement. A sample excellent submission would also help teams calibrate how much proof to include in README/VERIFY artifacts.
+        - generic [ref=e350]:
+          - generic [ref=e352]: A copy of your responses will be emailed to the address that you provided.
+          - generic [ref=e353]:
+            - button "Submit" [ref=e355] [cursor=pointer]:
+              - generic [ref=e358]: Submit
+            - button "Clear form" [ref=e360] [cursor=pointer]:
+              - generic [ref=e363]: Clear form
+          - generic [ref=e364]: Never submit passwords through Google Forms.
+      - generic [ref=e365]:
+        - generic [ref=e366]:
+          - generic [ref=e369]:
+            - text: reCAPTCHA
+            - generic [ref=e370]:
+              - link "Privacy" [ref=e371] [cursor=pointer]:
+                - /url: https://www.google.com/intl/en/policies/privacy/
+              - link "Terms" [ref=e372] [cursor=pointer]:
+                - /url: https://www.google.com/intl/en/policies/terms/
+          - text: This form was created inside Canteen.
+          - paragraph [ref=e373]:
+            - text: Does this form look suspicious?
+            - link "Report" [ref=e374] [cursor=pointer]:
+              - /url: https://docs.google.com/forms/d/e/1FAIpQLSfgDV0TLAEONtGYDKSjxusDCeqsa4prj01FhoBM2a8NTQvfmA/abuse
+        - link "Google Forms" [ref=e376] [cursor=pointer]:
+          - /url: //www.google.com/forms/about/?utm_source=product&utm_medium=forms_logo&utm_campaign=forms
+          - img "Google" [ref=e377]
+          - text: Forms
+    - generic [ref=e381]:
+      - button "help and feedback" [ref=e382] [cursor=pointer]
+      - tooltip [ref=e385]: Help and feedback
+  - iframe [active] [ref=e402]:
+    - dialog [ref=f4e3]:
+      - generic [ref=f4e4]:
+        - generic [ref=f4e7]:
+          - text: Select all squares with
+          - strong [ref=f4e8]: motorcycles
+          - generic [ref=f4e9]: If there are none, click skip
+        - table [ref=f4e12]:
+          - rowgroup [ref=f4e13]:
+            - row [ref=f4e14]:
+              - button [ref=f4e15]
+              - button [ref=f4e18]
+              - button [ref=f4e21]
+              - button [ref=f4e24]
+            - row [ref=f4e27]:
+              - button [ref=f4e28]
+              - button [ref=f4e31]
+              - button [ref=f4e34]
+              - button [ref=f4e37]
+            - row [ref=f4e40]:
+              - button [ref=f4e41]
+              - button [ref=f4e44]
+              - button [ref=f4e47]
+              - button [ref=f4e50]
+            - row [ref=f4e53]:
+              - button [ref=f4e54]
+              - button [ref=f4e57]
+              - button [ref=f4e60]
+              - button [ref=f4e63]
+      - generic [ref=f4e69]:
+        - generic [ref=f4e70]:
+          - button "Get a new challenge" [ref=f4e72] [cursor=pointer]
+          - button "Get an audio challenge" [ref=f4e74] [cursor=pointer]
+          - button "Help" [ref=f4e76] [cursor=pointer]
+        - button "Skip" [ref=f4e78] [cursor=pointer]
