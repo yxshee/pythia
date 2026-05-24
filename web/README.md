@@ -72,7 +72,7 @@ Vercel env):
 ```bash
 cd ../agent
 PRIVATE_TRACES_BLOB_URL=https://…  uv run python -m pythia.scripts.validate_submission \
-  --mode deploy --check-blob
+  --mode private-deploy --check-blob
 ```
 
 Exit code 0 means the URL is reachable, served as JSON, and parsed to a

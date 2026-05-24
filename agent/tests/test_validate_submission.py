@@ -334,5 +334,43 @@ class ValidateSubmissionPackageModeTests(unittest.TestCase):
             )
 
 
+class ValidateSubmissionModeAliasTests(unittest.TestCase):
+    """Old mode names ('deploy', 'package') remain aliases for the canonical
+    names ('private-deploy', 'public-package') so STATUS.md / README.md
+    examples keep working while docs are updated."""
+
+    def _staged_repo(self, root: Path) -> None:
+        _scaffold(root)
+        preview = [_entry(i) for i in range(1, 9)]
+        full = [_full_entry(i) for i in range(1, 9)]
+        (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
+        (root / "web" / "data" / "picks-full.private.json").write_text(json.dumps(full))
+
+    def test_private_deploy_matches_deploy_alias(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._staged_repo(root)
+            self.assertEqual(
+                validate_repo(root, mode="private-deploy"),
+                validate_repo(root, mode="deploy"),
+            )
+
+    def test_public_package_matches_package_alias(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._staged_repo(root)
+            self.assertEqual(
+                validate_repo(root, mode="public-package"),
+                validate_repo(root, mode="package"),
+            )
+
+    def test_unknown_mode_raises(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._staged_repo(root)
+            with self.assertRaisesRegex(ValueError, "unknown mode"):
+                validate_repo(root, mode="not-a-real-mode")
+
+
 if __name__ == "__main__":
     unittest.main()

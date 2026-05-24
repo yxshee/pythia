@@ -2,14 +2,15 @@
 
 Two modes:
 
-* ``deploy`` (default): for the live Vercel deploy. Requires the paid
-  full bundle to exist locally (``web/data/picks-full.private.json``) OR
-  a Vercel Blob URL (``PRIVATE_TRACES_BLOB_URL``) to be configured. Runs
-  full-payload quality checks against the local file when present.
+* ``private-deploy`` (default; alias ``deploy``): for the live Vercel
+  deploy. Requires the paid full bundle to exist locally
+  (``web/data/picks-full.private.json``) OR a Vercel Blob URL
+  (``PRIVATE_TRACES_BLOB_URL``) to be configured. Runs full-payload
+  quality checks against the local file when present.
 
-* ``package``: for the public submission zip. Forbids the paid full
-  bundle and the legacy public full snapshot. Runs only public-surface
-  checks.
+* ``public-package`` (alias ``package``): for the public submission
+  zip. Forbids the paid full bundle and the legacy public full
+  snapshot. Runs only public-surface checks.
 
 Both modes share the public-surface invariants: preview cleanliness,
 wrong FOMC date patterns, stale unlock-price copy, fixture source
@@ -18,8 +19,8 @@ markers, public ``traces/`` absence, and home-feed dedup.
 Usage::
 
     cd agent
-    uv run python -m pythia.scripts.validate_submission --mode deploy
-    uv run python -m pythia.scripts.validate_submission --mode package
+    uv run python -m pythia.scripts.validate_submission --mode private-deploy
+    uv run python -m pythia.scripts.validate_submission --mode public-package
 """
 
 from __future__ import annotations
@@ -35,6 +36,15 @@ from pathlib import Path
 from typing import Any
 
 _BLOB_FETCH_TIMEOUT_S = 5.0
+
+# Old names accepted as aliases so STATUS.md / README.md examples keep working
+# while docs are updated. Canonical names are 'private-deploy' / 'public-package'.
+_MODE_ALIASES: dict[str, str] = {
+    "deploy": "private-deploy",
+    "package": "public-package",
+    "private-deploy": "private-deploy",
+    "public-package": "public-package",
+}
 
 _PREVIEW_FORBIDDEN_KEYS = frozenset({
     "analyst",
@@ -161,10 +171,14 @@ def _check_blob_url(url: str, failures: list[str]) -> None:
 
 
 def validate_repo(
-    repo_root: Path, *, mode: str = "deploy", check_blob: bool = False
+    repo_root: Path, *, mode: str = "private-deploy", check_blob: bool = False
 ) -> list[str]:
-    if mode not in {"deploy", "package"}:
-        raise ValueError(f"unknown mode: {mode!r}; expected 'deploy' or 'package'")
+    canonical = _MODE_ALIASES.get(mode)
+    if canonical is None:
+        raise ValueError(
+            f"unknown mode: {mode!r}; expected one of {sorted(_MODE_ALIASES)}"
+        )
+    mode = canonical
 
     preview_path = repo_root / "web" / "data" / "picks-preview.json"
     public_full_path = repo_root / "web" / "data" / "picks-full.json"
@@ -178,7 +192,7 @@ def validate_repo(
 
     full_entries: list[dict[str, Any]] = []
     blob_url = os.environ.get("PRIVATE_TRACES_BLOB_URL")
-    if mode == "deploy":
+    if mode == "private-deploy":
         if private_full_path.exists():
             full_entries = _load_json(private_full_path)
         elif blob_url:
@@ -189,7 +203,7 @@ def validate_repo(
             pass
         else:
             failures.append(
-                "deploy mode: web/data/picks-full.private.json is missing AND "
+                "private-deploy mode: web/data/picks-full.private.json is missing AND "
                 "PRIVATE_TRACES_BLOB_URL is unset"
             )
         if check_blob:
@@ -199,11 +213,11 @@ def validate_repo(
                 )
             else:
                 _check_blob_url(blob_url, failures)
-    # package mode intentionally ignores private_full_path: the operator's
-    # working directory always has it after `publish_live_feed`, but the
-    # zip builder in `scripts/package_submission.py` excludes everything
-    # matching `web/data/picks-full*`. The shipped zip will not contain
-    # the private bundle even when the working tree does.
+    # public-package mode intentionally ignores private_full_path: the
+    # operator's working directory always has it after `publish_live_feed`,
+    # but the zip builder in `scripts/package_submission.py` excludes
+    # everything matching `web/data/picks-full*`. The shipped zip will not
+    # contain the private bundle even when the working tree does.
 
     scan_roots = ("agent", "web", "traces", "README.md", "STATUS.md", "VERIFY.md", "docs")
     for pattern in _WRONG_FOMC_PATTERNS:
@@ -274,17 +288,23 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--mode",
-        choices=("deploy", "package"),
-        default="deploy",
-        help="deploy: live Vercel state (default). package: contents of the public submission zip.",
+        choices=("private-deploy", "public-package", "deploy", "package"),
+        default="private-deploy",
+        help=(
+            "private-deploy (default): live Vercel state — requires the paid full "
+            "bundle locally OR PRIVATE_TRACES_BLOB_URL. "
+            "public-package: contents of the public submission zip — forbids the "
+            "paid bundle. "
+            "'deploy'/'package' are accepted aliases for back-compat."
+        ),
     )
     parser.add_argument(
         "--check-blob",
         action="store_true",
         help=(
-            "deploy mode only: fetch PRIVATE_TRACES_BLOB_URL and assert it serves a "
-            "non-empty JSON trace bundle. Catches typo'd or truncated Blob URLs in the "
-            "Vercel env before promoting a deploy."
+            "private-deploy mode only: fetch PRIVATE_TRACES_BLOB_URL and assert it "
+            "serves a non-empty JSON trace bundle. Catches typo'd or truncated Blob "
+            "URLs in the Vercel env before promoting a deploy."
         ),
     )
     args = parser.parse_args()
@@ -299,19 +319,23 @@ def main() -> int:
     preview_entries = _load_json(repo_root / "web" / "data" / "picks-preview.json")
     home = _latest_by_market(_eligible_home_entries(preview_entries))
     private_full_path = repo_root / "web" / "data" / "picks-full.private.json"
-    if args.mode == "deploy" and private_full_path.exists():
+    canonical_mode = _MODE_ALIASES[args.mode]
+    if canonical_mode == "private-deploy" and private_full_path.exists():
         full_entries = _load_json(private_full_path)
         print(
-            f"submission data ok (deploy): {len(home)} home markets, "
+            f"submission data ok (private-deploy): {len(home)} home markets, "
             f"{len(full_entries)} private full traces"
         )
-    elif args.mode == "deploy":
+    elif canonical_mode == "private-deploy":
         print(
-            f"submission data ok (deploy): {len(home)} home markets, "
+            f"submission data ok (private-deploy): {len(home)} home markets, "
             "private bundle served from PRIVATE_TRACES_BLOB_URL"
         )
     else:
-        print(f"submission data ok (package): {len(home)} home markets, no paid bundle present")
+        print(
+            f"submission data ok (public-package): {len(home)} home markets, "
+            "no paid bundle present"
+        )
     return 0
 
 
