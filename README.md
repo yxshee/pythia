@@ -110,15 +110,13 @@ Pythia recommends; it never trades. Followers place orders themselves on Polymar
 
 <table>
 <tr>
-<th>Locked preview</th>
+
 <th>Paid unlock</th>
 </tr>
 <tr>
-<td><a href="https://agoraalpha.vercel.app/pick/29"><img src="verify/screenshots/pick-preview-locked.png" alt="Locked preview — BUY NO on the Canadiens, paywall CTA visible" width="430" /></a></td>
 <td><a href="https://agoraalpha.vercel.app"><img src="verify/screenshots/unlocked-trace.png" alt="Unlocked trace — full reasoning chain, sources, sizing" width="430" /></a></td>
 </tr>
 <tr>
-<td align="center"><sub><em>Free signal · paywalled reasoning</em></sub></td>
 <td align="center"><sub><em>Post-unlock: sizing, EV, sources, risks</em></sub></td>
 </tr>
 </table>
