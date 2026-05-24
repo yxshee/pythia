@@ -22,7 +22,7 @@
 | Final promotion tree | `main` / `origin/main` aligned for the final package and deploy verification; final runtime hardening keeps rate-limit counters out of Blob while preserving durable nonce replay. |
 | Generated at      | `2026-05-24T18:27:21Z` (§5.4 final trace-24 live unlock); screenshots refreshed on `2026-05-24`; package manifest generated after final zip (§7). |
 | Production URL    | https://agoraalpha.vercel.app                                      |
-| Production deploy | `dpl_BoAm2rmGoRE8A5kP5cuvx7NjAir4` / `https://agoraalpha-9xn58kz0n-yashs-projects-a859a420.vercel.app`, aliased to `https://agoraalpha.vercel.app`. |
+| Production deploy | Latest `https://agoraalpha.vercel.app` production alias verified with `vercel inspect`. The exact deployment id is kept in the operator handoff because docs-only proof commits can trigger a fresh Vercel deployment. |
 | UnlockMarket addr | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` (registered trace IDs `24,25,26,27,28,29,30,31`) |
 | Chain             | Arc testnet, chain id `5042002`                                    |
 
