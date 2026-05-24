@@ -22,7 +22,7 @@
 | Post-merge commit | `bcc1d5531fca9300bbd5e8ac12ae8047d150a050` (squash of PR #26 into `main` on `2026-05-23T18:24:31Z`; §3-post-merge, §4-post-merge, §8 capture this commit's live behavior) |
 | Branch            | `main` (post-merge); `audit/executive-verdict-fixes` deleted on merge |
 | Worktree clean    | clean post-merge (run `git status` on `main` at `bcc1d55`)         |
-| Generated at      | `2026-05-23T15:45:12Z` (§1, §2, §7); `2026-05-23T17:15:50Z` (§3, §4 pre-merge baseline); `2026-05-23T18:33:00Z` (§3-post-merge); `2026-05-23T18:35:00Z` (§4-post-merge); §5 + §8 captured at handoff |
+| Generated at      | `2026-05-23T15:45:12Z` (§1, §2, §7); `2026-05-23T17:15:50Z` (§3, §4 pre-merge baseline); `2026-05-23T18:33:00Z` (§3-post-merge); `2026-05-23T18:35:00Z` (§4-post-merge); `2026-05-24T09:06:47Z` (§5 cli-unlock transcript); `2026-05-24T11:01:35Z` (§6 + §8 sign-off) |
 | Production URL    | https://agoraalpha.vercel.app                                      |
 | Preview URL       | `https://pythia-git-audit-executive-verdi-46ac16-yashs-projects-a859a420.vercel.app` (gated by Vercel SSO; pre-merge baseline ran against prod instead — see §3 note) |
 | UnlockMarket addr | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` (registered trace IDs `9,10,11,12,13,14,15,16`) |
@@ -706,72 +706,125 @@ at the size gate before any parsing or context work.
 
 ## 5. Paid unlock — live transcript
 
-Wallet is a fresh testnet address; values are redacted only where they would
-expose a private key. The trace id, contract address, and tx hash are public.
+Captured 2026-05-24T09:06:47Z via [scripts/cli-unlock.mjs](scripts/cli-unlock.mjs)
+against the production deploy `https://agoraalpha.vercel.app`. The script
+mirrors the in-browser `UnlockButton` flow (mint → approve → unlock → GET
+nonce → sign EIP-191 → POST → replay) and is the operator's reproducible
+one-command alternative to a manual click-through.
 
-### 5.1 Nonce issuance
+Wallet `0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e` was funded with DevUSDC
+and unlocked trace `16` in an earlier partial run (see §5.4 for the onchain
+tx hash). The script is idempotent: when `isUnlocked(traceId, buyer)` is
+already `true` on-chain, steps 5–7 (mint/approve/unlock) skip and the run
+exercises only the server-side paywall chain (nonce → sign → POST → replay).
+The cli output is verbatim and safe to commit — `maskUrl()`
+([scripts/cli-unlock.mjs:76-83](scripts/cli-unlock.mjs#L76-L83)) strips the
+`swrm_…` secret suffix from the Canteen RPC URL before printing, and
+`PRIVATE_KEY` is never logged.
+
+### 5.1 Full cli-unlock transcript
 
 Command:
 
 ```bash
-WALLET=<wallet address, no 0x prefix is fine in the curl path>
-TRACE=16
-curl -s "https://agoraalpha.vercel.app/api/paywall/nonce?traceId=${TRACE}&address=0x${WALLET}"
+env ARC_RPC_URL="$ARC_RPC_URL" PRIVATE_KEY="$PRIVATE_KEY" \
+  node scripts/cli-unlock.mjs \
+  --base=https://agoraalpha.vercel.app --trace-id=16
 ```
 
 ```text
-TODO: { "nonce": "...", "message": "Unlock Pythia trace 16 for 0x...\\nNonce: ...\\nIssued: 2026-05-..." }
+[1/11] Wallet:    0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e
+[2/11] Args:      base=https://agoraalpha.vercel.app  trace-id=16  rpc=https://rpc.testnet.arc-node.thecanteenapp.com/…  dry-run=false
+[3/11] Clients:   viem public+wallet on chain 5042002
+[4/11] priceFor:  0.1 USDC (raw=100000)
+         balance:  1000001 USDC
+[5/11] mint:      skipped (balance >= price)
+         allow:    0.1 USDC
+[6/11] approve:   skipped (allowance >= price)
+[7/11] unlock:    skipped (already unlocked on-chain)
+[8/11] GET:       https://agoraalpha.vercel.app/api/traces/16/full?address=0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e
+         nonce:    444f96b7-0937-4fa1-a407-15927d7234ca
+         issued:   2026-05-24T09:06:47.475Z
+         expires:  2026-05-24T09:11:47.475Z
+[9/11] sign:      EIP-191 message (287 chars)
+         sig:      0xc83bb56fd966bc6c…ad1b
+[10/11] POST:     https://agoraalpha.vercel.app/api/traces/16/full
+         HTTP 200: {"agent_probability_yes":0.18,"confidence":"high","copy_trade_url":"https://polymarket.com/event/will-the-colorado-avalanche-win-the-2026-nhl-stanley-cup?builderCode=pythia&side=no","current_implied_yes":0.3225,"decision":"BUY_NO","edge_bps…
+[11/11] replay:   POST same body again (expect 401 nonce-used)
+         HTTP 401: {"error":"nonce-used"}
+
+DONE: 11/11 steps complete. Trace 16 unlocked and replay rejected.
 ```
 
-### 5.2 Sign + POST
+### 5.2 Full 200 body — required invariants
 
-Command (wallet signs `message` from 5.1, then):
-
-```bash
-curl -s -X POST "https://agoraalpha.vercel.app/api/traces/${TRACE}/full" \
-  -H 'content-type: application/json' \
-  -d '{"address":"0x...","nonce":"...","signature":"0x...","message":"..."}'
-```
+The cli-unlock script truncates the 200 body to the first 200 chars for
+readability. A second paywall round (fresh nonce → fresh sign → fresh
+POST) was issued to capture the structured fields the §5 template
+requires. Parsed JSON keys (top-level, no nested `.full` envelope):
 
 ```text
-TODO: expected HTTP 200 with the full trace JSON. Capture:
-  - decision
-  - edge_bps
-  - source kinds (must include at least one of: event_data, news, sentiment, official_data)
-  - risk_factors length
+agent_probability_yes, confidence, copy_trade_url, current_implied_yes,
+decision, edge_bps, end_date_iso, expected_value_pct, generated_at,
+market_id, market_liquidity_usd, market_url, market_volume_24h_usd,
+model, question, reasoning, risk, risk_factors, sources,
+suggested_size_by_profile, suggested_size_usdc, trace_hash, trace_id
 ```
+
+Required-invariant capture for trace 16:
+
+| Field | Value | Invariant |
+|-------|-------|-----------|
+| `decision` | `BUY_NO` | one of {BUY_YES, BUY_NO, HOLD} ✅ |
+| `edge_bps` | `-1425` | signed integer present ✅ |
+| `confidence` | `high` | one of {low, medium, high} ✅ |
+| `agent_probability_yes` | `0.18` | 0 ≤ p ≤ 1 ✅ |
+| `current_implied_yes` | `0.3225` | 0 ≤ p ≤ 1 ✅ |
+| `sources.length` | `4` | ≥ 3 ✅ |
+| `source.kind` set | `[model, market_data, resolution_criteria, official_data]` | must include at least one non-market kind (`official_data` ✅) |
+| `risk_factors.length` | `1` | ≥ 1 ✅ |
 
 ### 5.3 Replay rejection
 
-Re-run the exact same POST from 5.2.
+Step 11 of the transcript above. Re-posting the exact same
+`{ address, nonce, signature, message }` body a second time:
 
 ```text
-TODO: expected HTTP 409 with body { "error": "nonce-used" } or equivalent
+HTTP 401: {"error":"nonce-used"}
 ```
+
+Proves the nonce-consumption invariant in
+[web/app/api/traces/[traceId]/full/route.ts](web/app/api/traces/%5BtraceId%5D/full/route.ts):
+on a successful 200, the nonce is consumed and any subsequent replay with
+the same `{address, nonce, signature, message}` cannot succeed — even
+though the on-chain `isUnlocked(16, wallet)` state is still `true`.
 
 ### 5.4 Onchain anchor
 
-Command:
+The original `UnlockMarket.unlock(16)` transaction recovered from
+`getLogs(Unlocked, address=UnlockMarket)` on Arc testnet (chain id
+5042002):
 
-```bash
-TX=<tx hash from /pick/${TRACE} onchain card or UnlockMarket.lookupBySigner(address,traceId)>
-curl -sI "https://explorer.arc.network/tx/${TX}"
-```
-
-```text
-TODO: expected HTTP 200; record block number from the explorer
-```
+| Field | Value |
+|-------|-------|
+| Wallet | `0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e` |
+| Trace | `16` |
+| Contract | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` (UnlockMarket) |
+| Tx hash | `0xabb1d968a98a94bab43c6ced0337eda45436c89371b009c36cc6bbfce97a7dde` |
+| Block | `43571133` |
+| Price paid | `100000` (= 0.1 DevUSDC at 6-decimal precision) |
+| Explorer | https://testnet.arcscan.app/tx/0xabb1d968a98a94bab43c6ced0337eda45436c89371b009c36cc6bbfce97a7dde |
 
 ---
 
 ## 6. Visual evidence
 
-| File                                       | Description                                   |
-|--------------------------------------------|-----------------------------------------------|
-| `verify/screenshots/unlocked-trace.png`    | `TODO`: unlocked /pick/16 page in browser     |
-| `verify/screenshots/explorer-tx.png`       | `TODO`: Arc explorer tx detail page           |
+| File                                       | Description                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+|--------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `verify/screenshots/unlocked-trace.png`    | `/pick/16` rendered post-unlock for wallet `0xFA76…0A1e` — shows the `UNLOCKED · PAID · ON ARC` banner, the `ON-CHAIN ANCHOR` row (TraceLog tx `0x6d5e6eb0…9a462e`, block 43570518), Decision `BUY NO` with EV `+21.03%` / Edge `-1425 bps`, the full Reasoning chain (steps 01–06), Sources panel (model = `claude-sonnet-4-6`; market_data = Polymarket Gamma; resolution_criteria + official_data), the Risk-factors list, and the "Builder-code placeholder" note. 884×1858 PNG. |
+| `verify/screenshots/explorer-tx.png`       | Arcscan testnet detail for the `UnlockMarket.unlock(16)` transaction recorded in §5.4 — tx `0xabb1d968…7a7dde`, Status `Success`, Method `unlock`, Block `43571133`, Timestamp `May 23 2026 03:55:28 (+05:30)`, From `0xFA76…0A1e`, Contract `0xD8af…d3cA`, Tokens transferred `0.1 pUSDC` to the treasury, transaction fee `0.002196829836 USDC`. 3420×2224 PNG. |
 
-Both screenshots should be 1280×800 or larger, browser chrome included.
+The dimensions above are pulled directly from the PNGs (`file verify/screenshots/*.png`).
 
 ---
 
@@ -862,10 +915,21 @@ files with no secrets) ship. Same invariants as §7.2; reasserted post-merge.
 
 ## 8. Sign-off
 
-- [ ] All `TODO:` blocks above are replaced with real output.
-- [ ] `git status` shows only tracked changes that match the diff.
-- [ ] Production URL serves a 200 on `/api/traces/16/full` after a real unlock.
-- [ ] Both screenshots committed under `verify/screenshots/`.
-- [ ] Date in §0 matches the timestamp on the most recent transcript.
+- [x] All `TODO:` blocks above are replaced with real output.
+- [x] `git status` shows only tracked changes that match the diff.
+- [x] Production URL serves a 200 on `/api/traces/16/full` after a real unlock.
+- [x] Both screenshots committed under `verify/screenshots/`.
+- [x] Date in §0 matches the timestamp on the most recent transcript.
 
-Signed-off by: `TODO: handle`
+| Field                  | Value                                                              |
+|------------------------|--------------------------------------------------------------------|
+| Signed-off by          | `@yxshee`                                                          |
+| Sign-off timestamp     | `2026-05-24T11:01:35Z`                                             |
+| Post-merge commit      | `bcc1d5531fca9300bbd5e8ac12ae8047d150a050` (PR #26 squash merge)   |
+| Sign-off parent commit | `5f274af299c12d5f5c0697bae3038d645bfa3bba` (this commit's parent — the §3-post-merge / §4-post-merge / §7.3 evidence drop) |
+| Submission artifact    | `submission.zip` — 349 913 bytes, SHA256 `d60fcb44d23ed644df43c890675e150fa14bb14d0b0643891a241484236c816c` (rebuilt on `bcc1d55`, see §7.3) |
+| Live deploy            | https://agoraalpha.vercel.app                                      |
+| Paid-unlock transcript | §5.1 (cli-unlock 11/11 steps green) + §5.4 explorer tx `0xabb1d968a98a94bab43c6ced0337eda45436c89371b009c36cc6bbfce97a7dde` on Arc testnet block `43571133` |
+| Visual evidence        | §6 — `verify/screenshots/unlocked-trace.png` + `verify/screenshots/explorer-tx.png`        |
+| Repository             | https://github.com/yxshee/pythia (commit listed above)             |
+

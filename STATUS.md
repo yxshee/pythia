@@ -122,7 +122,7 @@ One-command end-to-end paid-unlock flow against any deploy
 
 ```bash
 npm install
-PRIVATE_KEY=0x<fresh-testnet-key> ARC_RPC_URL=https://<arc-rpc> \
+PRIVATE_KEY=0xREPLACE_WITH_64_HEX ARC_RPC_URL=https://REPLACE_WITH_ARC_RPC_URL \
   node scripts/cli-unlock.mjs --base=https://agoraalpha.vercel.app --trace-id=16
 ```
 
