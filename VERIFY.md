@@ -275,11 +275,11 @@ Command:
 
 ```bash
 cd /Users/Shared/pythia && PYTHONPATH=agent uv --project agent run \
-  python -m pythia.scripts.validate_submission --mode deploy
+  python -m pythia.scripts.validate_submission --mode private-deploy
 ```
 
 ```text
-submission data ok (deploy): 8 home markets, 8 private full traces
+submission data ok (private-deploy): 8 home markets, 8 private full traces
 ```
 
 (exit code 0)
@@ -294,12 +294,12 @@ python3 scripts/package_submission.py
 unzip -q submission.zip -d /tmp/pythia-pkg-check
 cd /tmp/pythia-pkg-check && PYTHONPATH=/Users/Shared/pythia/agent \
   uv --project /Users/Shared/pythia/agent run \
-  python -m pythia.scripts.validate_submission --mode package
+  python -m pythia.scripts.validate_submission --mode public-package
 ```
 
 ```text
 wrote submission.zip (337,703 bytes)
-submission data ok (package): 8 home markets, no paid bundle present
+submission data ok (public-package): 8 home markets, no paid bundle present
 ```
 
 (both exit code 0)
@@ -373,7 +373,7 @@ curl -s https://agoraalpha.vercel.app | grep -oc 'href="/pick/[0-9]\+"'
 ```
 
 Home renders exactly 8 pick-page links — matches the 8 live Polymarket
-traces validated by `validate_submission --mode deploy` in §2.3.
+traces validated by `validate_submission --mode private-deploy` in §2.3.
 
 ### 3.3 Pick page renders
 
@@ -857,7 +857,7 @@ unzip -l submission.zip | grep -E 'picks|trace-' | head -20
 Only `web/data/picks-preview.json` appears. No `web/data/picks-full*.json` and
 no `traces/trace-*.json` entries — confirms the package builder excludes both
 the public and private full bundles and the raw trace JSONs. This is also
-asserted at runtime by §2.4's `--mode package` validator.
+asserted at runtime by §2.4's `--mode public-package` validator.
 
 ### 7.3 Post-merge zip rebuild
 
@@ -888,7 +888,7 @@ d60fcb44d23ed644df43c890675e150fa14bb14d0b0643891a241484236c816c  submission.zip
 | SHA256           | `d60fcb44d23ed644df43c890675e150fa14bb14d0b0643891a241484236c816c` |
 | File count       | 94                                                                 |
 | Built by         | `scripts/package_submission.py`                                    |
-| Validator        | `validate_submission --mode package` (invoked internally; passed)  |
+| Validator        | `validate_submission --mode public-package` (invoked internally; passed)  |
 
 The +12 210 byte delta vs §7.1 (337 703 → 349 913) reflects the audit
 branch's additions: `scripts/cli-unlock.mjs` (+324 lines), `package.json`,
