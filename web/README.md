@@ -14,8 +14,8 @@ and the paid-unlock paywall against the `UnlockMarket` contract on Arc testnet.
 - Next.js 16.2.6 (App Router, Turbopack, file-based metadata)
 - React 19, TypeScript 5, Tailwind 4
 - viem 2 + wagmi 2 for wallet + chain reads
-- `@vercel/blob` for the private full-trace payload
-- `@vercel/kv` for durable paywall nonce storage + rate limiting when configured (in-memory fallback for the hackathon demo)
+- `@vercel/blob` for the private full-trace payload plus durable nonce/rate-limit fallback
+- `@vercel/kv` for durable paywall nonce storage + rate limiting when configured
 
 ## Paywall flow
 
@@ -50,10 +50,10 @@ Two contracts you must respect:
 - **The Blob URL itself is the secret.** `PRIVATE_TRACES_BLOB_URL` carries
   a random suffix that is the only access control on the paid payload.
   Treat it like a token: never log, never commit.
-- **KV is the durable path, not the current demo dependency.** Without
-  `KV_REST_API_URL` / `KV_REST_API_TOKEN`, nonce and rate-limit state uses
-  per-instance Maps. That supports the smoke test but is not sufficient for
-  real paid traffic across multiple serverless instances.
+- **Durable state is required in production.** The API prefers
+  `KV_REST_API_URL` / `KV_REST_API_TOKEN` when present, otherwise it uses the
+  existing Vercel Blob store through `BLOB_READ_WRITE_TOKEN`. Per-process Maps
+  are local-dev only.
 
 ## Scripts
 

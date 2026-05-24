@@ -2,7 +2,14 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { arc } from "@/lib/arc-chain";
 import { UNLOCK_MARKET } from "@/lib/contracts";
-import { requireKvInProduction } from "@/lib/server/kv";
+import {
+  blobStreamToText,
+  getBlobStateClient,
+  isBlobWriteConflict,
+  productionRequiresDurableState,
+  StateStoreUnavailableError,
+} from "@/lib/server/blob-state";
+import { getKv } from "@/lib/server/kv";
 
 const NONCE_TTL_MS = 5 * 60 * 1000;
 const NONCE_TTL_SECONDS = NONCE_TTL_MS / 1000;
@@ -35,6 +42,50 @@ function activeKey(nonce: string): string {
 
 function usedKey(nonce: string): string {
   return `nonce:used:${nonce}`;
+}
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const MAX_NONCE_RECORD_BYTES = 8 * 1024;
+
+function blobActivePath(nonce: string): string {
+  return `paywall/nonces/active/${nonce}.json`;
+}
+
+function blobUsedPath(nonce: string): string {
+  return `paywall/nonces/used/${nonce}.json`;
+}
+
+function assertSafeNonce(nonce: string): boolean {
+  return UUID_RE.test(nonce);
+}
+
+function parseNonceRecord(raw: string): NonceRecord | null {
+  try {
+    const parsed = JSON.parse(raw) as Partial<NonceRecord>;
+    if (
+      typeof parsed.nonce === "string" &&
+      typeof parsed.host === "string" &&
+      typeof parsed.traceId === "number" &&
+      typeof parsed.address === "string" &&
+      typeof parsed.issuedAt === "number" &&
+      typeof parsed.expiresAt === "number" &&
+      typeof parsed.message === "string"
+    ) {
+      return parsed as NonceRecord;
+    }
+  } catch {
+    // Invalid durable-state payload: treat as missing and fail closed later.
+  }
+  return null;
+}
+
+function putOptions() {
+  return {
+    access: "private" as const,
+    allowOverwrite: false,
+    cacheControlMaxAge: 60,
+    contentType: "application/json",
+  };
 }
 
 export function buildUnlockMessage(input: {
@@ -85,9 +136,13 @@ export async function issueUnlockNonce(input: {
     }),
   };
 
-  const kv = requireKvInProduction();
+  const kv = getKv();
   if (kv) {
     await kv.set(activeKey(nonce), record, { ex: NONCE_TTL_SECONDS });
+  } else if (getBlobStateClient()) {
+    await getBlobStateClient()!.put(blobActivePath(nonce), JSON.stringify(record), putOptions());
+  } else if (productionRequiresDurableState()) {
+    throw new StateStoreUnavailableError();
   } else {
     active.set(nonce, record);
   }
@@ -95,23 +150,50 @@ export async function issueUnlockNonce(input: {
 }
 
 async function loadActive(nonce: string): Promise<NonceRecord | null> {
-  const kv = requireKvInProduction();
+  if (!assertSafeNonce(nonce)) return null;
+
+  const kv = getKv();
   if (kv) {
     return (await kv.get<NonceRecord>(activeKey(nonce))) ?? null;
+  }
+  const blob = getBlobStateClient();
+  if (blob) {
+    const result = await blob.get(blobActivePath(nonce), {
+      access: "private",
+      useCache: false,
+    });
+    if (!result || result.statusCode !== 200) return null;
+    return parseNonceRecord(await blobStreamToText(result.stream, MAX_NONCE_RECORD_BYTES));
+  }
+  if (productionRequiresDurableState()) {
+    throw new StateStoreUnavailableError();
   }
   return active.get(nonce) ?? null;
 }
 
 async function isUsed(nonce: string): Promise<boolean> {
-  const kv = requireKvInProduction();
+  if (!assertSafeNonce(nonce)) return false;
+
+  const kv = getKv();
   if (kv) {
     return (await kv.get(usedKey(nonce))) !== null;
+  }
+  const blob = getBlobStateClient();
+  if (blob) {
+    const result = await blob.get(blobUsedPath(nonce), { access: "private", useCache: false });
+    if (result?.stream) await result.stream.cancel().catch(() => undefined);
+    return result !== null;
+  }
+  if (productionRequiresDurableState()) {
+    throw new StateStoreUnavailableError();
   }
   return used.has(nonce);
 }
 
 async function markUsed(nonce: string): Promise<boolean> {
-  const kv = requireKvInProduction();
+  if (!assertSafeNonce(nonce)) return false;
+
+  const kv = getKv();
   if (kv) {
     const stored = await kv.set(usedKey(nonce), 1, {
       ex: NONCE_TTL_SECONDS,
@@ -120,12 +202,32 @@ async function markUsed(nonce: string): Promise<boolean> {
     if (stored !== "OK") return false;
     await kv.del(activeKey(nonce));
     return true;
-  } else {
-    if (used.has(nonce)) return false;
-    active.delete(nonce);
-    used.set(nonce, Date.now() + NONCE_TTL_MS);
+  }
+
+  const blob = getBlobStateClient();
+  if (blob) {
+    try {
+      await blob.put(
+        blobUsedPath(nonce),
+        JSON.stringify({ nonce, usedAt: new Date().toISOString() }),
+        putOptions(),
+      );
+    } catch (err) {
+      if (isBlobWriteConflict(err)) return false;
+      throw err;
+    }
+    await blob.del(blobActivePath(nonce)).catch(() => undefined);
     return true;
   }
+
+  if (productionRequiresDurableState()) {
+    throw new StateStoreUnavailableError();
+  }
+
+  if (used.has(nonce)) return false;
+  active.delete(nonce);
+  used.set(nonce, Date.now() + NONCE_TTL_MS);
+  return true;
 }
 
 export async function validateUnlockNonce(input: {
@@ -147,9 +249,11 @@ export async function validateUnlockNonce(input: {
     return { ok: false, reason: "nonce-not-found" };
   }
   if (record.expiresAt <= now) {
-    const kv = requireKvInProduction();
+    const kv = getKv();
     if (kv) {
       await kv.del(activeKey(input.nonce));
+    } else if (getBlobStateClient() && assertSafeNonce(input.nonce)) {
+      await getBlobStateClient()!.del(blobActivePath(input.nonce)).catch(() => undefined);
     } else {
       active.delete(input.nonce);
     }

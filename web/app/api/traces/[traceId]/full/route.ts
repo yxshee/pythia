@@ -24,6 +24,7 @@ import { createPublicClient, http, isAddress, type Hex } from "viem";
 import { arc } from "@/lib/arc-chain";
 import { UNLOCK_MARKET, unlockMarketAbi } from "@/lib/contracts";
 import { loadPick, loadPickFull } from "@/lib/traces";
+import { isStateStoreUnavailableError } from "@/lib/server/blob-state";
 import { clientIp, rateLimit } from "@/lib/server/rate-limit";
 import { trustedRequestHost, utf8ByteLength } from "@/lib/server/request-security";
 import {
@@ -53,6 +54,14 @@ function rateLimited(retryAfterSeconds: number): NextResponse {
     { error: "rate-limited" },
     { status: 429, headers: { "Retry-After": String(retryAfterSeconds) } },
   );
+}
+
+function nonceStoreError(err: unknown): NextResponse {
+  if (isStateStoreUnavailableError(err)) {
+    return bad("server-not-configured", 503);
+  }
+  console.error("paywall nonce store failed", err);
+  return bad("nonce-store-failed", 503);
 }
 
 function parseIssuedTimestamp(message: string): number | null {
@@ -119,9 +128,13 @@ export async function GET(
   const host = trustedRequestHost(req);
   if (!host) return bad("host-not-allowed", 400);
 
-  return NextResponse.json(await issueUnlockNonce({ host, traceId, address }), {
-    headers: { "Cache-Control": "private, no-store, max-age=0" },
-  });
+  try {
+    return NextResponse.json(await issueUnlockNonce({ host, traceId, address }), {
+      headers: { "Cache-Control": "private, no-store, max-age=0" },
+    });
+  } catch (err) {
+    return nonceStoreError(err);
+  }
 }
 
 export async function POST(
@@ -177,13 +190,18 @@ export async function POST(
     return bad("message-context-mismatch", 401);
   }
 
-  const nonceValid = await validateUnlockNonce({
-    nonce,
-    host: requestHost,
-    traceId,
-    address,
-    message,
-  });
+  let nonceValid: Awaited<ReturnType<typeof validateUnlockNonce>>;
+  try {
+    nonceValid = await validateUnlockNonce({
+      nonce,
+      host: requestHost,
+      traceId,
+      address,
+      message,
+    });
+  } catch (err) {
+    return nonceStoreError(err);
+  }
   if (!nonceValid.ok) {
     return bad(nonceValid.reason, 401);
   }
@@ -249,13 +267,18 @@ export async function POST(
     return bad("trace-not-found", 404);
   }
 
-  const nonceConsumed = await consumeUnlockNonce({
-    nonce,
-    host: requestHost,
-    traceId,
-    address,
-    message,
-  });
+  let nonceConsumed: Awaited<ReturnType<typeof consumeUnlockNonce>>;
+  try {
+    nonceConsumed = await consumeUnlockNonce({
+      nonce,
+      host: requestHost,
+      traceId,
+      address,
+      message,
+    });
+  } catch (err) {
+    return nonceStoreError(err);
+  }
   if (!nonceConsumed.ok) {
     return bad(nonceConsumed.reason, 401);
   }
