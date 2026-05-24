@@ -7,6 +7,7 @@ import {
   getBlobStateClient,
   isBlobWriteConflict,
   productionRequiresDurableState,
+  STATE_BLOB_ACCESS,
   StateStoreUnavailableError,
 } from "@/lib/server/blob-state";
 import { getKv } from "@/lib/server/kv";
@@ -81,7 +82,7 @@ function parseNonceRecord(raw: string): NonceRecord | null {
 
 function putOptions() {
   return {
-    access: "private" as const,
+    access: STATE_BLOB_ACCESS,
     allowOverwrite: false,
     cacheControlMaxAge: 60,
     contentType: "application/json",
@@ -159,7 +160,7 @@ async function loadActive(nonce: string): Promise<NonceRecord | null> {
   const blob = getBlobStateClient();
   if (blob) {
     const result = await blob.get(blobActivePath(nonce), {
-      access: "private",
+      access: STATE_BLOB_ACCESS,
       useCache: false,
     });
     if (!result || result.statusCode !== 200) return null;
@@ -180,7 +181,10 @@ async function isUsed(nonce: string): Promise<boolean> {
   }
   const blob = getBlobStateClient();
   if (blob) {
-    const result = await blob.get(blobUsedPath(nonce), { access: "private", useCache: false });
+    const result = await blob.get(blobUsedPath(nonce), {
+      access: STATE_BLOB_ACCESS,
+      useCache: false,
+    });
     if (result?.stream) await result.stream.cancel().catch(() => undefined);
     return result !== null;
   }

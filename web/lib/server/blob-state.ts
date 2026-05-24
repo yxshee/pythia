@@ -4,6 +4,11 @@ type BlobClient = typeof import("@vercel/blob");
 
 let cached: BlobClient | null | undefined;
 
+// The existing Blob store is public-access. State object names are hashed or
+// UUID-random and contain no paid trace payload; writes still require the
+// server-only BLOB_READ_WRITE_TOKEN, and reads use `cache=0`.
+export const STATE_BLOB_ACCESS = "public" as const;
+
 export class StateStoreUnavailableError extends Error {
   constructor() {
     super("No durable server-side state store is configured");

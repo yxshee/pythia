@@ -5,6 +5,7 @@ import {
   getBlobStateClient,
   isBlobWriteConflict,
   productionRequiresDurableState,
+  STATE_BLOB_ACCESS,
 } from "@/lib/server/blob-state";
 import { getKv } from "@/lib/server/kv";
 
@@ -78,12 +79,12 @@ async function blobRateLimit(
   const path = blobBucketPath(key);
   for (let attempt = 0; attempt < MAX_BLOB_ATTEMPTS; attempt += 1) {
     const now = Date.now();
-    const existing = await blob.get(path, { access: "private", useCache: false });
+    const existing = await blob.get(path, { access: STATE_BLOB_ACCESS, useCache: false });
     if (!existing || existing.statusCode !== 200) {
       const next = { count: 1, resetAt: now + windowMs };
       try {
         await blob.put(path, JSON.stringify(next), {
-          access: "private",
+          access: STATE_BLOB_ACCESS,
           allowOverwrite: false,
           cacheControlMaxAge: 60,
           contentType: "application/json",
@@ -108,7 +109,7 @@ async function blobRateLimit(
     };
     try {
       await blob.put(path, JSON.stringify(next), {
-        access: "private",
+        access: STATE_BLOB_ACCESS,
         allowOverwrite: true,
         cacheControlMaxAge: 60,
         contentType: "application/json",
