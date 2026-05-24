@@ -29,6 +29,7 @@ Tests: `cd contracts && forge test`; see [`VERIFY.md`](../VERIFY.md) and CI for 
 | `TraceLog` | `0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4` | https://testnet.arcscan.app/address/0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4 | Source verified on 2026-05-25 via Arcscan/Blockscout. `getsourcecode` returns `ContractName=TraceLog`, compiler `v0.8.24+commit.e11b9ed9`, optimization enabled, and non-empty `SourceCode`. |
 | `UnlockMarket` | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` | https://testnet.arcscan.app/address/0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA | Source verified on 2026-05-25 via Arcscan/Blockscout. `getsourcecode` returns `ContractName=UnlockMarket`, compiler `v0.8.24+commit.e11b9ed9`, optimization enabled, and non-empty `SourceCode`. |
 | `DevUSDC` | `0x6d3bda6e93dd02a1c237642C5af837796bF47511` | https://testnet.arcscan.app/address/0x6d3bda6e93dd02a1c237642C5af837796bF47511 | Source verified on 2026-05-25 via Arcscan/Blockscout. `getsourcecode` returns `ContractName=DevUSDC`, compiler `v0.8.24+commit.e11b9ed9`, optimization enabled, and non-empty `SourceCode`. |
+| `PythiaVault` | `0x7383dF0f0F0822b380092C5D2204258Ce4C842B5` | https://testnet.arcscan.app/address/0x7383dF0f0F0822b380092C5D2204258Ce4C842B5 | Source-visible on 2026-05-25 via Arcscan/Blockscout. The deployed bytecode verifies against the original `805ff6f` vault source; the current repo adds post-deploy zero-NAV hardening and explicit out-of-scope comments, so this experimental contract is not part of the bytecode-equivalence proof for the core demo path. |
 
 Command used for the source-verification status:
 
@@ -99,7 +100,7 @@ USDC_ADDRESS_ARC=0x...
 |---|---|---|
 | USDC | `PythiaVault.asset` + `UnlockMarket.usdc` | USDC-denominated accounting. The current demo token is open-mint `DevUSDC` on Arc testnet; production uses canonical Circle USDC. |
 | Wallets | operator + buyer EOAs | Dev-controlled wallet for the agent; user EOAs for unlocks (wagmi/viem on the web side). Circle Wallets are planned, not shipped. |
-| Contracts | `PythiaVault`, `TraceLog`, `UnlockMarket` | Three Arc-native deployments. |
+| Contracts | `TraceLog`, `UnlockMarket`, `DevUSDC`, `PythiaVault` | `TraceLog` + `UnlockMarket` are the core Arc-native proof path; `DevUSDC` is the testnet payment token; `PythiaVault` is deployed/source-visible but experimental and not evaluated for the submission. |
 | App Kit | Planned | Arc App Kit can provide Send, Bridge, Swap, and Unified Balance flows; the current buyer flow is hand-wired via wagmi + viem. |
 | x402 / session keys | Planned | The current paywall is `UnlockMarket` + signed EIP-191 nonce verification. x402-style paid API flows and session-key unlock/copy-trade flows are not shipped in this submission. |
 | CCTP | Planned (post-submission) | Bridge accrued unlock revenue from Arc to other chains; revenue-flow demo only. |

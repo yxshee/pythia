@@ -268,7 +268,7 @@ Live on **[agoraalpha.vercel.app](https://agoraalpha.vercel.app)** · Arc testne
 | **`TraceLog`** | [`0x48Af95Ed…98AFB4`](https://testnet.arcscan.app/address/0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4) | Source-verified reasoning-trace hash emitter |
 | **`UnlockMarket`** | [`0xD8af5ebe…4bd3cA`](https://testnet.arcscan.app/address/0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA) | Source-verified pay-per-unlock for full traces (0.1 DevUSDC) |
 | **`DevUSDC`** | [`0x6d3bda6e…F47511`](https://testnet.arcscan.app/address/0x6d3bda6e93dd02a1c237642C5af837796bF47511) | Source-verified EIP-3009 testnet USDC · open mint |
-| **`PythiaVault`** | [`0x7383dF0f…C4842B5`](https://testnet.arcscan.app/address/0x7383dF0f0F0822b380092C5D2204258Ce4C842B5) | ERC4626 paper-PnL vault (experimental) |
+| **`PythiaVault`** | [`0x7383dF0f…C4842B5`](https://testnet.arcscan.app/address/0x7383dF0f0F0822b380092C5D2204258Ce4C842B5) | Arcscan source-visible paper-PnL vault (experimental; not demo path) |
 
 Every claim is **byte-replayable** from [`VERIFY.md`](VERIFY.md): current Foundry and agent test output, live curl-based deploy surface checks, paywall rejection paths, and a recorded paid-unlock transcript (mint → approve → unlock → signed payload → replay rejection).
 

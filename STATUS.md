@@ -18,6 +18,11 @@ Last updated: 2026-05-25 (Asia/Kolkata).
   scripts/check_contract_bytecode.py` also confirms the local Foundry
   artifacts match deployed runtime logic after normalizing Solidity metadata
   and immutable slots.
+- **`PythiaVault` is source-visible but not core.** The deployed experimental
+  vault verifies on Arcscan against the original `805ff6f` source. The current
+  repo has post-deploy zero-NAV hardening and explicit out-of-scope comments,
+  so it is intentionally excluded from the core bytecode-equivalence checker
+  and should not be evaluated as the submission path.
 - **`UnlockMarket` is hardened for the demo path.** It now requires registered
   trace IDs, supports owner-only batch registration, updates state before token
   transfer, uses a simple `nonReentrant` guard, and wraps `transferFrom` with an

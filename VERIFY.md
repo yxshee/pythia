@@ -840,6 +840,15 @@ UnlockMarket  ContractName=UnlockMarket  CompilerVersion=v0.8.24+commit.e11b9ed9
 DevUSDC       ContractName=DevUSDC       CompilerVersion=v0.8.24+commit.e11b9ed9  OptimizationUsed=true  SourceCodeLen=6261
 ```
 
+`PythiaVault` is also source-visible on Arcscan, but it is experimental and not
+part of the core submission path. Its deployed bytecode verifies against the
+original `805ff6f` vault source; the current repo source adds post-deploy
+zero-NAV hardening and explicit out-of-scope comments. Readback:
+
+```text
+PythiaVault  ContractName=PythiaVault  CompilerVersion=v0.8.24+commit.e11b9ed9  OptimizationUsed=true  SourceCodeLen=13210
+```
+
 ---
 
 ## 6. Visual evidence
