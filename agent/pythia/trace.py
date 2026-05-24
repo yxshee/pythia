@@ -56,6 +56,21 @@ TRACE_LOG_ABI: list[dict[str, Any]] = [
         "inputs": [],
         "outputs": [{"name": "", "type": "uint256"}],
     },
+    {
+        "type": "event",
+        "name": "Trace",
+        "anonymous": False,
+        "inputs": [
+            {"name": "traceId", "type": "uint256", "indexed": True},
+            {"name": "publisher", "type": "address", "indexed": True},
+            {"name": "marketId", "type": "bytes32", "indexed": True},
+            {"name": "decision", "type": "uint8", "indexed": False},
+            {"name": "positionUsdc", "type": "uint256", "indexed": False},
+            {"name": "confidenceBps", "type": "uint16", "indexed": False},
+            {"name": "ipfsCid", "type": "bytes32", "indexed": False},
+            {"name": "parentTraceId", "type": "uint256", "indexed": False},
+        ],
+    },
 ]
 
 # Map agent decision strings to the TraceLog.Decision enum.
@@ -238,9 +253,6 @@ class TracePublisher:
             cid_b32 = Web3.to_bytes(hexstr=cid_hex)
             parent_id = int(plan.parent_trace_id or 0)
 
-            # Read the to-be-assigned id BEFORE we send so we can record it in metadata.
-            assigned_id = int(self._contract.functions.nextTraceId().call())
-
             tx = self._contract.functions.publish(
                 market_id_b32,
                 decision_enum,
@@ -264,6 +276,13 @@ class TracePublisher:
             tx_hash_hex = tx_hash_bytes.hex() if isinstance(tx_hash_bytes, bytes) else str(tx_hash_bytes)
             if not tx_hash_hex.startswith("0x"):
                 tx_hash_hex = "0x" + tx_hash_hex
+            # Parse the Trace event from the receipt rather than pre-reading
+            # nextTraceId(): concurrent publishers race that read and would
+            # stamp the wrong id in the local snapshot.
+            events = self._contract.events.Trace().process_receipt(receipt)
+            if not events:
+                raise RuntimeError(f"tx {tx_hash_hex} did not emit Trace event")
+            assigned_id = int(events[0]["args"]["traceId"])
             return {
                 "tx_hash": tx_hash_hex,
                 "block_number": int(receipt.blockNumber),
