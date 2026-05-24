@@ -2,9 +2,9 @@
 /**
  * Upload `web/data/picks-full.private.json` to Vercel Blob.
  *
- * The URL printed on success embeds a random suffix and IS the access
- * secret. Set it as `PRIVATE_TRACES_BLOB_URL` on the Vercel project so
- * the paywall route can fetch it server-side.
+ * The Blob URL embeds a random suffix and IS the access secret. It is written
+ * only to the gitignored `web/data/.blob-url` cache; stdout prints a redacted
+ * status message so shell logs do not leak the URL.
  *
  * Usage (from repo root):
  *   BLOB_READ_WRITE_TOKEN=... node scripts/upload-private-blob.mjs
@@ -12,13 +12,13 @@
  * Or invoked indirectly by `publish_live_feed.py --upload-blob`.
  *
  * Exit codes:
- *   0  uploaded; URL on stdout
+ *   0  uploaded; URL written to web/data/.blob-url
  *   2  token missing
  *   3  source file missing or unreadable
  *   4  upload failed
  */
 import { put } from "@vercel/blob";
-import { readFile, writeFile } from "node:fs/promises";
+import { chmod, readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 
@@ -44,8 +44,9 @@ async function main() {
       contentType: "application/json",
       token,
     });
-    await writeFile(URL_CACHE, result.url + "\n", "utf-8");
-    console.log(result.url);
+    await writeFile(URL_CACHE, result.url + "\n", { encoding: "utf-8", mode: 0o600 });
+    await chmod(URL_CACHE, 0o600);
+    console.log("uploaded picks-full.private.json; wrote secret URL to web/data/.blob-url");
     process.exit(0);
   } catch (err) {
     console.error("blob put failed:", err?.message ?? err);

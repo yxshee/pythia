@@ -222,7 +222,8 @@ def _upload_private_blob(repo_root: Path) -> int:
 
     Kept in a single Node script so the @vercel/blob SDK is the only
     Blob-touching code path. Returns 0 on success and the script's exit
-    code (2/3/4) on failure. Prints the Blob URL to stdout on success.
+    code (2/3/4) on failure. The uploader writes the secret Blob URL to
+    web/data/.blob-url and never prints it.
     """
     if not os.environ.get("BLOB_READ_WRITE_TOKEN"):
         print("BLOB_READ_WRITE_TOKEN missing; cannot upload to Vercel Blob.", file=sys.stderr)
@@ -245,9 +246,9 @@ def _upload_private_blob(repo_root: Path) -> int:
     if result.returncode != 0:
         sys.stderr.write(result.stderr)
         return result.returncode
-    blob_url = result.stdout.strip()
-    print(f"uploaded picks-full.private.json to: {blob_url}")
-    print("set PRIVATE_TRACES_BLOB_URL=<url> on the Vercel project before promoting.")
+    if result.stdout:
+        sys.stdout.write(result.stdout)
+    print("Set PRIVATE_TRACES_BLOB_URL from web/data/.blob-url before promoting; do not paste it into logs.")
     return 0
 
 
