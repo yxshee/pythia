@@ -19,10 +19,10 @@
 | Field             | Value                                                              |
 |-------------------|--------------------------------------------------------------------|
 | Historical baseline | Earlier sections retain pre-promotion audit transcripts for comparison. The final promotion proof is §5 onward. |
-| Final promotion tree | Current `main` worktree before final commit; `origin/main` alignment is checked after the final commit/push. |
-| Generated at      | `2026-05-24T16:36:19Z` and `2026-05-24T16:45:06Z` (§5 trace-24 live unlocks); screenshots refreshed on `2026-05-24`; package manifest generated after final zip (§7). |
+| Final promotion tree | `main` / `origin/main` aligned at `df176c4` for the final package and deploy verification. |
+| Generated at      | `2026-05-24T18:06:35Z` (§5.5 final trace-24 live unlock); screenshots refreshed on `2026-05-24`; package manifest generated after final zip (§7). |
 | Production URL    | https://agoraalpha.vercel.app                                      |
-| Production deploy | `dpl_4Vwhv7ykRSKf6TCVV4N3LzgjKP6o` (`agoraalpha-dpigs6uuu-yashs-projects-a859a420.vercel.app`, aliased to production) |
+| Production deploy | `dpl_8gv2TPfbaG69biZmSLbhKMBcLB7G` (`agoraalpha-gsx3jhm7o-yashs-projects-a859a420.vercel.app`, aliased to production) |
 | UnlockMarket addr | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` (registered trace IDs `24,25,26,27,28,29,30,31`) |
 | Chain             | Arc testnet, chain id `5042002`                                    |
 
@@ -777,7 +777,27 @@ Step 11 proves the nonce-consumption invariant. Re-posting the exact same
 HTTP 401: {"error":"nonce-used"}
 ```
 
-### 5.4 Onchain unlock anchor — trace 24
+### 5.4 Final hardened nonce smoke
+
+After replacing per-instance nonce state with HMAC-bound nonce tokens plus
+durable write-once Blob used markers, the final production deploy
+`dpl_8gv2TPfbaG69biZmSLbhKMBcLB7G` was re-smoked against trace `24`:
+
+```text
+[8/11] GET:       https://agoraalpha.vercel.app/api/traces/24/full?address=0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e
+         nonce:    eyJ2Ijox...PUzSc_HZ55IPyu95nZWjLq6Ry79FCAc0ujsAJ47mH3Y
+         issued:   2026-05-24T18:06:35.074Z
+         expires:  2026-05-24T18:11:35.074Z
+[9/11] sign:      EIP-191 message (599 chars)
+[10/11] POST:     https://agoraalpha.vercel.app/api/traces/24/full
+         HTTP 200: {"agent_probability_yes":0.09,"confidence":"medium","copy_trade_url":null,...}
+[11/11] replay:   POST same body again (expect 401 nonce-used)
+         HTTP 401: {"error":"nonce-used"}
+
+DONE: 11/11 steps complete. Trace 24 unlocked and replay rejected.
+```
+
+### 5.5 Onchain unlock anchor — trace 24
 
 Recovered from `getLogs(Unlocked, address=UnlockMarket)` on Arc testnet
 (chain id `5042002`):
@@ -792,7 +812,7 @@ Recovered from `getLogs(Unlocked, address=UnlockMarket)` on Arc testnet
 | Price paid | `100000` (= 0.1 DevUSDC at 6-decimal precision) |
 | Explorer | https://testnet.arcscan.app/tx/0x0f1d9b9a7a7a501047460c37c8267e3ed24f27381d77e5fcc002397c27c15e2b |
 
-### 5.5 Batch alignment checks
+### 5.6 Batch alignment checks
 
 ```text
 preview_ids       24,25,26,27,28,29,30,31
