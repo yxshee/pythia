@@ -22,7 +22,7 @@
 | Final promotion tree | `main` / `origin/main` aligned for the final package and deploy verification; runtime hardening commit is `df176c4`. |
 | Generated at      | `2026-05-24T18:06:35Z` (§5.5 final trace-24 live unlock); screenshots refreshed on `2026-05-24`; package manifest generated after final zip (§7). |
 | Production URL    | https://agoraalpha.vercel.app                                      |
-| Production deploy | `dpl_2m41yR9y7DrzVhBM8pXH18hvzZJs` (`agoraalpha-6pleuxhdk-yashs-projects-a859a420.vercel.app`, aliased to production) |
+| Production deploy | Latest `https://agoraalpha.vercel.app` production alias verified with `vercel inspect`; exact deploy id is recorded in the operator handoff. |
 | UnlockMarket addr | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` (registered trace IDs `24,25,26,27,28,29,30,31`) |
 | Chain             | Arc testnet, chain id `5042002`                                    |
 
