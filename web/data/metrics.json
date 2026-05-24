@@ -1,9 +1,9 @@
 {
   "published": 8,
-  "paper_volume_usdc": 159.5,
-  "latest_trace_id": 16,
-  "latest_tx_hash": "0x6d5e6eb0eae1017daebd3d9127efb7f77fd667194f088cd55981af7c439a462e",
-  "latest_block": 43570518,
+  "paper_volume_usdc": 81.5,
+  "latest_trace_id": 31,
+  "latest_tx_hash": "0xf0a3bb2c3e7212149a6b297d8693163a9b78806d9d2e5ae3abf682da50742bb8",
+  "latest_block": 43847112,
   "contract": "0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4",
   "chain_id": 5042002,
   "explorer_url": "https://testnet.arcscan.app"
