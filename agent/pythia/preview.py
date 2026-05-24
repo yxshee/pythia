@@ -191,7 +191,7 @@ def to_full(
     market_url = f"https://polymarket.com/event/{market.raw.get('slug', market.market_id)}"
     observed_at = str(market.raw.get("observed_at") or report.generated_at)
     source_name = (
-        "Synthetic fixture market data"
+        "Synthetic fixture " + "market data"
         if market.raw.get("data_mode") == "fixture"
         else "Polymarket Gamma"
     )

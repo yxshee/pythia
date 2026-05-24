@@ -202,7 +202,7 @@ Ran 12 tests for test/PythiaVault.t.sol:PythiaVaultTest
 [PASS] test_withdraw_profitTakesFee() (gas: 204352)
 Suite result: ok. 12 passed; 0 failed; 0 skipped; finished in 9.67ms (3.26ms CPU time)
 
-Ran 4 test suites in 14.66ms (36.62ms CPU time): 42 tests passed, 0 failed, 0 skipped (42 total tests)
+Current final packaging gates re-run `cd contracts && forge test -vvv`; see the latest verification summary and CI output for the current Foundry count.
 ```
 
 ### 2.2 Agent — `python -m unittest discover -s tests -v`

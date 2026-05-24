@@ -94,9 +94,11 @@ Last updated: 2026-05-24 (Asia/Kolkata).
 
 ## Does Not Yet Work
 
-- **Circle Wallets / App Kit / Gateway / Paymaster / CCTP.** The shipping buyer
-  flow uses injected wallets through wagmi/viem. Those Circle products remain
-  planned integrations.
+- **Circle Wallets / App Kit / Gateway / Paymaster / CCTP / x402 session keys.**
+  The shipping buyer flow uses injected wallets through wagmi/viem plus
+  `UnlockMarket` on Arc. Circle Wallets, App Kit, x402-style paid API flows,
+  and session-key unlock/copy-trade flows remain planned integrations, not
+  shipped features.
 - **`PythiaVault.recordTrade` resolver close-out.** `agent/pythia/resolver.py`
   does not exist yet. Paper PnL close-out after market resolution is planned.
 - **Production Polymarket builder attribution.** Current links are
@@ -117,7 +119,7 @@ mode does not imply a failure in the other; they assert different invariants.
 
 ```bash
 cd agent && uv run python -m unittest discover -s tests
-# 33 tests passed
+# 37 tests passed
 
 cd agent && uv run python -m pythia.scripts.validate_submission --mode private-deploy
 # submission data ok (private-deploy): 8 home markets, 8 private full traces

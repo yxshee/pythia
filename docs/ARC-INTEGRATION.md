@@ -20,7 +20,15 @@
 | `TraceLog` | Authorized event emitter for reasoning-trace content hashes | `contracts/src/TraceLog.sol` |
 | `UnlockMarket` | Pay-per-unlock for full reasoning traces (USDC on Arc) | `contracts/src/UnlockMarket.sol` |
 
-Tests: `cd contracts && forge test` (42/42 passing).
+Tests: `cd contracts && forge test`; see [`VERIFY.md`](../VERIFY.md) and CI for the current passing count.
+
+### Deployed contract verification
+
+| Contract | Address | Arcscan | Source verification |
+|---|---|---|---|
+| `TraceLog` | `0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4` | https://testnet.arcscan.app/address/0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4 | Confirm on Arcscan before final portal submission; do not claim verified source unless the Contract tab shows it. |
+| `UnlockMarket` | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` | https://testnet.arcscan.app/address/0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA | Confirm on Arcscan before final portal submission; do not claim verified source unless the Contract tab shows it. |
+| `DevUSDC` | `0x6d3bda6e93dd02a1c237642C5af837796bF47511` | https://testnet.arcscan.app/address/0x6d3bda6e93dd02a1c237642C5af837796bF47511 | Confirm on Arcscan before final portal submission; do not claim verified source unless the Contract tab shows it. |
 
 ### UnlockMarket flow
 
@@ -78,6 +86,7 @@ USDC_ADDRESS_ARC=0x...
 | Wallets | operator + buyer EOAs | Dev-controlled wallet for the agent; user EOAs for unlocks (wagmi/viem on the web side). Circle Wallets are planned, not shipped. |
 | Contracts | `PythiaVault`, `TraceLog`, `UnlockMarket` | Three Arc-native deployments. |
 | App Kit | Planned | Arc App Kit can provide Send, Bridge, Swap, and Unified Balance flows; the current buyer flow is hand-wired via wagmi + viem. |
+| x402 / session keys | Planned | The current paywall is `UnlockMarket` + signed EIP-191 nonce verification. x402-style paid API flows and session-key unlock/copy-trade flows are not shipped in this submission. |
 | CCTP | Planned (post-submission) | Bridge accrued unlock revenue from Arc to other chains; revenue-flow demo only. |
 | Paymaster | Stretch | Public Paymaster page does not list Arc; Arc already uses USDC as gas natively, so this is mostly redundant. |
 | USYC | Stretch | Requires allowlist + $100k institutional minimum; out of MVP scope. |

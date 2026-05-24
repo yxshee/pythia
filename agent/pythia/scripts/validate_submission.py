@@ -60,7 +60,16 @@ _WRONG_FOMC_PATTERNS = (
     "2026-07-" + "30",
 )
 _STALE_USDC_COPY = "Unlock 0.10 " + "USDC"
-_FIXTURE_SOURCE = "Offline market " + "fixture"
+_FIXTURE_SOURCE_MARKERS = (
+    "Offline market " + "fixture",
+    "Synthetic fixture " + "market data",
+)
+_HOLD_ACTIONABLE_RECOMMENDATION_MARKERS = (
+    "buy yes is justifiable",
+    "buy no is justifiable",
+    "take the position",
+    "copy trade",
+)
 
 
 def _load_json(path: Path) -> Any:
@@ -174,10 +183,22 @@ def _check_full_entries(
     for entry in entries:
         full = entry.get("full") or {}
         trace_id = entry.get("trace_id")
-        if _FIXTURE_SOURCE in json.dumps(entry):
+        entry_text = json.dumps(entry).lower()
+        if any(marker.lower() in entry_text for marker in _FIXTURE_SOURCE_MARKERS):
             failures.append(f"{source_label} trace {trace_id}: full payload contains fixture source marker")
-        if full.get("decision") == "HOLD" and full.get("copy_trade_url"):
-            failures.append(f"{source_label} trace {trace_id}: HOLD full payload still has copy_trade_url")
+        if full.get("decision") == "HOLD":
+            reasoning_text = json.dumps(full.get("reasoning") or [], ensure_ascii=False).lower()
+            if any(marker in reasoning_text for marker in _HOLD_ACTIONABLE_RECOMMENDATION_MARKERS):
+                failures.append(
+                    f"{source_label} trace {trace_id}: HOLD reasoning contains actionable recommendation language"
+                )
+            if full.get("copy_trade_url"):
+                failures.append(f"{source_label} trace {trace_id}: HOLD full payload still has copy_trade_url")
+            if float(full.get("suggested_size_usdc") or 0) != 0:
+                failures.append(f"{source_label} trace {trace_id}: HOLD full payload has nonzero suggested_size_usdc")
+            profile_sizes = full.get("suggested_size_by_profile") or {}
+            if any(float(size or 0) != 0 for size in profile_sizes.values()):
+                failures.append(f"{source_label} trace {trace_id}: HOLD full payload has nonzero profile size")
         sources = full.get("sources") or []
         if len(sources) < 3:
             failures.append(f"{source_label} trace {trace_id}: full payload has only {len(sources)} sources")
@@ -252,16 +273,18 @@ def validate_repo(
     stale_copy_paths = _scan_text(repo_root, _STALE_USDC_COPY, scan_roots)
     if stale_copy_paths:
         failures.append(f"stale unlock-price copy appears in {stale_copy_paths}")
-    fixture_paths = _scan_text(repo_root, _FIXTURE_SOURCE, scan_roots)
-    if fixture_paths:
-        failures.append(f"fixture source marker appears in {fixture_paths}")
+    for marker in _FIXTURE_SOURCE_MARKERS:
+        fixture_paths = _scan_text(repo_root, marker, scan_roots)
+        if fixture_paths:
+            failures.append(f"fixture source marker {marker!r} appears in {fixture_paths}")
 
     for entry in preview_entries:
         trace_id = entry.get("trace_id")
         leaked = _PREVIEW_FORBIDDEN_KEYS & set(entry)
         if leaked:
             failures.append(f"trace {trace_id}: preview bundle leaks {sorted(leaked)}")
-        if _FIXTURE_SOURCE in json.dumps(entry):
+        preview_text = json.dumps(entry).lower()
+        if any(marker.lower() in preview_text for marker in _FIXTURE_SOURCE_MARKERS):
             failures.append(f"trace {trace_id}: preview bundle contains fixture source marker")
 
     eligible = _eligible_home_entries(preview_entries)

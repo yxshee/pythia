@@ -25,7 +25,7 @@
       "trace_hash": "0x09d89328fe484a8904809704dbbae111bff4a9dd5336571ccda30de4d3a455fd",
       "trace_id": 24
     },
-    "theme": "crypto",
+    "theme": "sports",
     "trace_id": 24,
     "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
   },
@@ -55,7 +55,7 @@
       "trace_hash": "0x31447ed64cf2899b5c4d20340bbce379b941ce8a488bcf82066037f83b6831fd",
       "trace_id": 25
     },
-    "theme": "crypto",
+    "theme": "sports",
     "trace_id": 25,
     "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
   },
@@ -85,7 +85,7 @@
       "trace_hash": "0x2fac9d206d7d07687f521cf9ab7e1736fbe8fa7e3ca47ec912fea468c8c6a6d4",
       "trace_id": 26
     },
-    "theme": "crypto",
+    "theme": "sports",
     "trace_id": 26,
     "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
   },
@@ -115,7 +115,7 @@
       "trace_hash": "0x0ae14dac34587e5f98b7f3eb9461f4f700149c76c738b0d07c1c3e19d62196af",
       "trace_id": 27
     },
-    "theme": "crypto",
+    "theme": "sports",
     "trace_id": 27,
     "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
   },
@@ -145,7 +145,7 @@
       "trace_hash": "0xa529e7b8cfa852417c02cc9438024e779df9aefd8f9ce9c5b7c4491d48785860",
       "trace_id": 28
     },
-    "theme": "crypto",
+    "theme": "sports",
     "trace_id": 28,
     "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
   },
@@ -175,7 +175,7 @@
       "trace_hash": "0x177874e17f36cb75ccb08d2e5ee67f7a54f291a3e2c246a6465f07d010deaa6b",
       "trace_id": 29
     },
-    "theme": "crypto",
+    "theme": "sports",
     "trace_id": 29,
     "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
   },
@@ -205,7 +205,7 @@
       "trace_hash": "0xd4510569860b5ca735128bede4bb4aa9eb7f84db7ced3be59d5060f61da9ef9d",
       "trace_id": 30
     },
-    "theme": "crypto",
+    "theme": "geopolitics",
     "trace_id": 30,
     "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
   },
@@ -235,7 +235,7 @@
       "trace_hash": "0x3129444b2a70d79f7d2edb58c8ea85cf52680c1fb3812bf28b4b868fc33778a5",
       "trace_id": 31
     },
-    "theme": "crypto",
+    "theme": "politics",
     "trace_id": 31,
     "vault": "0x7383dF0f0F0822b380092C5D2204258Ce4C842B5"
   }

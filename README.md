@@ -153,7 +153,7 @@ Pythia recommends; it never trades. Followers place orders themselves on Polymar
 ## ✦ &nbsp; Quickstart
 
 ```bash
-# 1 · Contracts (Foundry · 42 tests)
+# 1 · Contracts (Foundry; see VERIFY.md for current test output)
 cd contracts && forge build && forge test
 
 # 2 · Agent (Python · uv-managed)
@@ -229,7 +229,7 @@ python3 scripts/package_submission.py
 <td valign="top" width="50%">
 
 #### ◈ Contracts — [`contracts/`](contracts/)
-Solidity 0.8.24 + Foundry. Four contracts: `PythiaVault`, `TraceLog`, `UnlockMarket`, `DevUSDC`. **42/42** forge tests passing.
+Solidity 0.8.24 + Foundry. Four contracts: `PythiaVault`, `TraceLog`, `UnlockMarket`, `DevUSDC`. Current test output is recorded in [`VERIFY.md`](VERIFY.md) and CI.
 
 </td>
 <td valign="top" width="50%">
@@ -270,7 +270,7 @@ Live on **[agoraalpha.vercel.app](https://agoraalpha.vercel.app)** · Arc testne
 | **`DevUSDC`** | [`0x6d3bda6e…F47511`](https://testnet.arcscan.app/address/0x6d3bda6e93dd02a1c237642C5af837796bF47511) | EIP-3009 testnet USDC · open mint |
 | **`PythiaVault`** | [`0x7383dF0f…C4842B5`](https://testnet.arcscan.app/address/0x7383dF0f0F0822b380092C5D2204258Ce4C842B5) | ERC4626 paper-PnL vault (experimental) |
 
-Every claim is **byte-replayable** from [`VERIFY.md`](VERIFY.md): 42 forge tests, 19 agent tests, live curl-based deploy surface checks, paywall rejection paths, and a recorded paid-unlock transcript (mint → approve → unlock → signed payload → replay rejection).
+Every claim is **byte-replayable** from [`VERIFY.md`](VERIFY.md): current Foundry and agent test output, live curl-based deploy surface checks, paywall rejection paths, and a recorded paid-unlock transcript (mint → approve → unlock → signed payload → replay rejection).
 
 <details>
 <summary><strong>▸ &nbsp; Hackathon scoring (self-assessment)</strong></summary>
@@ -279,7 +279,7 @@ Every claim is **byte-replayable** from [`VERIFY.md`](VERIFY.md): 42 forge tests
 |---|---|---|
 | **Agentic sophistication** | 30% | Real Scout → Analyst → PM → Publisher → Trace loop. Autonomous on pick, sizing, hold/exit, trace generation. |
 | **Traction** | 30% | Telegram + web preview tier + Arc testnet unlock flow + paper recommendation volume. Builder-fee attribution designed but pending bytes32 registration. |
-| **Circle tools** | 20% | Arc contracts + DevUSDC unlock flow. Circle Wallets · App Kit · CCTP · Gateway · Paymaster are planned integrations. EIP-3009 primitives ship on `DevUSDC`. |
+| **Circle tools** | 20% | Arc contracts + DevUSDC unlock flow. Circle Wallets · App Kit · CCTP · Gateway · Paymaster · x402/session keys are planned integrations, not shipped. EIP-3009 primitives ship on `DevUSDC`. |
 | **Innovation** | 20% | Paid, on-chain-anchored reasoning-trace marketplace. Free-preview / paid-full split at the data-model level, not bolted on. |
 
 </details>
@@ -289,7 +289,7 @@ Every claim is **byte-replayable** from [`VERIFY.md`](VERIFY.md): 42 forge tests
 
 ```
 pythia/
-├── contracts/                          # Foundry · 4 contracts · 42 tests
+├── contracts/                          # Foundry · 4 contracts · see VERIFY.md for current tests
 │   └── src/{PythiaVault,TraceLog,UnlockMarket,DevUSDC}.sol
 ├── agent/                              # Python loop
 │   └── pythia/{scout,analyst,pm,publisher,trace,loop}.py

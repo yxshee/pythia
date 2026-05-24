@@ -49,20 +49,29 @@ def _entry(trace_id: int, *, question: str | None = None, decision: str = "BUY_Y
     }
 
 
-def _full_entry(trace_id: int, *, decision: str = "BUY_YES", fixture_source: bool = False) -> dict:
+def _full_entry(
+    trace_id: int,
+    *,
+    decision: str = "BUY_YES",
+    fixture_source: bool = False,
+    source_name: str | None = None,
+    reasoning_text: str | None = None,
+) -> dict:
     entry = _entry(trace_id, decision=decision)
+    market_source_name = source_name or (("Offline market " + "fixture") if fixture_source else "Polymarket Gamma")
+    reasoning = reasoning_text or "Resolution timing can still surprise the market."
     entry["full"] = {
         **entry["preview"],
         "edge_bps": 600,
         "expected_value_pct": 4.2,
         "suggested_size_usdc": 12.0 if decision != "HOLD" else 0.0,
         "suggested_size_by_profile": {"conservative": 4.8, "balanced": 12.0, "aggressive": 19.2},
-        "reasoning": [{"kind": "risk", "text": "Resolution timing can still surprise the market."}],
+        "reasoning": [{"kind": "risk", "text": reasoning}],
         "sources": [
             {"kind": "model", "name": "claude-sonnet-4-6", "observed_at": "2026-05-23T00:00:00+00:00"},
             {
                 "kind": "market_data",
-                "name": ("Offline market " + "fixture") if fixture_source else "Polymarket Gamma",
+                "name": market_source_name,
                 "url": "https://polymarket.com/event/live-market",
                 "observed_at": "2026-05-23T00:00:00+00:00",
             },
@@ -157,6 +166,47 @@ class ValidateSubmissionDeployModeTests(unittest.TestCase):
                 any("lack a non-market kind" in f for f in failures),
                 failures,
             )
+
+    def test_rejects_hold_payload_with_buy_recommendation_language(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _scaffold(root)
+            preview = [_entry(i, decision="HOLD" if i == 1 else "BUY_YES") for i in range(1, 9)]
+            full = [
+                _full_entry(
+                    i,
+                    decision="HOLD" if i == 1 else "BUY_YES",
+                    reasoning_text="A BUY YES is justifiable despite the final action.",
+                )
+                if i == 1
+                else _full_entry(i)
+                for i in range(1, 9)
+            ]
+            (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
+            (root / "web" / "data" / "picks-full.private.json").write_text(json.dumps(full))
+
+            failures = validate_repo(root, mode="deploy")
+
+            self.assertTrue(
+                any("HOLD reasoning contains actionable recommendation language" in f for f in failures),
+                failures,
+            )
+
+    def test_rejects_synthetic_fixture_market_data_source(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _scaffold(root)
+            preview = [_entry(i) for i in range(1, 9)]
+            full = [
+                _full_entry(i, source_name=("Synthetic fixture " + "market data") if i == 1 else None)
+                for i in range(1, 9)
+            ]
+            (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
+            (root / "web" / "data" / "picks-full.private.json").write_text(json.dumps(full))
+
+            failures = validate_repo(root, mode="deploy")
+
+            self.assertTrue(any("fixture source marker" in failure for failure in failures), failures)
 
     def test_rejects_public_full_snapshot_fixture_source_wrong_dates_and_stale_copy(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
