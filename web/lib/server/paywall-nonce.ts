@@ -5,6 +5,7 @@ import { UNLOCK_MARKET } from "@/lib/contracts";
 import {
   blobStreamToText,
   getBlobStateClient,
+  isBlobMissingRead,
   isBlobWriteConflict,
   productionRequiresDurableState,
   STATE_BLOB_ACCESS,
@@ -159,10 +160,15 @@ async function loadActive(nonce: string): Promise<NonceRecord | null> {
   }
   const blob = getBlobStateClient();
   if (blob) {
-    const result = await blob.get(blobActivePath(nonce), {
-      access: STATE_BLOB_ACCESS,
-      useCache: false,
-    });
+    const result = await blob
+      .get(blobActivePath(nonce), {
+        access: STATE_BLOB_ACCESS,
+        useCache: false,
+      })
+      .catch((err) => {
+        if (isBlobMissingRead(err)) return null;
+        throw err;
+      });
     if (!result || result.statusCode !== 200) return null;
     return parseNonceRecord(await blobStreamToText(result.stream, MAX_NONCE_RECORD_BYTES));
   }
@@ -181,10 +187,15 @@ async function isUsed(nonce: string): Promise<boolean> {
   }
   const blob = getBlobStateClient();
   if (blob) {
-    const result = await blob.get(blobUsedPath(nonce), {
-      access: STATE_BLOB_ACCESS,
-      useCache: false,
-    });
+    const result = await blob
+      .get(blobUsedPath(nonce), {
+        access: STATE_BLOB_ACCESS,
+        useCache: false,
+      })
+      .catch((err) => {
+        if (isBlobMissingRead(err)) return null;
+        throw err;
+      });
     if (result?.stream) await result.stream.cancel().catch(() => undefined);
     return result !== null;
   }

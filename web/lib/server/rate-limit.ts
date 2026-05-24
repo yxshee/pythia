@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import {
   blobStreamToText,
   getBlobStateClient,
+  isBlobMissingRead,
   isBlobWriteConflict,
   productionRequiresDurableState,
   STATE_BLOB_ACCESS,
@@ -79,7 +80,12 @@ async function blobRateLimit(
   const path = blobBucketPath(key);
   for (let attempt = 0; attempt < MAX_BLOB_ATTEMPTS; attempt += 1) {
     const now = Date.now();
-    const existing = await blob.get(path, { access: STATE_BLOB_ACCESS, useCache: false });
+    const existing = await blob
+      .get(path, { access: STATE_BLOB_ACCESS, useCache: false })
+      .catch((err) => {
+        if (isBlobMissingRead(err)) return null;
+        throw err;
+      });
     if (!existing || existing.statusCode !== 200) {
       const next = { count: 1, resetAt: now + windowMs };
       try {

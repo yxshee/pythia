@@ -48,6 +48,13 @@ export function isBlobWriteConflict(err: unknown): boolean {
   );
 }
 
+export function isBlobMissingRead(err: unknown): boolean {
+  if (!err || typeof err !== "object") return false;
+  const message =
+    "message" in err ? String((err as { message?: unknown }).message).toLowerCase() : "";
+  return message.includes("404") || message.includes("400 bad request");
+}
+
 export async function blobStreamToText(
   stream: ReadableStream<Uint8Array>,
   maxBytes: number,
