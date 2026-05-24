@@ -56,9 +56,12 @@ class PackageSubmissionTests(unittest.TestCase):
         # the zip, the uploaded artifact contradicts its own sign-off.
         included = [
             ".github/workflows/ci.yml",
+            "verify/agora-alpha-demo.gif",
+            "verify/agora-alpha-demo.mp4",
+            "verify/screenshots/hero-og.png",
+            "verify/screenshots/home-picks-grid.png",
             "verify/screenshots/unlocked-trace.png",
             "verify/screenshots/explorer-tx.png",
-            "verify/agora-alpha-demo.mp4",
         ]
 
         for rel in included:

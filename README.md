@@ -20,7 +20,7 @@ An autonomous Delphic oracle for prediction markets. Pythia scans Polymarket, sc
 
 <br />
 
-[**Live demo**](https://agoraalpha.vercel.app) · [**Try an unlock**](https://agoraalpha.vercel.app/pick/29) · [**Verify**](VERIFY.md) · [**Status**](STATUS.md) · [**Hackathon**](https://agora.thecanteenapp.com/)
+[**Live demo**](https://agoraalpha.vercel.app) · [**Try an unlock**](https://agoraalpha.vercel.app/pick/24) · [**Verify**](VERIFY.md) · [**Status**](STATUS.md) · [**Hackathon**](https://agora.thecanteenapp.com/)
 
 </div>
 
@@ -114,7 +114,7 @@ Pythia recommends; it never trades. Followers place orders themselves on Polymar
 <th>Paid unlock</th>
 </tr>
 <tr>
-<td><a href="https://agoraalpha.vercel.app"><img src="verify/screenshots/unlocked-trace.png" alt="Unlocked trace — full reasoning chain, sources, sizing" width="430" /></a></td>
+<td><a href="https://agoraalpha.vercel.app/pick/24"><img src="verify/screenshots/unlocked-trace.png" alt="Unlocked trace 24 — full reasoning chain, sources, sizing" width="430" /></a></td>
 </tr>
 <tr>
 <td align="center"><sub><em>Post-unlock: sizing, EV, sources, risks</em></sub></td>
@@ -123,9 +123,9 @@ Pythia recommends; it never trades. Followers place orders themselves on Polymar
 
 <br />
 
-<a href="https://testnet.arcscan.app/tx/0xe83d9fad0bbf0ce260ae55130fe51358c51136dc7d14ce19280f09c2b4aa66d1"><img src="verify/screenshots/explorer-tx.png" alt="Arc explorer — UnlockMarket transaction confirming the paid unlock" width="860" /></a>
+<a href="https://testnet.arcscan.app/tx/0x0f1d9b9a7a7a501047460c37c8267e3ed24f27381d77e5fcc002397c27c15e2b"><img src="verify/screenshots/explorer-tx.png" alt="Arc explorer — UnlockMarket transaction confirming the trace 24 paid unlock" width="860" /></a>
 
-<sub><em>↑ Arcscan testnet · <code>UnlockMarket.unlock(16)</code> — 0.1 DevUSDC paid to treasury, trace unlocked on-chain.</em></sub>
+<sub><em>↑ Arcscan testnet · <code>UnlockMarket.unlock(24)</code> — 0.1 DevUSDC paid to treasury, trace unlocked on-chain.</em></sub>
 
 </div>
 

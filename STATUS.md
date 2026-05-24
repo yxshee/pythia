@@ -21,9 +21,10 @@ Last updated: 2026-05-24 (Asia/Kolkata).
   `python -m pythia.scripts.publish_live_feed`, which refuses fixture data,
   heuristic analyses, duplicate markets, and local-only traces.
 - **Preview/full split is structural.** `web/data/picks-preview.json` is the
-  public browser bundle. Full paid traces are loaded from
-  `web/data/picks-full.private.json` when present locally/server-side and are
-  excluded from the public submission zip.
+  public browser bundle. Full paid traces are loaded from the server-side
+  `PRIVATE_TRACES_BLOB_URL` on production, with `web/data/picks-full.private.json`
+  kept as the local operator snapshot. Both private full bundles are excluded
+  from the public submission zip.
 - **Server-side signed-message paywall.** `/api/traces/[id]/full` now issues a
   short-lived nonce with `GET`, requires the wallet to sign the exact
   host/trace/address/chain/contract/nonce message, checks
@@ -47,16 +48,14 @@ Last updated: 2026-05-24 (Asia/Kolkata).
   (full-payload quality, ≥1 non-market source per trace) run via
   `validate_submission --mode private-deploy`.
 - **`UnlockMarket` deployed and registered on Arc testnet.** The current
-  `UnlockMarket` at `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` registers
-  the 9-16 batch that the live deploy currently serves. A fresh 24-31
-  batch was published on Arc TraceLog (`web/data/metrics.json`
-  `latest_tx_hash` =
+  `UnlockMarket` at `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` now
+  registers trace IDs `24,25,26,27,28,29,30,31`. The 24-31 batch was
+  published on Arc TraceLog (`web/data/metrics.json` `latest_tx_hash` =
   `0xf0a3bb2c3e7212149a6b297d8693163a9b78806d9d2e5ae3abf682da50742bb8`,
-  block 43847112) and ships in this submission zip, but the live deploy
-  and `UnlockMarket` registered-IDs set both still reflect the 9-16
-  batch — the audit branch is intentionally local only until the final
-  PR. On-chain reads confirmed registered IDs return `true` for
-  `traceExists`, while trace `999` returns `false`.
+  block 43847112), promoted to Vercel Blob, wired into
+  `PRIVATE_TRACES_BLOB_URL`, and redeployed to `https://agoraalpha.vercel.app`.
+  On-chain reads confirmed `traceExists(24..31) == true`, while trace `999`
+  returns `false`.
 - **Author-verified live smoke against the private deploy artifact.**
   The production alias `https://agoraalpha.vercel.app` serves the
   published picks, paid `/pick/<id>` pages return 200, SSR HTML contains
@@ -65,8 +64,8 @@ Last updated: 2026-05-24 (Asia/Kolkata).
   (`scripts/cli-unlock.mjs`, viem) mints DevUSDC, approves the exact
   unlock price, calls `UnlockMarket.unlock`, signs the nonce-bound
   message, fetches the full payload, then receives `nonce-used` on
-  replay. Operator transcript is captured in `VERIFY.md §5.5`. The
-  public submission zip intentionally excludes the paid full bundle.
+  replay. Operator transcript for trace `24` is captured in `VERIFY.md §5`.
+  The public submission zip intentionally excludes the paid full bundle.
 - **Real traction is limited.** No external users have unlocked paid
   traces yet; the unlock-count surface is intentionally blank in
   `TractionStrip` rather than faked. The Arcscan link to
@@ -101,9 +100,10 @@ Last updated: 2026-05-24 (Asia/Kolkata).
 - **Production Polymarket builder attribution.** Current links are
   recommendation deep-links. Production fee attribution requires the official
   V2 order object to include the registered bytes32 `builderCode`.
-- **Durable private storage.** The private full snapshot is a server-side file
-  for the hackathon deploy path. Production should move paid traces to Vercel
-  Blob, S3, Supabase private tables, or encrypted object storage.
+- **Encrypted/pinned private storage.** The hackathon deploy now serves paid
+  traces from Vercel Blob through the server-only `PRIVATE_TRACES_BLOB_URL`.
+  Production should still add encryption-at-rest policy, object rotation, and
+  IPFS/Irys-style content pinning before real paid traffic.
 
 ## Verification Run Before Packaging
 
@@ -115,14 +115,14 @@ mode does not imply a failure in the other; they assert different invariants.
 
 ```bash
 cd agent && uv run python -m unittest discover -s tests
-# 25 tests passed
+# 31 tests passed
 
 cd agent && uv run python -m pythia.scripts.validate_submission --mode private-deploy
 # submission data ok (private-deploy): 8 home markets, 8 private full traces
 
 # Operator pre-prod gate: also fetch PRIVATE_TRACES_BLOB_URL and assert it
-# serves a non-empty JSON trace bundle. Catches a typo'd or truncated Blob
-# URL in the Vercel env before promoting.
+# exactly matches web/data/picks-preview.json IDs and passes full-trace
+# quality checks. Catches typo'd, truncated, or stale Blob URLs.
 PRIVATE_TRACES_BLOB_URL=https://… cd agent && \
   uv run python -m pythia.scripts.validate_submission --mode private-deploy --check-blob
 
@@ -130,7 +130,7 @@ cd web && pnpm exec tsc --noEmit && pnpm build
 # TypeScript and Next.js production build passed
 
 cd contracts && forge test -vvv
-# 42 tests passed
+# 43 tests passed
 
 python3 scripts/package_submission.py
 # creates submission.zip only after package-mode validation passes
@@ -145,7 +145,7 @@ One-command end-to-end paid-unlock flow against any deploy
 ```bash
 npm install
 PRIVATE_KEY=0xREPLACE_WITH_64_HEX ARC_RPC_URL=https://REPLACE_WITH_ARC_RPC_URL \
-  node scripts/cli-unlock.mjs --base=https://agoraalpha.vercel.app --trace-id=16
+  node scripts/cli-unlock.mjs --base=https://agoraalpha.vercel.app --trace-id=24
 ```
 
 The script mints DevUSDC (if needed), approves exact unlock price, calls
