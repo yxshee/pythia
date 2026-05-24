@@ -1,13 +1,6 @@
 import "server-only";
-import { createHash } from "node:crypto";
-import {
-  blobStreamToText,
-  getBlobStateClient,
-  isBlobMissingRead,
-  isBlobWriteConflict,
-  productionRequiresDurableState,
-  STATE_BLOB_ACCESS,
-} from "@/lib/server/blob-state";
+import { createHash, randomUUID } from "node:crypto";
+import { getBlobStateClient, productionRequiresDurableState, STATE_BLOB_ACCESS } from "@/lib/server/blob-state";
 import { getKv } from "@/lib/server/kv";
 
 type Bucket = {
@@ -17,8 +10,6 @@ type Bucket = {
 
 const buckets = new Map<string, Bucket>();
 const IP_RE = /^[a-z0-9:.%-]{1,64}$/i;
-const MAX_BUCKET_BYTES = 1024;
-const MAX_BLOB_ATTEMPTS = 4;
 
 function cleanIp(value: string | null): string | null {
   const ip = value?.trim() ?? "";
@@ -39,29 +30,7 @@ export function clientIp(headers: Headers): string {
 
 function blobBucketPath(key: string): string {
   const digest = createHash("sha256").update(key).digest("hex");
-  return `paywall/rate-limit/${digest}.json`;
-}
-
-function parseBucket(raw: string): Bucket | null {
-  try {
-    const parsed = JSON.parse(raw) as Partial<Bucket>;
-    if (
-      typeof parsed.count === "number" &&
-      Number.isFinite(parsed.count) &&
-      typeof parsed.resetAt === "number" &&
-      Number.isFinite(parsed.resetAt)
-    ) {
-      return parsed as Bucket;
-    }
-  } catch {
-    // Malformed durable counter: reset the bucket on the next write attempt.
-  }
-  return null;
-}
-
-function retryAfter(resetAt: number, windowMs: number): number {
-  const remaining = Math.ceil((resetAt - Date.now()) / 1000);
-  return remaining > 0 ? remaining : Math.max(1, Math.ceil(windowMs / 1000));
+  return `paywall/rate-limit/${digest}/`;
 }
 
 async function blobRateLimit(
@@ -77,60 +46,36 @@ async function blobRateLimit(
     throw new Error("blobRateLimit called without a Blob state client");
   }
 
-  const path = blobBucketPath(key);
-  for (let attempt = 0; attempt < MAX_BLOB_ATTEMPTS; attempt += 1) {
-    const now = Date.now();
-    const existing = await blob
-      .get(path, { access: STATE_BLOB_ACCESS, useCache: false })
-      .catch((err) => {
-        if (isBlobMissingRead(err)) return null;
-        throw err;
-      });
-    if (!existing || existing.statusCode !== 200) {
-      const next = { count: 1, resetAt: now + windowMs };
-      try {
-        await blob.put(path, JSON.stringify(next), {
-          access: STATE_BLOB_ACCESS,
-          allowOverwrite: false,
-          cacheControlMaxAge: 60,
-          contentType: "application/json",
-        });
-        return { ok: true };
-      } catch (err) {
-        if (isBlobWriteConflict(err)) continue;
-        console.error("rate limit durable create failed", err);
-        return { ok: false, retryAfterSeconds: Math.max(1, Math.ceil(windowMs / 1000)) };
+  const now = Date.now();
+  const prefix = blobBucketPath(key);
+  await blob.put(`${prefix}${now}-${randomUUID()}.json`, "1", {
+    access: STATE_BLOB_ACCESS,
+    allowOverwrite: false,
+    cacheControlMaxAge: 60,
+    contentType: "application/json",
+  });
+
+  const cutoff = now - windowMs;
+  let cursor: string | undefined;
+  let count = 0;
+  let oldestInWindow = now;
+  do {
+    const page = await blob.list({ prefix, cursor, limit: 1000 });
+    for (const item of page.blobs) {
+      const uploadedAt = item.uploadedAt.getTime();
+      if (uploadedAt >= cutoff) {
+        count += 1;
+        oldestInWindow = Math.min(oldestInWindow, uploadedAt);
       }
     }
+    cursor = page.cursor;
+  } while (cursor && count <= limit);
 
-    const current =
-      parseBucket(await blobStreamToText(existing.stream, MAX_BUCKET_BYTES)) ?? {
-        count: 0,
-        resetAt: now,
-      };
-    const reset = current.resetAt <= now;
-    const next = {
-      count: reset ? 1 : current.count + 1,
-      resetAt: reset ? now + windowMs : current.resetAt,
-    };
-    try {
-      await blob.put(path, JSON.stringify(next), {
-        access: STATE_BLOB_ACCESS,
-        allowOverwrite: true,
-        cacheControlMaxAge: 60,
-        contentType: "application/json",
-        ifMatch: existing.blob.etag,
-      });
-      if (next.count <= limit) return { ok: true };
-      return { ok: false, retryAfterSeconds: retryAfter(next.resetAt, windowMs) };
-    } catch (err) {
-      if (isBlobWriteConflict(err)) continue;
-      console.error("rate limit durable update failed", err);
-      return { ok: false, retryAfterSeconds: Math.max(1, Math.ceil(windowMs / 1000)) };
-    }
+  if (count <= limit) return { ok: true };
+  return {
+    ok: false,
+    retryAfterSeconds: Math.max(1, Math.ceil((oldestInWindow + windowMs - now) / 1000)),
   }
-
-  return { ok: false, retryAfterSeconds: 1 };
 }
 
 export async function rateLimit(
