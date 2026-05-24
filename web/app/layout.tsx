@@ -20,17 +20,17 @@ const mono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Agora Alpha — auditable AI reasoning, paid in USDC on Arc",
   description:
-    "An autonomous prediction-market analyst that publishes paid, on-chain-verifiable market calls. Built for the Agora Agents Hackathon (Canteen x Circle x Arc).",
+    "An autonomous prediction-market analyst prototype that publishes paid, on-chain-verifiable market calls. Built for the Agora Agents Hackathon (Canteen x Circle x Arc).",
   metadataBase: new URL("https://agoraalpha.vercel.app"),
   openGraph: {
     title: "Agora Alpha",
-    description: "USDC-native marketplace for AI reasoning traces. Settled on Arc.",
+    description: "USDC-native marketplace prototype for AI reasoning traces. Settled on Arc.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Agora Alpha",
-    description: "USDC-native marketplace for AI reasoning traces. Settled on Arc.",
+    description: "USDC-native marketplace prototype for AI reasoning traces. Settled on Arc.",
   },
 };
 

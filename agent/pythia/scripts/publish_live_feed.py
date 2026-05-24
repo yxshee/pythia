@@ -47,6 +47,10 @@ _LOW_SIGNAL_PHRASES = (
     "gta vi released",
     "will jesus christ return",
 )
+_FIXTURE_SOURCE_MARKERS = (
+    "Offline market " + "fixture",
+    "Synthetic fixture " + "market data",
+)
 
 
 def _hold_plan(report: AnalystReport) -> TradePlan:
@@ -206,7 +210,7 @@ def _assert_trace_ok(trace: dict[str, Any]) -> list[str]:
 
     if preview.get("model") == "heuristic-v1-placeholder":
         failures.append(f"trace {trace_id}: heuristic model")
-    if ("Offline market " + "fixture") in source_names:
+    if any(marker in source_names for marker in _FIXTURE_SOURCE_MARKERS):
         failures.append(f"trace {trace_id}: fixture source")
     if not (trace.get("onchain") or {}).get("tx_hash"):
         failures.append(f"trace {trace_id}: missing onchain tx_hash")

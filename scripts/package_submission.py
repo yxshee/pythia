@@ -114,6 +114,13 @@ def validate_repo(repo_root: Path) -> list[str]:
     return validate(repo_root, mode="public-package")
 
 
+def display_output_path(repo_root: Path, out_path: Path) -> Path:
+    try:
+        return out_path.relative_to(repo_root)
+    except ValueError:
+        return out_path
+
+
 def create_zip(repo_root: Path, out_path: Path) -> None:
     files = iter_package_files(repo_root)
     with zipfile.ZipFile(out_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
@@ -144,7 +151,7 @@ def main() -> int:
     if out.exists():
         out.unlink()
     create_zip(repo_root, out)
-    print(f"wrote {out.relative_to(repo_root)} ({out.stat().st_size:,} bytes)")
+    print(f"wrote {display_output_path(repo_root, out)} ({out.stat().st_size:,} bytes)")
     return 0
 
 

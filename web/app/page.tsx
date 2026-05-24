@@ -20,7 +20,7 @@ export default async function HomePage() {
               Agora · Alpha · Pythia
             </p>
             <h1 className="mt-5 font-display text-[44px] font-light leading-[0.98] tracking-[-0.02em] text-ink md:text-[64px]">
-              The first <em className="text-oxblood not-italic">USDC-native</em> marketplace
+              A <em className="text-oxblood not-italic">USDC-native</em> marketplace prototype
               for <span className="underline decoration-gold/70 decoration-[3px] underline-offset-[6px]">auditable</span> AI reasoning traces.
             </h1>
             <p className="mt-7 max-w-xl font-display text-[17px] leading-[1.55] text-ink-soft md:text-[19px]">

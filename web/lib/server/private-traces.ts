@@ -30,6 +30,17 @@ const PRIVATE_TRACE_AAD = "pythia-private-traces-v1";
 
 let cached: { at: number; traces: Trace[] } | null = null;
 
+export class PrivateTraceStoreUnavailableError extends Error {
+  constructor(cause: unknown) {
+    super("Private trace store is unavailable", { cause });
+    this.name = "PrivateTraceStoreUnavailableError";
+  }
+}
+
+export function isPrivateTraceStoreUnavailableError(err: unknown): boolean {
+  return err instanceof PrivateTraceStoreUnavailableError;
+}
+
 function localSnapshotPath(): string {
   return path.resolve(process.cwd(), "data", "picks-full.private.json");
 }
@@ -130,9 +141,9 @@ async function loadFromLocal(): Promise<Trace[]> {
 }
 
 /**
- * Returns the full paid bundle, or `null` when neither source is available.
- * The caller (typically `loadPickFull`) is expected to handle `null` by
- * returning a 404 to the client — never by leaking a partial response.
+ * Returns the full paid bundle, or `null` when neither source is configured.
+ * Source/decryption/fetch failures throw so paid users see a server-side
+ * private-store outage instead of a misleading `trace-not-found`.
  */
 export async function loadPrivateTraces(): Promise<Trace[] | null> {
   if (cached && Date.now() - cached.at < TTL_MS) return cached.traces;
@@ -152,7 +163,7 @@ export async function loadPrivateTraces(): Promise<Trace[] | null> {
     // Fail closed: a Blob outage must not silently downgrade to "no payload"
     // for paid users. Logging here lets us see the cause in Vercel logs.
     console.error("private-traces load failed", err);
-    return null;
+    throw new PrivateTraceStoreUnavailableError(err);
   }
 }
 

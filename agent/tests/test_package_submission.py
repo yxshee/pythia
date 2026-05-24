@@ -7,6 +7,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
+from scripts import package_submission  # noqa: E402
 from scripts.package_submission import should_exclude  # noqa: E402
 
 
@@ -69,6 +70,22 @@ class PackageSubmissionTests(unittest.TestCase):
         for rel in included:
             with self.subTest(rel=rel):
                 self.assertFalse(should_exclude(Path(rel), is_dir=False))
+
+    def test_absolute_output_path_outside_repo_is_printable(self) -> None:
+        helper = getattr(package_submission, "display_output_path", None)
+        self.assertIsNotNone(helper)
+        if helper is None:
+            return
+
+        repo_root = Path("/repo")
+        self.assertEqual(helper(repo_root, repo_root / "submission.zip"), Path("submission.zip"))
+        self.assertEqual(helper(repo_root, Path("/tmp/submission.zip")), Path("/tmp/submission.zip"))
+
+    def test_ci_runs_public_package_validation_and_packager(self) -> None:
+        workflow = (REPO_ROOT / ".github" / "workflows" / "ci.yml").read_text()
+
+        self.assertIn("pythia.scripts.validate_submission --mode public-package", workflow)
+        self.assertIn("python scripts/package_submission.py", workflow)
 
 
 if __name__ == "__main__":

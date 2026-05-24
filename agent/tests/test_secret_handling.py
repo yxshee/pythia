@@ -66,3 +66,12 @@ class SecretHandlingTests(unittest.TestCase):
         self.assertRegex(source, r"MIN_PAYWALL_NONCE_SECRET_BYTES\s*=\s*32")
         self.assertIn('Buffer.byteLength(secret, "utf8")', body)
         self.assertIn("StateStoreUnavailableError", body)
+
+    def test_private_trace_store_failures_are_not_reported_as_missing_trace(self) -> None:
+        loader = (ROOT / "web" / "lib" / "server" / "private-traces.ts").read_text()
+        route = (ROOT / "web" / "app" / "api" / "traces" / "[traceId]" / "full" / "route.ts").read_text()
+
+        self.assertIn("PrivateTraceStoreUnavailableError", loader)
+        self.assertIn("throw new PrivateTraceStoreUnavailableError", loader)
+        self.assertIn("isPrivateTraceStoreUnavailableError", route)
+        self.assertIn("private-trace-store-unavailable", route)

@@ -25,6 +25,7 @@ import { arc } from "@/lib/arc-chain";
 import { UNLOCK_MARKET, unlockMarketAbi } from "@/lib/contracts";
 import { loadPick, loadPickFull } from "@/lib/traces";
 import { isStateStoreUnavailableError } from "@/lib/server/blob-state";
+import { isPrivateTraceStoreUnavailableError } from "@/lib/server/private-traces";
 import { clientIp, rateLimit } from "@/lib/server/rate-limit";
 import { trustedRequestHost, utf8ByteLength } from "@/lib/server/request-security";
 import {
@@ -262,7 +263,15 @@ export async function POST(
   //    fields like expected_value_pct sit on .full, not the wrapper.
   //    We also guard `!trace.full` so a malformed snapshot 404s here
   //    instead of leaking an empty body that crashes downstream.
-  const trace = await loadPickFull(traceId);
+  let trace: Awaited<ReturnType<typeof loadPickFull>>;
+  try {
+    trace = await loadPickFull(traceId);
+  } catch (err) {
+    if (isPrivateTraceStoreUnavailableError(err)) {
+      return bad("private-trace-store-unavailable", 503);
+    }
+    throw err;
+  }
   if (!trace || !trace.full) {
     return bad("trace-not-found", 404);
   }

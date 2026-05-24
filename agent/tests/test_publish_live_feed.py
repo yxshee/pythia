@@ -5,7 +5,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from pythia.scripts.publish_live_feed import _dedupe_live_candidates, _load_gamma_candidates
+from pythia.scripts.publish_live_feed import (
+    _assert_trace_ok,
+    _dedupe_live_candidates,
+    _load_gamma_candidates,
+)
 
 
 def _raw_market(idx: int, question: str | None = None) -> dict:
@@ -76,6 +80,26 @@ class PublishLiveFeedTests(unittest.TestCase):
             deduped = _dedupe_live_candidates(_load_gamma_candidates(path))
 
             self.assertEqual([c.market_id for c in deduped], [raw[0]["conditionId"], raw[1]["conditionId"]])
+
+    def test_publish_gate_rejects_synthetic_fixture_market_data_source(self) -> None:
+        trace = {
+            "trace_id": 42,
+            "preview": {"model": "claude-sonnet-4-6"},
+            "onchain": {"tx_hash": "0x" + "1" * 64},
+            "full": {
+                "decision": "BUY_YES",
+                "copy_trade_url": "https://polymarket.com/event/live-market",
+                "risk_factors": ["Resolution can surprise the market."],
+                "sources": [
+                    {"name": "Polymarket Gamma"},
+                    {"name": "Synthetic fixture " + "market data"},
+                ],
+            },
+        }
+
+        failures = _assert_trace_ok(trace)
+
+        self.assertTrue(any("fixture source" in failure for failure in failures), failures)
 
 
 if __name__ == "__main__":

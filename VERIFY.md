@@ -809,6 +809,37 @@ traceExists(31)   true
 `web/data/picks-preview.json`, and runs the same full-payload quality checks
 against the decrypted Blob entries.
 
+### 5.7 Arcscan source-verification proof
+
+On 2026-05-25, the three core demo contracts were submitted through Foundry's
+Blockscout verifier against `https://testnet.arcscan.app/api/` and each returned
+`Pass - Verified`.
+
+Command shape:
+
+```bash
+cd contracts
+ARCSCAN_API_KEY='' forge verify-contract \
+  --verifier blockscout \
+  --verifier-url https://testnet.arcscan.app/api/ \
+  --compiler-version v0.8.24+commit.e11b9ed9 \
+  --optimizer-runs 200 \
+  --via-ir \
+  <address> src/<Contract>.sol:<Contract>
+```
+
+`TraceLog` and `UnlockMarket` were verified with ABI-encoded constructor
+arguments matching their deployed constructor inputs. `DevUSDC` has no
+constructor arguments.
+
+Arcscan API readback:
+
+```text
+TraceLog      ContractName=TraceLog      CompilerVersion=v0.8.24+commit.e11b9ed9  OptimizationUsed=true  SourceCodeLen=3779
+UnlockMarket  ContractName=UnlockMarket  CompilerVersion=v0.8.24+commit.e11b9ed9  OptimizationUsed=true  SourceCodeLen=6142
+DevUSDC       ContractName=DevUSDC       CompilerVersion=v0.8.24+commit.e11b9ed9  OptimizationUsed=true  SourceCodeLen=6261
+```
+
 ---
 
 ## 6. Visual evidence

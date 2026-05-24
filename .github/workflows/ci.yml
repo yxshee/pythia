@@ -70,3 +70,19 @@ jobs:
 
       - name: forge test -vvv
         run: forge test -vvv
+
+  submission:
+    name: submission package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: validate public package
+        run: PYTHONPATH=agent python -m pythia.scripts.validate_submission --mode public-package
+
+      - name: build submission.zip
+        run: python scripts/package_submission.py
