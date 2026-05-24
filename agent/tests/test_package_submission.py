@@ -17,6 +17,7 @@ class PackageSubmissionTests(unittest.TestCase):
             ".private/archive-traces/trace-000023.json",
             "submission.zip",
             "traces/trace-000023.json",
+            "web/data/.blob-url",
             "web/data/picks-full.json",
             "web/data/picks-full.private.json",
             "web/node_modules/.modules.yaml",

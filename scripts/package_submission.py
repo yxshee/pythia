@@ -52,6 +52,7 @@ EXCLUDED_PARTS = {
 EXCLUDED_NAMES = {
     ".env",
     ".env.local",
+    ".blob-url",
     "next-env.d.ts",
     "tsconfig.tsbuildinfo",
     "submission.zip",
