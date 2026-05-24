@@ -19,10 +19,10 @@
 | Field             | Value                                                              |
 |-------------------|--------------------------------------------------------------------|
 | Historical baseline | Earlier sections retain pre-promotion audit transcripts for comparison. The final promotion proof is §5 onward. |
-| Final promotion tree | `main` / `origin/main` aligned at `df176c4` for the final package and deploy verification. |
+| Final promotion tree | `main` / `origin/main` aligned for the final package and deploy verification; runtime hardening commit is `df176c4`. |
 | Generated at      | `2026-05-24T18:06:35Z` (§5.5 final trace-24 live unlock); screenshots refreshed on `2026-05-24`; package manifest generated after final zip (§7). |
 | Production URL    | https://agoraalpha.vercel.app                                      |
-| Production deploy | `dpl_8gv2TPfbaG69biZmSLbhKMBcLB7G` (`agoraalpha-gsx3jhm7o-yashs-projects-a859a420.vercel.app`, aliased to production) |
+| Production deploy | `dpl_2m41yR9y7DrzVhBM8pXH18hvzZJs` (`agoraalpha-6pleuxhdk-yashs-projects-a859a420.vercel.app`, aliased to production) |
 | UnlockMarket addr | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` (registered trace IDs `24,25,26,27,28,29,30,31`) |
 | Chain             | Arc testnet, chain id `5042002`                                    |
 
@@ -780,8 +780,8 @@ HTTP 401: {"error":"nonce-used"}
 ### 5.4 Final hardened nonce smoke
 
 After replacing per-instance nonce state with HMAC-bound nonce tokens plus
-durable write-once Blob used markers, the final production deploy
-`dpl_8gv2TPfbaG69biZmSLbhKMBcLB7G` was re-smoked against trace `24`:
+durable write-once Blob used markers, the hardened production alias was
+re-smoked against trace `24`:
 
 ```text
 [8/11] GET:       https://agoraalpha.vercel.app/api/traces/24/full?address=0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e
