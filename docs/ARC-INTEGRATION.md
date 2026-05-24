@@ -26,9 +26,9 @@ Tests: `cd contracts && forge test`; see [`VERIFY.md`](../VERIFY.md) and CI for 
 
 | Contract | Address | Arcscan | Source verification |
 |---|---|---|---|
-| `TraceLog` | `0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4` | https://testnet.arcscan.app/address/0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4 | Not source-verified as of 2026-05-25: Arcscan `getsourcecode` returned empty `SourceCode`. |
-| `UnlockMarket` | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` | https://testnet.arcscan.app/address/0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA | Not source-verified as of 2026-05-25: Arcscan `getsourcecode` returned empty `SourceCode`. |
-| `DevUSDC` | `0x6d3bda6e93dd02a1c237642C5af837796bF47511` | https://testnet.arcscan.app/address/0x6d3bda6e93dd02a1c237642C5af837796bF47511 | Not source-verified as of 2026-05-25: Arcscan `getsourcecode` returned empty `SourceCode`. |
+| `TraceLog` | `0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4` | https://testnet.arcscan.app/address/0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4 | Not source-verified as of 2026-05-25: Arcscan `getsourcecode` returned empty `SourceCode`. Local runtime bytecode matches after normalizing Solidity metadata. |
+| `UnlockMarket` | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` | https://testnet.arcscan.app/address/0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA | Not source-verified as of 2026-05-25: Arcscan `getsourcecode` returned empty `SourceCode`. Local runtime bytecode matches after normalizing Solidity metadata and immutable slots. |
+| `DevUSDC` | `0x6d3bda6e93dd02a1c237642C5af837796bF47511` | https://testnet.arcscan.app/address/0x6d3bda6e93dd02a1c237642C5af837796bF47511 | Not source-verified as of 2026-05-25: Arcscan `getsourcecode` returned empty `SourceCode`. Local runtime bytecode matches after normalizing Solidity metadata and immutable slots. |
 
 Command used for the source-verification status:
 
@@ -37,6 +37,15 @@ curl "https://testnet.arcscan.app/api?module=contract&action=getsourcecode&addre
 ```
 
 Do not claim verified source until these rows are updated from Arcscan evidence.
+
+Command used for bytecode-equivalence proof:
+
+```bash
+ARC_RPC_URL=https://... python3 scripts/check_contract_bytecode.py
+```
+
+The checker strips Solidity CBOR metadata and zeroes immutable references before
+comparing local Foundry artifacts with `cast code` output.
 
 ### UnlockMarket flow
 

@@ -12,6 +12,11 @@ Last updated: 2026-05-25 (Asia/Kolkata).
   Deployments table. `PythiaVault` is also deployed but is marked **experimental
   — not in scope for this submission** (header at
   `contracts/src/PythiaVault.sol`).
+- **Contract runtime bytecode is locally reproducible.** Arcscan source
+  verification is still not available for the deployed contracts, but
+  `python3 scripts/check_contract_bytecode.py` confirms the local Foundry
+  artifacts match deployed runtime logic after normalizing Solidity metadata
+  and immutable slots.
 - **`UnlockMarket` is hardened for the demo path.** It now requires registered
   trace IDs, supports owner-only batch registration, updates state before token
   transfer, uses a simple `nonReentrant` guard, and wraps `transferFrom` with an

@@ -46,6 +46,17 @@ Before using language like "effective oracle", "validated oracle", or
 | Metrics | Brier score, calibration bucket, hit rate by decision type, and paper PnL. |
 | Failure review | At least 3 correct-sounding wrong traces and the policy changes they caused. |
 
+The machine gate for that study is:
+
+```bash
+cd agent
+uv run python -m pythia.scripts.validate_oracle_eval ../eval/oracle-redteam.json
+```
+
+That command intentionally fails if the dataset is missing, has fewer than
+20 resolved markets, lacks paper PnL / resolution sources, or contains fewer
+than 3 correct-sounding wrong examples with policy changes.
+
 ## Correct-Sounding Wrong Trace Template
 
 Use this table when the resolved-market study is added:
@@ -69,4 +80,3 @@ Disallowed until the backtest exists:
 - "Validated predictor."
 - "Profitable historical track record."
 - "Calibrated across long-tail markets."
-
