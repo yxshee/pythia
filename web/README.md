@@ -44,9 +44,13 @@ See [./.env.local.example](./.env.local.example) for the full annotated list.
 Two contracts you must respect:
 
 - **Never prefix server-only vars with `NEXT_PUBLIC_`.** `ARC_RPC_URL`,
-  `PRIVATE_TRACES_BLOB_URL`, `BLOB_READ_WRITE_TOKEN`, `KV_REST_API_URL`,
-  and `KV_REST_API_TOKEN` are server-only. They appear only in Node.js
-  runtime bundles, never in the browser.
+  `PRIVATE_TRACES_BLOB_URL`, `PAYWALL_NONCE_SECRET`,
+  `BLOB_READ_WRITE_TOKEN`, `KV_REST_API_URL`, and `KV_REST_API_TOKEN`
+  are server-only. They appear only in Node.js runtime bundles, never in
+  the browser.
+- **Use a dedicated nonce signing secret.** `PAYWALL_NONCE_SECRET` is
+  required in production for HMAC-bound unlock messages; do not reuse Blob,
+  RPC, wallet, or API credentials.
 - **The Blob URL itself is the secret.** `PRIVATE_TRACES_BLOB_URL` carries
   a random suffix that is the only access control on the paid payload.
   Treat it like a token: never log, never commit.

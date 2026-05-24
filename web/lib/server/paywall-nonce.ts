@@ -45,10 +45,7 @@ function blobUsedPath(nonce: string): string {
 }
 
 function nonceSecret(): string {
-  const secret =
-    process.env.PAYWALL_NONCE_SECRET ??
-    process.env.KV_REST_API_TOKEN ??
-    process.env.BLOB_READ_WRITE_TOKEN;
+  const secret = process.env.PAYWALL_NONCE_SECRET;
   if (secret) return secret;
   if (productionRequiresDurableState()) throw new StateStoreUnavailableError();
   return "local-dev-paywall-nonce-secret";

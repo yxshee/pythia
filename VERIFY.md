@@ -753,8 +753,9 @@ HTTP 401: {"error":"nonce-used"}
 ### 5.4 Final hardened nonce + rate-limit smoke
 
 After replacing per-instance nonce state with HMAC-bound nonce tokens,
-durable write-once Blob used markers, and bounded KV-or-memory rate limiting,
-the final production alias was re-smoked against trace `24`:
+a dedicated production `PAYWALL_NONCE_SECRET`, durable write-once Blob used
+markers, and bounded KV-or-memory rate limiting, the final production alias
+was re-smoked against trace `24`:
 
 ```text
 [8/11] GET:       https://agoraalpha.vercel.app/api/traces/24/full?address=0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e

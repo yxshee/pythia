@@ -21,3 +21,17 @@ class SecretHandlingTests(unittest.TestCase):
         self.assertNotIn("uploaded picks-full.private.json to:", source)
         self.assertIn("web/data/.blob-url", source)
 
+    def test_paywall_nonce_uses_dedicated_hmac_secret(self) -> None:
+        source = (ROOT / "web" / "lib" / "server" / "paywall-nonce.ts").read_text()
+        nonce_secret = re.search(
+            r"function nonceSecret\(\): string \{(?P<body>.*?)\n\}",
+            source,
+            re.DOTALL,
+        )
+        self.assertIsNotNone(nonce_secret)
+        body = nonce_secret.group("body")
+
+        self.assertIn("process.env.PAYWALL_NONCE_SECRET", body)
+        self.assertIn("productionRequiresDurableState()", body)
+        self.assertNotIn("BLOB_READ_WRITE_TOKEN", body)
+        self.assertNotIn("KV_REST_API_TOKEN", body)
