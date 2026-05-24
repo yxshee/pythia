@@ -84,13 +84,12 @@ Last updated: 2026-05-24 (Asia/Kolkata).
 - **Source bundles are market-data first.** Live traces include model,
   Polymarket market data, and resolution text. Broader news/sentiment/source
   credibility ingestion remains post-submission work.
-- **Paywall nonce + rate limiting require Vercel KV in production.**
-  `requireKvInProduction()` throws at boot when `KV_REST_API_URL` /
-  `KV_REST_API_TOKEN` are unset and `VERCEL_ENV=production`, so a deploy
-  cannot silently degrade to per-instance in-memory Maps (which would
-  401 a POST on instance B with `nonce-not-found` after the GET hit
-  instance A). Local dev still uses the in-memory fallback for ergonomic
-  offline work.
+- **Paywall nonce + rate limiting have a Vercel KV hardening path.**
+  The current hackathon deploy can fall back to per-instance in-memory
+  Maps when `KV_REST_API_URL` / `KV_REST_API_TOKEN` are unset, which keeps
+  the one-command paid-unlock smoke live. Configure KV before real paid
+  traffic so nonce and rate-limit state are durable across serverless
+  instances.
 
 ## Does Not Yet Work
 

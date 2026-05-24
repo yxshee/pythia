@@ -15,7 +15,7 @@ and the paid-unlock paywall against the `UnlockMarket` contract on Arc testnet.
 - React 19, TypeScript 5, Tailwind 4
 - viem 2 + wagmi 2 for wallet + chain reads
 - `@vercel/blob` for the private full-trace payload
-- `@vercel/kv` for the paywall nonce store + rate limiter (in-memory fallback for local dev)
+- `@vercel/kv` for durable paywall nonce storage + rate limiting when configured (in-memory fallback for the hackathon demo)
 
 ## Paywall flow
 
@@ -50,6 +50,10 @@ Two contracts you must respect:
 - **The Blob URL itself is the secret.** `PRIVATE_TRACES_BLOB_URL` carries
   a random suffix that is the only access control on the paid payload.
   Treat it like a token: never log, never commit.
+- **KV is the durable path, not the current demo dependency.** Without
+  `KV_REST_API_URL` / `KV_REST_API_TOKEN`, nonce and rate-limit state uses
+  per-instance Maps. That supports the smoke test but is not sufficient for
+  real paid traffic across multiple serverless instances.
 
 ## Scripts
 
@@ -65,9 +69,9 @@ Use `pnpm install --frozen-lockfile` in CI (see [.github/workflows/ci.yml](../.g
 ## Operator pre-deploy gate
 
 Before promoting a build that depends on `PRIVATE_TRACES_BLOB_URL`, run the
-validator's `--check-blob` mode to confirm the URL actually serves a
-non-empty JSON trace bundle (catches a typo'd or truncated Blob URL in the
-Vercel env):
+validator's `--check-blob` mode to confirm the URL actually serves the full
+trace bundle whose IDs exactly match `web/data/picks-preview.json` and whose
+entries pass full-payload quality checks:
 
 ```bash
 cd ../agent
@@ -75,10 +79,10 @@ PRIVATE_TRACES_BLOB_URL=https://…  uv run python -m pythia.scripts.validate_su
   --mode private-deploy --check-blob
 ```
 
-Exit code 0 means the URL is reachable, served as JSON, and parsed to a
-non-empty trace array. Any other case prints a `FAIL:` line naming the URL
-and the reason (HTTP status, content-type mismatch, parse error, empty
-list).
+Exit code 0 means the URL is reachable, served as JSON, parsed to a
+non-empty trace array, ID-matched to the public preview file, and passes
+source/risk/HOLD-copy-trade checks. Any other case prints a `FAIL:` line
+with the reason while redacting the URL itself.
 
 ## Wallet smoke (operator)
 
@@ -91,7 +95,7 @@ clean transcript for VERIFY.md §5 without screenshots.
 cd ..
 npm install                                # one-time install (repo-root deps)
 PRIVATE_KEY=0xREPLACE_WITH_64_HEX ARC_RPC_URL=https://REPLACE_WITH_ARC_RPC_URL \
-  node scripts/cli-unlock.mjs --base=https://agoraalpha.vercel.app --trace-id=16
+  node scripts/cli-unlock.mjs --base=https://agoraalpha.vercel.app --trace-id=24
 ```
 
 Pre-flight `--dry-run` flag stops after reading the on-chain unlock price

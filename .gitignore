@@ -38,6 +38,7 @@ agent/.venv/
 bot/.venv/
 .private/
 submission.zip
+submission.zip.sha256
 
 # Logs + caches
 *.log
