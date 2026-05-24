@@ -19,56 +19,29 @@
 | Field             | Value                                                              |
 |-------------------|--------------------------------------------------------------------|
 | Historical baseline | Earlier sections retain pre-promotion audit transcripts for comparison. The final promotion proof is §5 onward. |
-| Final promotion tree | `main` / `origin/main` aligned for the final package and deploy verification; runtime hardening commit is `df176c4`. |
-| Generated at      | `2026-05-24T18:06:35Z` (§5.5 final trace-24 live unlock); screenshots refreshed on `2026-05-24`; package manifest generated after final zip (§7). |
+| Final promotion tree | `main` / `origin/main` aligned for the final package and deploy verification; final runtime hardening keeps rate-limit counters out of Blob while preserving durable nonce replay. |
+| Generated at      | `2026-05-24T18:27:21Z` (§5.4 final trace-24 live unlock); screenshots refreshed on `2026-05-24`; package manifest generated after final zip (§7). |
 | Production URL    | https://agoraalpha.vercel.app                                      |
-| Production deploy | Latest `https://agoraalpha.vercel.app` production alias verified with `vercel inspect`; exact deploy id is recorded in the operator handoff. |
+| Production deploy | `dpl_BoAm2rmGoRE8A5kP5cuvx7NjAir4` / `https://agoraalpha-9xn58kz0n-yashs-projects-a859a420.vercel.app`, aliased to `https://agoraalpha.vercel.app`. |
 | UnlockMarket addr | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` (registered trace IDs `24,25,26,27,28,29,30,31`) |
 | Chain             | Arc testnet, chain id `5042002`                                    |
 
 ### 0.1 Diff scope
 
-The audit branch modifies the following tracked files and adds the following
-new files. Reproduce with `git status --short` on the same commit.
+The post-promotion runtime cleanup removes Blob-backed rate-limit counters,
+adds a regression test for that contract, and keeps the proof docs aligned on
+trace IDs `24,25,26,27,28,29,30,31`. The runtime cleanup commit scope was:
 
 ```text
- M .env.example
- M .gitignore
- M README.md
- M STATUS.md
- M VERIFY.md
- M agent/pythia/analyst.py
- M agent/pythia/preview.py
- M agent/pythia/scripts/publish_live_feed.py
- M agent/pythia/scripts/validate_submission.py
- M agent/tests/test_publisher_payload.py
- M agent/tests/test_validate_submission.py
- M contracts/src/PythiaVault.sol
- M scripts/package_submission.py
- M traces/sanitized-full-trace.example.json
- M web/.env.local.example
- M web/README.md
- M web/app/api/rpc/route.ts
- M web/app/api/traces/[traceId]/full/route.ts
- M web/app/layout.tsx
- M web/app/page.tsx
- M web/app/pick/[traceId]/page.tsx
- M web/components/traction-strip.tsx
- M web/components/unlocked-content.tsx
- M web/lib/server/paywall-nonce.ts
- M web/lib/server/rate-limit.ts
- M web/lib/traces.ts
- M web/next.config.ts
- M web/package.json
- M web/pnpm-lock.yaml
-?? .github/workflows/ci.yml
-?? VERIFY-CHECKLIST.md
-?? scripts/backfill_event_data_sources.py
-?? scripts/upload-private-blob.mjs
-?? web/app/opengraph-image.tsx
-?? web/app/twitter-image.tsx
-?? web/lib/server/kv.ts
-?? web/lib/server/private-traces.ts
+ec5ebfe fix: keep rate limits off blob storage
+ STATUS.md                                   |  11 +--
+ agent/tests/test_web_rate_limit.py          |  23 ++++++
+ contracts/script/DeployUnlockMarket.s.sol   |   2 +-
+ contracts/script/RegisterUnlockTraces.s.sol |   2 +-
+ web/.env.local.example                      |  12 +--
+ web/README.md                               |  10 +--
+ web/lib/server/kv.ts                        |   5 +-
+ web/lib/server/rate-limit.ts                | 115 ----------------------------
 ```
 
 ---
@@ -704,7 +677,7 @@ at the size gate before any parsing or context work.
 
 ## 5. Paid unlock — live transcript (current public batch)
 
-Captured `2026-05-24T17:07:50Z` via [scripts/cli-unlock.mjs](scripts/cli-unlock.mjs)
+Captured `2026-05-24T18:27:21Z` via [scripts/cli-unlock.mjs](scripts/cli-unlock.mjs)
 against the production deploy `https://agoraalpha.vercel.app`, after the
 public preview, private Blob bundle, live deploy, and `UnlockMarket`
 registration were aligned on trace IDs `24,25,26,27,28,29,30,31`.
@@ -729,17 +702,17 @@ PRIVATE_KEY=$DEMO_DEPLOYER_PK ARC_RPC_URL=$ARC_RPC_URL \
 [2/11] Args:      base=https://agoraalpha.vercel.app  trace-id=24  rpc=https://rpc.testnet.arc-node.thecanteenapp.com/…  dry-run=false
 [3/11] Clients:   viem public+wallet on chain 5042002
 [4/11] priceFor:  0.1 USDC (raw=100000)
-         balance:  1000001 USDC
+         balance:  1000001.1 USDC
 [5/11] mint:      skipped (balance >= price)
          allow:    0.1 USDC
 [6/11] approve:   skipped (allowance >= price)
 [7/11] unlock:    skipped (already unlocked on-chain)
 [8/11] GET:       https://agoraalpha.vercel.app/api/traces/24/full?address=0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e
-         nonce:    83314be6-5ccf-4600-92e3-53459bfbe3f0
-         issued:   2026-05-24T17:07:50.004Z
-         expires:  2026-05-24T17:12:50.004Z
-[9/11] sign:      EIP-191 message (287 chars)
-         sig:      0xa8eb61b8cde15aa8…f11b
+         nonce:    eyJ2Ijox...OY-N8
+         issued:   2026-05-24T18:27:21.822Z
+         expires:  2026-05-24T18:32:21.822Z
+[9/11] sign:      EIP-191 message (599 chars)
+         sig:      0x4aefff6a45e0847a…461b
 [10/11] POST:     https://agoraalpha.vercel.app/api/traces/24/full
          HTTP 200: {"agent_probability_yes":0.09,"confidence":"medium","copy_trade_url":null,"current_implied_yes":0.0105,"decision":"HOLD","edge_bps":795,"end_date_iso":"2026-07-20T00:00:00Z","expected_value_pct":0,"generated_at":"2026-05-24T14:28:09+00:00",…
 [11/11] replay:   POST same body again (expect 401 nonce-used)
@@ -777,17 +750,17 @@ Step 11 proves the nonce-consumption invariant. Re-posting the exact same
 HTTP 401: {"error":"nonce-used"}
 ```
 
-### 5.4 Final hardened nonce smoke
+### 5.4 Final hardened nonce + rate-limit smoke
 
-After replacing per-instance nonce state with HMAC-bound nonce tokens plus
-durable write-once Blob used markers, the hardened production alias was
-re-smoked against trace `24`:
+After replacing per-instance nonce state with HMAC-bound nonce tokens,
+durable write-once Blob used markers, and bounded KV-or-memory rate limiting,
+the final production alias was re-smoked against trace `24`:
 
 ```text
 [8/11] GET:       https://agoraalpha.vercel.app/api/traces/24/full?address=0xFA769b2C65087311B51E9541D8C8987f7FFB0A1e
-         nonce:    eyJ2Ijox...PUzSc_HZ55IPyu95nZWjLq6Ry79FCAc0ujsAJ47mH3Y
-         issued:   2026-05-24T18:06:35.074Z
-         expires:  2026-05-24T18:11:35.074Z
+         nonce:    eyJ2Ijox...OY-N8
+         issued:   2026-05-24T18:27:21.822Z
+         expires:  2026-05-24T18:32:21.822Z
 [9/11] sign:      EIP-191 message (599 chars)
 [10/11] POST:     https://agoraalpha.vercel.app/api/traces/24/full
          HTTP 200: {"agent_probability_yes":0.09,"confidence":"medium","copy_trade_url":null,...}
@@ -843,7 +816,7 @@ checks against the Blob entries.
 | `verify/screenshots/home-picks-grid.png`   | Production home feed after promotion — shows the current `24-31` pick batch on the live alias. 1200×2626 PNG. |
 | `verify/screenshots/pick-preview-locked.png` | `/pick/24` locked preview — shows trace 24, free signal, Arc TraceLog anchor, and the DevUSDC/testnet paywall before full payload reveal. 1200×1455 PNG. |
 | `verify/screenshots/unlocked-trace.png`    | `/pick/24` rendered post-unlock for wallet `0xFA76…0A1e` — shows Pick #024 ("Will USA win the 2026 FIFA World Cup?"), Decision `HOLD`, the `UNLOCKED · PAID · ON ARC` full-trace section, EV `+0.00%`, Edge `+795 bps`, zero paper sizes for all profiles, full reasoning chain, source bundle (`model`, `market_data`, `resolution_criteria`, `official_data`), risk factors, and the no-copy-trade HOLD state. 884×2678 PNG. |
-| `verify/screenshots/explorer-tx.png`       | Arcscan testnet detail for the `UnlockMarket.unlock(24)` transaction recorded in §5.4 — tx `0x0f1d9b9a…27c15e2b`, Status `Success`, Method `unlock`, Block `43861411`, Timestamp `May 24 2026 22:06:17 (+05:30)`, From `0xFA76…0A1e`, Contract `0xD8af…d3cA`, Tokens transferred `0.1 pUSDC` to the treasury, transaction fee `0.002196895654783656 USDC`. 3420×2146 PNG. |
+| `verify/screenshots/explorer-tx.png`       | Arcscan testnet detail for the `UnlockMarket.unlock(24)` transaction recorded in §5.5 — tx `0x0f1d9b9a…27c15e2b`, Status `Success`, Method `unlock`, Block `43861411`, Timestamp `May 24 2026 22:06:17 (+05:30)`, From `0xFA76…0A1e`, Contract `0xD8af…d3cA`, Tokens transferred `0.1 pUSDC` to the treasury, transaction fee `0.002196895654783656 USDC`. 3420×2146 PNG. |
 
 The dimensions above are pulled directly from the PNGs (`file verify/screenshots/*.png`).
 
@@ -951,10 +924,10 @@ files with no secrets) ship. Same invariants as §7.2; reasserted post-merge.
 | Field                  | Value                                                              |
 |------------------------|--------------------------------------------------------------------|
 | Signed-off by          | `@yxshee`                                                          |
-| Sign-off timestamp     | `2026-05-24T17:07:50Z`                                             |
-| Sign-off commit        | final local commit for this repair; exact pushed SHA is recorded by `git log main` after commit/push |
+| Sign-off timestamp     | `2026-05-24T18:27:21Z`                                             |
+| Sign-off commit        | final pushed commit is verified with `git rev-parse HEAD` and `git rev-parse origin/main`; the commit hash is not embedded here to avoid self-referential proof churn |
 | Submission artifact    | `submission.zip` — exact SHA256 and byte count live in external `submission.zip.sha256` (excluded from the zip; see §7.3) |
 | Live deploy            | https://agoraalpha.vercel.app                                      |
-| Paid-unlock transcript | §5.1 (trace 24 cli-unlock 11/11 steps green) + §5.4 explorer tx `0x0f1d9b9a7a7a501047460c37c8267e3ed24f27381d77e5fcc002397c27c15e2b` on Arc testnet block `43861411` |
+| Paid-unlock transcript | §5.1 (trace 24 cli-unlock 11/11 steps green) + §5.5 explorer tx `0x0f1d9b9a7a7a501047460c37c8267e3ed24f27381d77e5fcc002397c27c15e2b` on Arc testnet block `43861411` |
 | Visual evidence        | §6 — `verify/screenshots/unlocked-trace.png` (`/pick/24`) + `verify/screenshots/explorer-tx.png` (`unlock(24)`) |
 | Repository             | https://github.com/yxshee/pythia (commit listed above)             |

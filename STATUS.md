@@ -117,7 +117,7 @@ mode does not imply a failure in the other; they assert different invariants.
 
 ```bash
 cd agent && uv run python -m unittest discover -s tests
-# 31 tests passed
+# 33 tests passed
 
 cd agent && uv run python -m pythia.scripts.validate_submission --mode private-deploy
 # submission data ok (private-deploy): 8 home markets, 8 private full traces
