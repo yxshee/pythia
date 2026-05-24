@@ -188,7 +188,36 @@ class ValidateSubmissionDeployModeTests(unittest.TestCase):
             failures = validate_repo(root, mode="deploy")
 
             self.assertTrue(
-                any("HOLD reasoning contains actionable recommendation language" in f for f in failures),
+                any("HOLD payload contains actionable recommendation language" in f for f in failures),
+                failures,
+            )
+
+    def test_rejects_hold_payload_with_buy_language_outside_served_full(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _scaffold(root)
+            preview = [_entry(i, decision="HOLD" if i == 1 else "BUY_YES") for i in range(1, 9)]
+            full = [
+                _full_entry(i, decision="HOLD" if i == 1 else "BUY_YES")
+                if i == 1
+                else _full_entry(i)
+                for i in range(1, 9)
+            ]
+            full[0]["analyst"] = {
+                "reasoning": [
+                    {
+                        "kind": "conclusion",
+                        "text": "A BUY YES is justifiable despite the final action.",
+                    }
+                ]
+            }
+            (root / "web" / "data" / "picks-preview.json").write_text(json.dumps(preview))
+            (root / "web" / "data" / "picks-full.private.json").write_text(json.dumps(full))
+
+            failures = validate_repo(root, mode="deploy")
+
+            self.assertTrue(
+                any("HOLD payload contains actionable recommendation language" in f for f in failures),
                 failures,
             )
 

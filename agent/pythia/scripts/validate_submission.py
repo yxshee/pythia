@@ -187,10 +187,10 @@ def _check_full_entries(
         if any(marker.lower() in entry_text for marker in _FIXTURE_SOURCE_MARKERS):
             failures.append(f"{source_label} trace {trace_id}: full payload contains fixture source marker")
         if full.get("decision") == "HOLD":
-            reasoning_text = json.dumps(full.get("reasoning") or [], ensure_ascii=False).lower()
-            if any(marker in reasoning_text for marker in _HOLD_ACTIONABLE_RECOMMENDATION_MARKERS):
+            hold_entry_text = json.dumps(entry, ensure_ascii=False).lower()
+            if any(marker in hold_entry_text for marker in _HOLD_ACTIONABLE_RECOMMENDATION_MARKERS):
                 failures.append(
-                    f"{source_label} trace {trace_id}: HOLD reasoning contains actionable recommendation language"
+                    f"{source_label} trace {trace_id}: HOLD payload contains actionable recommendation language"
                 )
             if full.get("copy_trade_url"):
                 failures.append(f"{source_label} trace {trace_id}: HOLD full payload still has copy_trade_url")
