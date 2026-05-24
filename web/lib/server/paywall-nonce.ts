@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { arc } from "@/lib/arc-chain";
 import { UNLOCK_MARKET } from "@/lib/contracts";
-import { getKv } from "@/lib/server/kv";
+import { requireKvInProduction } from "@/lib/server/kv";
 
 const NONCE_TTL_MS = 5 * 60 * 1000;
 const NONCE_TTL_SECONDS = NONCE_TTL_MS / 1000;
@@ -84,7 +84,7 @@ export async function issueUnlockNonce(input: {
     }),
   };
 
-  const kv = getKv();
+  const kv = requireKvInProduction();
   if (kv) {
     await kv.set(activeKey(nonce), record, { ex: NONCE_TTL_SECONDS });
   } else {
@@ -94,7 +94,7 @@ export async function issueUnlockNonce(input: {
 }
 
 async function loadActive(nonce: string): Promise<NonceRecord | null> {
-  const kv = getKv();
+  const kv = requireKvInProduction();
   if (kv) {
     return (await kv.get<NonceRecord>(activeKey(nonce))) ?? null;
   }
@@ -102,7 +102,7 @@ async function loadActive(nonce: string): Promise<NonceRecord | null> {
 }
 
 async function isUsed(nonce: string): Promise<boolean> {
-  const kv = getKv();
+  const kv = requireKvInProduction();
   if (kv) {
     return (await kv.get(usedKey(nonce))) !== null;
   }
@@ -110,7 +110,7 @@ async function isUsed(nonce: string): Promise<boolean> {
 }
 
 async function markUsed(nonce: string): Promise<void> {
-  const kv = getKv();
+  const kv = requireKvInProduction();
   if (kv) {
     await kv.set(usedKey(nonce), 1, { ex: NONCE_TTL_SECONDS });
     await kv.del(activeKey(nonce));
@@ -139,7 +139,7 @@ export async function validateUnlockNonce(input: {
     return { ok: false, reason: "nonce-not-found" };
   }
   if (record.expiresAt <= now) {
-    const kv = getKv();
+    const kv = requireKvInProduction();
     if (kv) {
       await kv.del(activeKey(input.nonce));
     } else {
