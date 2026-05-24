@@ -1,3 +1,4 @@
+import "server-only";
 import { randomUUID } from "node:crypto";
 import { arc } from "@/lib/arc-chain";
 import { UNLOCK_MARKET } from "@/lib/contracts";
@@ -109,14 +110,21 @@ async function isUsed(nonce: string): Promise<boolean> {
   return used.has(nonce);
 }
 
-async function markUsed(nonce: string): Promise<void> {
+async function markUsed(nonce: string): Promise<boolean> {
   const kv = requireKvInProduction();
   if (kv) {
-    await kv.set(usedKey(nonce), 1, { ex: NONCE_TTL_SECONDS });
+    const stored = await kv.set(usedKey(nonce), 1, {
+      ex: NONCE_TTL_SECONDS,
+      nx: true,
+    });
+    if (stored !== "OK") return false;
     await kv.del(activeKey(nonce));
+    return true;
   } else {
+    if (used.has(nonce)) return false;
     active.delete(nonce);
     used.set(nonce, Date.now() + NONCE_TTL_MS);
+    return true;
   }
 }
 
@@ -172,6 +180,8 @@ export async function consumeUnlockNonce(input: {
 }): Promise<{ ok: true } | { ok: false; reason: string }> {
   const valid = await validateUnlockNonce(input);
   if (!valid.ok) return valid;
-  await markUsed(input.nonce);
+  if (!(await markUsed(input.nonce))) {
+    return { ok: false, reason: "nonce-used" };
+  }
   return { ok: true };
 }

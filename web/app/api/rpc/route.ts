@@ -31,7 +31,9 @@
  * - 502 if the upstream fetch errors (network, timeout).
  */
 import { NextRequest, NextResponse } from "next/server";
+import { UNLOCK_MARKET, USDC } from "@/lib/contracts";
 import { clientIp, rateLimit } from "@/lib/server/rate-limit";
+import { trustedRequestHost, utf8ByteLength } from "@/lib/server/request-security";
 
 export const runtime = "nodejs";
 
@@ -46,16 +48,56 @@ const ALLOWED_METHODS = new Set([
   "eth_call",
   "eth_getBalance",
   "eth_getCode",
-  "eth_getLogs",
   "eth_getTransactionByHash",
   "eth_getTransactionReceipt",
   "net_version",
 ]);
 
-const MAX_BODY_CHARS = 25_000;
+const MAX_BODY_BYTES = 25_000;
+const MAX_RPC_RESPONSE_BYTES = 100_000;
 const MAX_BATCH_CALLS = 10;
+const UNLOCK_MARKET_READ_SELECTORS = new Set([
+  "0x8d5555f2", // priceFor(uint256)
+  "0x413a3842", // isUnlocked(uint256,address)
+]);
+const USDC_READ_SELECTORS = new Set([
+  "0x70a08231", // balanceOf(address)
+  "0xdd62ed3e", // allowance(address,address)
+]);
+
+function isAllowedEthCall(call: unknown): boolean {
+  const params =
+    call && typeof call === "object"
+      ? (call as { params?: unknown }).params
+      : undefined;
+  if (!Array.isArray(params) || !params[0] || typeof params[0] !== "object") {
+    return false;
+  }
+  const request = params[0] as { to?: unknown; data?: unknown; input?: unknown };
+  const to = typeof request.to === "string" ? request.to.toLowerCase() : "";
+  const data =
+    typeof request.data === "string"
+      ? request.data.toLowerCase()
+      : typeof request.input === "string"
+        ? request.input.toLowerCase()
+        : "";
+  if (!/^0x[0-9a-f]*$/.test(data) || data.length < 10) return false;
+  const selector = data.slice(0, 10);
+
+  if (to === UNLOCK_MARKET.toLowerCase()) {
+    return UNLOCK_MARKET_READ_SELECTORS.has(selector);
+  }
+  if (to === USDC.toLowerCase()) {
+    return USDC_READ_SELECTORS.has(selector);
+  }
+  return false;
+}
 
 export async function POST(req: NextRequest) {
+  if (!trustedRequestHost(req)) {
+    return NextResponse.json({ error: "host-not-allowed" }, { status: 400 });
+  }
+
   const limit = await rateLimit(`rpc:${clientIp(req.headers)}`, 120, 60_000);
   if (!limit.ok) {
     return NextResponse.json(
@@ -70,7 +112,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.text();
-  if (body.length > MAX_BODY_CHARS) {
+  if (utf8ByteLength(body) > MAX_BODY_BYTES) {
     return NextResponse.json({ error: "body-too-large" }, { status: 413 });
   }
 
@@ -106,10 +148,13 @@ export async function POST(req: NextRequest) {
         { status: 403 },
       );
     }
+    if (method === "eth_call" && !isAllowedEthCall(call)) {
+      return NextResponse.json({ error: "eth-call-not-allowed" }, { status: 403 });
+    }
   }
 
   // Bound how long we wait on the Canteen-issued RPC. The 10s budget is
-  // larger than any allowed read (eth_call, eth_getLogs) under normal load,
+  // larger than any allowed read under normal load,
   // and small enough that a hung upstream cannot tie up our Vercel function
   // budget. We return 504 on timeout so the caller can distinguish "upstream
   // is slow" from "upstream returned an error" (502).
@@ -123,6 +168,9 @@ export async function POST(req: NextRequest) {
       signal: controller.signal,
     });
     const respBody = await resp.text();
+    if (utf8ByteLength(respBody) > MAX_RPC_RESPONSE_BYTES) {
+      return NextResponse.json({ error: "upstream-response-too-large" }, { status: 502 });
+    }
     return new NextResponse(respBody, {
       status: resp.status,
       headers: { "content-type": "application/json" },
@@ -134,7 +182,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         error: "upstream-failed",
-        detail: err instanceof Error ? err.message : String(err),
       },
       { status: 502 },
     );

@@ -1,3 +1,4 @@
+import "server-only";
 import { requireKvInProduction } from "@/lib/server/kv";
 
 type Bucket = {
@@ -6,11 +7,23 @@ type Bucket = {
 };
 
 const buckets = new Map<string, Bucket>();
+const IP_RE = /^[a-z0-9:.%-]{1,64}$/i;
+
+function cleanIp(value: string | null): string | null {
+  const ip = value?.trim() ?? "";
+  return IP_RE.test(ip) ? ip : null;
+}
 
 export function clientIp(headers: Headers): string {
-  const forwarded = headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0]?.trim() || "unknown";
-  return headers.get("x-real-ip") ?? "unknown";
+  for (const name of ["x-vercel-forwarded-for", "x-real-ip", "x-forwarded-for"]) {
+    const value = headers.get(name);
+    if (!value) continue;
+    for (const part of value.split(",")) {
+      const ip = cleanIp(part);
+      if (ip) return ip;
+    }
+  }
+  return "unknown";
 }
 
 export async function rateLimit(

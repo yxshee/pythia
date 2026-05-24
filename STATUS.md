@@ -30,8 +30,10 @@ Last updated: 2026-05-24 (Asia/Kolkata).
   host/trace/address/chain/contract/nonce message, checks
   `UnlockMarket.isUnlocked(traceId, wallet)` on Arc, then consumes the nonce
   before returning the private full payload.
-- **RPC proxy has guardrails.** `/api/rpc` is read-only allowlisted, caps body
-  size and batch size, and has lightweight in-memory per-IP rate limiting.
+- **RPC proxy has guardrails.** `/api/rpc` rejects non-canonical production
+  hosts, forwards only a read-only method allowlist, restricts `eth_call` to
+  the deployed `UnlockMarket`/DevUSDC read selectors needed by the wallet UI,
+  caps request/response size and batch size, and rate-limits callers.
 - **Wallet flow uses DevUSDC/testnet wording.** The UI no longer presents the
   demo unlock as production USDC.
 - **Polymarket attribution is worded as placeholder-only.** The app does not

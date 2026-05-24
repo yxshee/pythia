@@ -10,7 +10,7 @@
  *
  * Usage (from repo root):
  *   PRIVATE_KEY=0xREPLACE_WITH_64_HEX  ARC_RPC_URL=https://REPLACE_WITH_ARC_RPC_URL  \
- *     node scripts/cli-unlock.mjs --base=https://agoraalpha.vercel.app --trace-id=16
+ *     node scripts/cli-unlock.mjs --base=https://agoraalpha.vercel.app --trace-id=24
  *
  * Required environment:
  *   PRIVATE_KEY   0x + 64 hex chars. NEVER use a production key.
@@ -20,7 +20,7 @@
  *
  * Flags:
  *   --base <url>      Deploy base URL (default https://agoraalpha.vercel.app).
- *   --trace-id <n>    Trace ID to unlock (default 16).
+ *   --trace-id <n>    Trace ID to unlock (default 24).
  *   --rpc <url>       Arc RPC URL override (else ARC_RPC_URL env).
  *   --dry-run         Stop after step 4 (price read); no tx sent.
  *   --help            Print this message.
@@ -88,7 +88,7 @@ function printHelp() {
 
 Options:
   --base <url>      Deploy base URL (default https://agoraalpha.vercel.app)
-  --trace-id <n>    Trace ID to unlock (default 16)
+  --trace-id <n>    Trace ID to unlock (default 24)
   --rpc <url>       Arc RPC URL (else ARC_RPC_URL env)
   --dry-run         Stop after step 4 (price read); no tx sent
   --help            This message
@@ -106,7 +106,7 @@ function parseCli() {
     parsed = parseArgs({
       options: {
         base: { type: "string", default: "https://agoraalpha.vercel.app" },
-        "trace-id": { type: "string", default: "16" },
+        "trace-id": { type: "string", default: "24" },
         rpc: { type: "string" },
         "dry-run": { type: "boolean", default: false },
         help: { type: "boolean", default: false },

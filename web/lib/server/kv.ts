@@ -1,3 +1,4 @@
+import "server-only";
 /**
  * Lazy Vercel KV client. Returns `null` when the runtime is not configured
  * for KV (no `KV_REST_API_URL` / `KV_REST_API_TOKEN`), so callers fall back

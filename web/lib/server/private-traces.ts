@@ -1,3 +1,4 @@
+import "server-only";
 /**
  * Server-only loader for the paid full-trace bundle.
  *
@@ -16,15 +17,28 @@
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
+import { utf8ByteLength } from "@/lib/server/request-security";
 import type { Trace } from "@/lib/traces";
 
 const TTL_MS = 30_000;
 const FETCH_TIMEOUT_MS = 8_000;
+const MAX_PRIVATE_TRACE_BYTES = 1_000_000;
 
 let cached: { at: number; traces: Trace[] } | null = null;
 
 function localSnapshotPath(): string {
   return path.resolve(process.cwd(), "data", "picks-full.private.json");
+}
+
+function parseTraceArray(body: string): Trace[] {
+  if (utf8ByteLength(body) > MAX_PRIVATE_TRACE_BYTES) {
+    throw new Error(`private trace payload exceeds ${MAX_PRIVATE_TRACE_BYTES} bytes`);
+  }
+  const parsed = JSON.parse(body) as unknown;
+  if (!Array.isArray(parsed) || !parsed.every((entry) => entry && typeof entry === "object")) {
+    throw new Error("private trace payload must be an array of trace objects");
+  }
+  return parsed as Trace[];
 }
 
 async function loadFromBlob(url: string): Promise<Trace[]> {
@@ -38,7 +52,7 @@ async function loadFromBlob(url: string): Promise<Trace[]> {
     if (!res.ok) {
       throw new Error(`blob fetch ${res.status}`);
     }
-    return (await res.json()) as Trace[];
+    return parseTraceArray(await res.text());
   } finally {
     clearTimeout(t);
   }
@@ -47,7 +61,7 @@ async function loadFromBlob(url: string): Promise<Trace[]> {
 async function loadFromLocal(): Promise<Trace[]> {
   const file = localSnapshotPath();
   const raw = await readFile(file, "utf-8");
-  return JSON.parse(raw) as Trace[];
+  return parseTraceArray(raw);
 }
 
 /**

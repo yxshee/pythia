@@ -9,7 +9,7 @@
     "upload-private-blob": "node scripts/upload-private-blob.mjs"
   },
   "dependencies": {
-    "@vercel/blob": "^0.27.3",
+    "@vercel/blob": "^2.4.0",
     "viem": "^2.50.4"
   }
 }

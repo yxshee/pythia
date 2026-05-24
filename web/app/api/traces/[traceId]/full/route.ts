@@ -23,8 +23,9 @@ import { NextResponse } from "next/server";
 import { createPublicClient, http, isAddress, type Hex } from "viem";
 import { arc } from "@/lib/arc-chain";
 import { UNLOCK_MARKET, unlockMarketAbi } from "@/lib/contracts";
-import { loadPickFull } from "@/lib/traces";
+import { loadPick, loadPickFull } from "@/lib/traces";
 import { clientIp, rateLimit } from "@/lib/server/rate-limit";
+import { trustedRequestHost, utf8ByteLength } from "@/lib/server/request-security";
 import {
   consumeUnlockNonce,
   issueUnlockNonce,
@@ -52,14 +53,6 @@ function rateLimited(retryAfterSeconds: number): NextResponse {
     { error: "rate-limited" },
     { status: 429, headers: { "Retry-After": String(retryAfterSeconds) } },
   );
-}
-
-function getRequestHost(req: Request): string {
-  return (
-    req.headers.get("x-forwarded-host") ??
-    req.headers.get("host") ??
-    ""
-  ).toLowerCase();
 }
 
 function parseIssuedTimestamp(message: string): number | null {
@@ -111,15 +104,20 @@ export async function GET(
   if (!Number.isFinite(traceId) || traceId <= 0) {
     return bad("invalid-trace-id");
   }
+  if (!(await loadPick(traceId))) {
+    return bad("trace-not-found", 404);
+  }
 
   const url = new URL(req.url);
   const address = url.searchParams.get("address") ?? "";
   if (!isAddress(address)) {
     return bad("invalid-address");
   }
+  const addressLimit = await rateLimit(`nonce-address:${address.toLowerCase()}`, 10, 60_000);
+  if (!addressLimit.ok) return rateLimited(addressLimit.retryAfterSeconds);
 
-  const host = getRequestHost(req);
-  if (!host) return bad("missing-host", 400);
+  const host = trustedRequestHost(req);
+  if (!host) return bad("host-not-allowed", 400);
 
   return NextResponse.json(await issueUnlockNonce({ host, traceId, address }), {
     headers: { "Cache-Control": "private, no-store, max-age=0" },
@@ -151,7 +149,7 @@ export async function POST(
   let body: Body;
   try {
     const raw = await req.text();
-    if (raw.length > MAX_BODY_BYTES) {
+    if (utf8ByteLength(raw) > MAX_BODY_BYTES) {
       return bad("payload-too-large", 413);
     }
     body = JSON.parse(raw) as Body;
@@ -166,13 +164,15 @@ export async function POST(
   if (!isAddress(address)) {
     return bad("invalid-address");
   }
+  const addressLimit = await rateLimit(`full-address:${address.toLowerCase()}`, 20, 60_000);
+  if (!addressLimit.ok) return rateLimited(addressLimit.retryAfterSeconds);
   if (!signature.startsWith("0x")) {
     return bad("invalid-signature");
   }
 
   // 1. Message must be bound to (host, traceId, address, chain, contract).
   //    Prevents reusing a signature meant for one trace/deploy to unlock another.
-  const requestHost = getRequestHost(req);
+  const requestHost = trustedRequestHost(req);
   if (!requestHost || !messageMatchesContext(message, traceId, address, requestHost)) {
     return bad("message-context-mismatch", 401);
   }
