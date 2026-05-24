@@ -1,4 +1,4 @@
-import { getKv } from "@/lib/server/kv";
+import { requireKvInProduction } from "@/lib/server/kv";
 
 type Bucket = {
   count: number;
@@ -18,7 +18,7 @@ export async function rateLimit(
   limit: number,
   windowMs: number,
 ): Promise<{ ok: true } | { ok: false; retryAfterSeconds: number }> {
-  const kv = getKv();
+  const kv = requireKvInProduction();
   if (kv) {
     const ttlSeconds = Math.max(1, Math.ceil(windowMs / 1000));
     const kvKey = `rl:${key}`;

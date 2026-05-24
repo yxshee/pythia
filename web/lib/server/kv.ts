@@ -25,3 +25,22 @@ export function getKv(): VercelKV | null {
   cached = mod.kv;
   return cached;
 }
+
+/**
+ * Production-safe accessor. In `VERCEL_ENV=production`, durable nonce +
+ * rate-limit state must be shared across serverless instances — otherwise
+ * a nonce GET on instance A 401s with `nonce-not-found` on a POST to
+ * instance B (silent paid-unlock failure). Throw on the first call instead
+ * of degrading silently to per-instance Maps.
+ */
+export function requireKvInProduction(): VercelKV | null {
+  const kv = getKv();
+  if (!kv && process.env.VERCEL_ENV === "production") {
+    throw new Error(
+      "KV_REST_API_URL and KV_REST_API_TOKEN are required in production. " +
+        "Paywall nonce and rate-limit state cannot fall back to per-instance " +
+        "in-memory Maps when serving real users.",
+    );
+  }
+  return kv;
+}
