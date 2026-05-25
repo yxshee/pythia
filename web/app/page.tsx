@@ -68,7 +68,7 @@ export default async function HomePage() {
         <section className="mt-20">
           <div className="flex items-baseline justify-between border-b border-ink/15 pb-3">
             <h2 className="mono text-[12px] uppercase tracking-[0.32em] text-ink">
-              Today&rsquo;s picks &middot; {picks.length}
+              Latest Arc-anchored picks &middot; {picks.length}
             </h2>
             <span className="mono text-[10px] uppercase tracking-[0.28em] text-ink-faint">
               {picks[0]?.generated_at
