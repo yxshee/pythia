@@ -44,6 +44,19 @@ ec5ebfe fix: keep rate limits off blob storage
  web/lib/server/rate-limit.ts                | 115 ----------------------------
 ```
 
+### 0.2 Contract verification (Arcscan)
+
+| Contract | Address | Source verified | Compiler | Arcscan |
+|---|---|---|---|---|
+| `TraceLog` | `0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4` | yes | `v0.8.24+commit.e11b9ed9` | [view](https://testnet.arcscan.app/address/0x48Af95Ed6F1E4dF73Dd62CE17731084a5E98AFB4) |
+| `UnlockMarket` | `0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA` | yes | `v0.8.24+commit.e11b9ed9` | [view](https://testnet.arcscan.app/address/0xD8af5ebe36AC9eA736f40D749674FF1B0f4bd3cA) |
+| `DevUSDC` | `0x6d3bda6e93dd02a1c237642C5af837796bF47511` | yes | `v0.8.24+commit.e11b9ed9` | [view](https://testnet.arcscan.app/address/0x6d3bda6e93dd02a1c237642C5af837796bF47511) |
+
+All three demo-path contracts are source-verified on Arcscan with optimizer
+on, `--via-ir` enabled. Full Blockscout API readback in §5.7. `PythiaVault`
+is also source-visible (see §5.7) but is experimental and not part of the
+core submission path.
+
 ---
 
 ## 1. Source build evidence

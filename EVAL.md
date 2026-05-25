@@ -65,6 +65,52 @@ Use this table when the resolved-market study is added:
 |---|---|---|---|---|---|
 | TBD | TBD | TBD | TBD | TBD | TBD |
 
+## Oracle Red-Team Roadmap
+
+We do not claim historical predictive accuracy yet. This release proves the
+Arc-native paid reasoning-trace primitive. EVAL.md defines and begins the
+red-team process: resolved long-tail markets, calibration, false positives,
+and correct-sounding wrong traces.
+
+The schema for resolved-market entries is captured at
+[`eval/oracle-redteam.sample.json`](eval/oracle-redteam.sample.json). Real
+entries land in `eval/oracle-redteam.json` as markets resolve, with sizing
+pulled from the private full trace at scoring time.
+
+### Failure taxonomy
+
+Every wrong trace gets one of these labels:
+
+- `source_missing` — the source bundle never pulled the data that would have
+  changed the call.
+- `source_stale` — the source was pulled but the data was already invalidated
+  by an event the agent did not see.
+- `overfit_to_market_price` — the agent collapsed to the implied probability
+  instead of holding its independent prior.
+- `ignored_liquidity` — the call was actionable in theory but unfillable at
+  the market's actual depth.
+- `long_horizon_uncertainty` — the resolution window was too far out for any
+  prior to be informative; the call should have been HOLD.
+- `correlation_blindness` — the agent treated correlated events as
+  independent and double-counted evidence.
+- `reasoning_sounded_good_but_false` — the trace read coherently but was
+  contradicted by a source the agent did weight, indicating a synthesis bug
+  rather than a missing-data bug.
+
+### Planned metrics
+
+Computed once the resolved-market dataset crosses the minimums in the
+previous section:
+
+- Accuracy on actionable calls (BUY_YES / BUY_NO only; HOLD excluded).
+- Brier score across all calls including HOLD-as-0.5-confidence.
+- Average calibration error per confidence bucket.
+- False-positive rate (actionable calls where the outcome contradicted the
+  decision).
+- False-negative rate ("HOLD regret" — HOLD calls where a confident
+  actionable call would have been correct).
+- Paper PnL in DevUSDC across all actionable calls at the published size.
+
 ## Submission Wording Boundary
 
 Allowed wording:

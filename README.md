@@ -9,7 +9,7 @@
 
 ### *A USDC-native marketplace prototype for auditable AI reasoning traces.*
 
-An autonomous analyst for prediction markets. Pythia scans Polymarket, scores each candidate with Claude Sonnet 4.6, sizes a paper position, and publishes a paid reasoning trace — every hash anchored on Arc.
+**Paid AI reasoning traces for long-tail sports prediction markets, settled and audited on Arc.** Pythia is an autonomous prediction-market analyst — its first vertical is long-tail sports (NBA, NHL, World Cup), where Polymarket odds drift fast and small edges matter. The agent scans candidates, scores each one with Claude Sonnet 4.6, sizes a paper position, and publishes a paid reasoning trace. Every hash is anchored on Arc.
 
 <br />
 

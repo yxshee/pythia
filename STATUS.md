@@ -121,16 +121,34 @@ Last updated: 2026-05-25 (Asia/Kolkata).
 
 ## Does Not Yet Work
 
-- **Circle Wallets / App Kit / Gateway / Paymaster / CCTP / x402 session keys.**
-  The shipping buyer flow uses injected wallets through wagmi/viem plus
-  `UnlockMarket` on Arc. Circle Wallets, App Kit, x402-style paid API flows,
-  and session-key unlock/copy-trade flows remain planned integrations, not
-  shipped features.
+- **Circle / Arc sponsor-stack integrations (planned).** The shipping buyer
+  flow uses injected wallets through wagmi/viem plus `UnlockMarket` on Arc.
+  The following sponsor primitives are scoped and documented but not yet
+  shipped:
+    - **Circle App Kit Send + Unified Balance.** Would collapse the
+      "approve → unlock" two-step into a single App Kit transfer.
+    - **Circle Agent Wallets.** Would give the agent its own
+      programmatically-controlled wallet for treasury-side flows; today
+      the operator EOA signs all on-chain writes.
+    - **x402 paid trace endpoint.** Roadmap in
+      [docs/X402-SESSION-KEYS.md](docs/X402-SESSION-KEYS.md). Would expose
+      `GET /api/x402/traces/:id` returning HTTP 402 with structured
+      payment requirements, retried with payment proof.
+    - **Session-key read grants.** Same doc. Read-only 15-minute browser
+      session bound to already-unlocked traces; explicitly not delegated
+      signing.
+    - **CCTP / Gateway / Paymaster.** Out of scope for testnet-only
+      DevUSDC; relevant only once the flow moves to canonical USDC across
+      chains.
+- **Production Polymarket order-level builder attribution.** Current links
+  are recommendation deep-links. Production fee attribution requires the
+  registered V2 bytes32 `builderCode` to be passed in the order struct via
+  the CLOB SDK and credited through `getBuilderTrades()`. A format-only
+  smoke validator lives at
+  [scripts/polymarket-builder-smoke.ts](scripts/polymarket-builder-smoke.ts);
+  it never places orders.
 - **`PythiaVault.recordTrade` resolver close-out.** `agent/pythia/resolver.py`
   does not exist yet. Paper PnL close-out after market resolution is planned.
-- **Production Polymarket builder attribution.** Current links are
-  recommendation deep-links. Production fee attribution requires the official
-  V2 order object to include the registered bytes32 `builderCode`.
 - **Private storage rotation and pinning.** The hackathon deploy now serves
   AES-256-GCM encrypted paid traces from Vercel Blob through the server-only
   `PRIVATE_TRACES_BLOB_URL` + `PRIVATE_TRACES_ENCRYPTION_KEY`. Production
