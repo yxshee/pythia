@@ -29,6 +29,7 @@ ROOT_DIRS = {
     "bot",
     "contracts",
     "docs",
+    "eval",
     "scripts",
     "traces",
     "verify",

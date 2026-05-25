@@ -1,0 +1,26 @@
+[
+  {
+    "_doc": "Schema sample for future oracle red-team entries. Real entries land here as the markets in web/data/picks-preview.json resolve. Fields with null values are filled in post-resolution; suggested_size_usdc is pulled from the private full trace at scoring time and is intentionally not duplicated in the public preview.",
+    "market_id": "0xb6b3d7a2037b3faa7e1306d741840d453432902d73cc9a146a035e40271eae73",
+    "question": "Will the San Antonio Spurs win the 2026 NBA Finals?",
+    "vertical": "sports",
+    "scored_at": "2026-05-24T14:28:41+00:00",
+    "trace_id": 26,
+    "trace_hash": "0x2fac9d206d7d07687f521cf9ab7e1736fbe8fa7e3ca47ec912fea468c8c6a6d4",
+    "market_probability_yes": 0.1555,
+    "agent_probability_yes": 0.04,
+    "decision": "BUY_NO",
+    "confidence": "high",
+    "risk": "aggressive",
+    "end_date_iso": "2026-07-01T00:00:00Z",
+    "suggested_size_usdc": null,
+    "outcome_yes": null,
+    "resolved_at": null,
+    "was_correct": null,
+    "reasoning_summary": null,
+    "reasoning_sounded_right": null,
+    "paper_pnl_usdc": null,
+    "failure_type": null,
+    "policy_change": null
+  }
+]
